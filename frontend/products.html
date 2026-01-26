@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>Shop Handmade Items | Washington Artisan Marketplace</title>
+    <meta name="description" content="Browse unique handmade items from talented Washington state artists. Shop pottery, jewelry, woodworking, textiles and more while supporting local artisans.">
+    <meta name="keywords" content="handmade Washington, artisan products, shop local crafts, buy handmade">
+    <link rel="canonical" href="https://waartisanmarket.com/products">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/products.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://waartisanmarket.com"
+      },{
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Shop",
+        "item": "https://waartisanmarket.com/products"
+      }]
+    }
+    </script>
+</head>
+<body>
+    <!-- Header (same as homepage) -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="nav-wrapper">
+                <a href="../index.html" class="logo">
+                    <h1>WA Artisan Market</h1>
+                </a>
+                
+                <div class="search-bar-container">
+                    <form class="search-form" id="search-form">
+                        <input 
+                            type="search" 
+                            name="q" 
+                            id="search-input"
+                            placeholder="Search handmade items..." 
+                            class="search-input"
+                            aria-label="Search products"
+                        >
+                        <button type="submit" class="search-btn" aria-label="Search">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="nav-links">
+                    <a href="products.html" class="active">Shop</a>
+                    <a href="about.html">Our Mission</a>
+                    <a href="../artist-cms/dashboard.html">Sell</a>
+                    <a href="#" class="cart-link">
+                        Cart <span class="cart-count">0</span>
+                    </a>
+                </div>
+
+                <button class="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <div class="container">
+            <ol>
+                <li><a href="../index.html">Home</a></li>
+                <li><span aria-current="page">Shop</span></li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="products-page">
+        <div class="container">
+            <div class="page-header">
+                <h1>Handmade Artisan Products</h1>
+                <p class="page-subtitle">Discover one-of-a-kind creations from talented Washington state artists</p>
+            </div>
+
+            <div class="products-layout">
+                <!-- Filters Sidebar -->
+                <aside class="filters-sidebar">
+                    <div class="filters-header">
+                        <h2>Filters</h2>
+                        <button id="clear-filters" class="clear-btn">Clear All</button>
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="filter-group">
+                        <h3 class="filter-title">Category</h3>
+                        <div class="filter-options">
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="jewelry">
+                                <span>Jewelry & Accessories</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="home-decor">
+                                <span>Home Decor</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="pottery">
+                                <span>Pottery & Ceramics</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="textiles">
+                                <span>Textiles & Fiber Arts</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="paintings">
+                                <span>Paintings & Wall Art</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="sculpture">
+                                <span>Sculpture</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="woodworking">
+                                <span>Woodworking</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="metalwork">
+                                <span>Metalwork</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="glass">
+                                <span>Glass Art</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="paper-arts">
+                                <span>Paper Arts & Prints</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="photography">
+                                <span>Photography</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="soap-candles">
+                                <span>Soaps & Candles</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="category" value="leather">
+                                <span>Leather Goods</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Price Filter -->
+                    <div class="filter-group">
+                        <h3 class="filter-title">Price Range</h3>
+                        <div class="price-inputs">
+                            <input type="number" id="min-price" placeholder="Min" min="0">
+                            <span>-</span>
+                            <input type="number" id="max-price" placeholder="Max" min="0">
+                        </div>
+                        <div class="price-quick-filters">
+                            <button class="price-tag" data-min="0" data-max="50">Under $50</button>
+                            <button class="price-tag" data-min="50" data-max="100">$50 - $100</button>
+                            <button class="price-tag" data-min="100" data-max="200">$100 - $200</button>
+                            <button class="price-tag" data-min="200" data-max="999999">$200+</button>
+                        </div>
+                    </div>
+
+                    <!-- Location Filter -->
+                    <div class="filter-group">
+                        <h3 class="filter-title">Artist Location</h3>
+                        <div class="filter-options">
+                            <label class="filter-option">
+                                <input type="checkbox" name="location" value="seattle">
+                                <span>Seattle</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="location" value="spokane">
+                                <span>Spokane</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="location" value="tacoma">
+                                <span>Tacoma</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="location" value="olympia">
+                                <span>Olympia</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="location" value="bellingham">
+                                <span>Bellingham</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="location" value="vancouver">
+                                <span>Vancouver</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Special Filters -->
+                    <div class="filter-group">
+                        <h3 class="filter-title">Special</h3>
+                        <div class="filter-options">
+                            <label class="filter-option">
+                                <input type="checkbox" name="special" value="featured">
+                                <span>Featured Items</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="special" value="new">
+                                <span>New Arrivals</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" name="special" value="sale">
+                                <span>On Sale</span>
+                            </label>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Products Area -->
+                <div class="products-area">
+                    <!-- Toolbar -->
+                    <div class="products-toolbar">
+                        <div class="results-info">
+                            <span id="results-count">Loading products...</span>
+                        </div>
+                        <div class="sort-options">
+                            <label for="sort-select">Sort by:</label>
+                            <select id="sort-select">
+                                <option value="featured">Featured</option>
+                                <option value="newest">Newest</option>
+                                <option value="price-low">Price: Low to High</option>
+                                <option value="price-high">Price: High to Low</option>
+                                <option value="popular">Most Popular</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Active Filters Display -->
+                    <div id="active-filters" class="active-filters"></div>
+
+                    <!-- Products Grid -->
+                    <div id="products-grid" class="products-grid">
+                        <!-- Products loaded dynamically -->
+                    </div>
+
+                    <!-- Load More Button -->
+                    <div class="load-more-container">
+                        <button id="load-more-btn" class="load-more-btn">Load More Products</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer (same as homepage) -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="products.html">All Products</a></li>
+                        <li><a href="products.html?category=jewelry">Jewelry</a></li>
+                        <li><a href="products.html?category=home-decor">Home Decor</a></li>
+                        <li><a href="products.html?category=pottery">Pottery</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Artists</h4>
+                    <ul>
+                        <li><a href="../artist-cms/dashboard.html">Sell Your Work</a></li>
+                        <li><a href="artists.html">Meet Our Artists</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>About</h4>
+                    <ul>
+                        <li><a href="about.html">Our Mission</a></li>
+                        <li><a href="/contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="/shipping">Shipping Info</a></li>
+                        <li><a href="/returns">Returns</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Washington Artisan Marketplace. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/products.js"></script>
+    <script src="js/filters.js"></script>
+</body>
+</html>

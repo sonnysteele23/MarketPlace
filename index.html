@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <title>Washington Artisan Marketplace - Support Local Artists & Fight Homelessness</title>
+    <meta name="title" content="Washington Artisan Marketplace - Support Local Artists & Fight Homelessness">
+    <meta name="description" content="Discover unique handmade items from talented Washington state artists. Every purchase supports local artisans and contributes 5% to solving homelessness.">
+    <meta name="keywords" content="Washington handmade, Seattle artisan, local crafts, handmade marketplace, support homeless artists, artisan goods Washington">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://waartisanmarket.com/">
+    <meta property="og:title" content="Washington Artisan Marketplace - Support Local Artists">
+    <meta property="og:description" content="Shop unique handmade items from Washington artists while supporting homelessness solutions.">
+    <meta property="og:image" content="/images/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://waartisanmarket.com/">
+    <meta property="twitter:title" content="Washington Artisan Marketplace">
+    <meta property="twitter:description" content="Shop unique handmade items from Washington artists while supporting homelessness solutions.">
+    <meta property="twitter:image" content="/images/twitter-image.jpg">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://waartisanmarket.com/">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="frontend/css/main.css">
+    
+    <!-- Preconnect to optimize loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Schema.org markup for Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Washington Artisan Marketplace",
+      "url": "https://waartisanmarket.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://waartisanmarket.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="nav-wrapper">
+                <a href="/" class="logo">
+                    <h1>WA Artisan Market</h1>
+                </a>
+                
+                <div class="search-bar-container">
+                    <form class="search-form" action="/search" method="GET">
+                        <input 
+                            type="search" 
+                            name="q" 
+                            placeholder="Search handmade items..." 
+                            class="search-input"
+                            aria-label="Search products"
+                        >
+                        <button type="submit" class="search-btn" aria-label="Search">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="nav-links">
+                    <a href="frontend/products.html">Shop</a>
+                    <a href="frontend/about.html">Our Mission</a>
+                    <a href="artist-cms/dashboard.html">Sell</a>
+                    <a href="#" class="cart-link">
+                        Cart <span class="cart-count">0</span>
+                    </a>
+                </div>
+
+                <button class="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2 class="hero-title">Handcrafted with Heart</h2>
+            <p class="hero-subtitle">Discover unique creations from talented Washington artists while making a difference</p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <strong>100+</strong>
+                    <span>Local Artists</span>
+                </div>
+                <div class="stat">
+                    <strong>5%</strong>
+                    <span>To Homelessness Solutions</span>
+                </div>
+                <div class="stat">
+                    <strong>1000+</strong>
+                    <span>Handmade Items</span>
+                </div>
+            </div>
+            <a href="frontend/products.html" class="cta-btn">Shop Now</a>
+        </div>
+    </section>
+
+    <!-- Impact Banner -->
+    <section class="impact-banner">
+        <div class="container">
+            <p>💙 Every purchase contributes 5% to solving homelessness in Washington state</p>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories-section">
+        <div class="container">
+            <h2 class="section-title">Shop by Category</h2>
+            <div class="categories-grid">
+                <a href="frontend/products.html?category=jewelry" class="category-card">
+                    <div class="category-icon">💎</div>
+                    <h3>Jewelry & Accessories</h3>
+                    <p>Handcrafted jewelry and unique accessories</p>
+                </a>
+                
+                <a href="frontend/products.html?category=home-decor" class="category-card">
+                    <div class="category-icon">🏠</div>
+                    <h3>Home Decor</h3>
+                    <p>Beautiful pieces for your living space</p>
+                </a>
+                
+                <a href="frontend/products.html?category=pottery" class="category-card">
+                    <div class="category-icon">🏺</div>
+                    <h3>Pottery & Ceramics</h3>
+                    <p>Functional art for everyday use</p>
+                </a>
+                
+                <a href="frontend/products.html?category=textiles" class="category-card">
+                    <div class="category-icon">🧵</div>
+                    <h3>Textiles & Fiber Arts</h3>
+                    <p>Woven, knitted, and sewn creations</p>
+                </a>
+                
+                <a href="frontend/products.html?category=paintings" class="category-card">
+                    <div class="category-icon">🎨</div>
+                    <h3>Paintings & Wall Art</h3>
+                    <p>Original artwork to brighten your walls</p>
+                </a>
+                
+                <a href="frontend/products.html?category=woodworking" class="category-card">
+                    <div class="category-icon">🪵</div>
+                    <h3>Woodworking</h3>
+                    <p>Crafted wood furniture and decor</p>
+                </a>
+                
+                <a href="frontend/products.html?category=glass" class="category-card">
+                    <div class="category-icon">🔮</div>
+                    <h3>Glass Art</h3>
+                    <p>Stunning blown and fused glass pieces</p>
+                </a>
+                
+                <a href="frontend/products.html?category=soap-candles" class="category-card">
+                    <div class="category-icon">🕯️</div>
+                    <h3>Soaps & Candles</h3>
+                    <p>Handmade aromatics for your home</p>
+                </a>
+            </div>
+            <div class="text-center">
+                <a href="frontend/products.html" class="view-all-btn">View All Categories →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products Section -->
+    <section class="featured-section">
+        <div class="container">
+            <h2 class="section-title">Featured Creations</h2>
+            <div class="products-grid" id="featured-products">
+                <!-- Products will be loaded dynamically -->
+                <div class="product-card-skeleton"></div>
+                <div class="product-card-skeleton"></div>
+                <div class="product-card-skeleton"></div>
+                <div class="product-card-skeleton"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Artist Spotlight Section -->
+    <section class="artist-spotlight">
+        <div class="container">
+            <h2 class="section-title">Artist Spotlight</h2>
+            <div class="spotlight-content">
+                <div class="spotlight-image">
+                    <img src="/images/artist-placeholder.jpg" alt="Featured Artist" loading="lazy">
+                </div>
+                <div class="spotlight-text">
+                    <h3>Meet Sarah Thompson</h3>
+                    <p class="artist-category">Ceramic Artist, Seattle</p>
+                    <p class="artist-story">
+                        "After experiencing homelessness for two years, I found solace in pottery. 
+                        This marketplace gave me a platform to share my work and rebuild my life. 
+                        Each piece I create is a reminder that everyone deserves a second chance."
+                    </p>
+                    <a href="frontend/artist-profile.html?id=sample" class="learn-more-btn">View Profile →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="mission-section">
+        <div class="container">
+            <div class="mission-content">
+                <h2>Our Mission</h2>
+                <p>
+                    We believe in the power of creativity and community. By connecting talented Washington 
+                    artists—including those experiencing homelessness—with customers who value handmade 
+                    quality, we're building more than a marketplace. We're creating opportunities.
+                </p>
+                <div class="mission-grid">
+                    <div class="mission-item">
+                        <h3>🎯 Support Artists</h3>
+                        <p>Provide a platform for local creators to showcase and sell their work</p>
+                    </div>
+                    <div class="mission-item">
+                        <h3>💰 Fight Homelessness</h3>
+                        <p>5% of every sale goes to homelessness solutions in Washington</p>
+                    </div>
+                    <div class="mission-item">
+                        <h3>🌱 Build Community</h3>
+                        <p>Connect buyers with the stories behind each handmade creation</p>
+                    </div>
+                </div>
+                <a href="frontend/about.html" class="cta-btn-secondary">Learn More About Our Impact</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+        <div class="container">
+            <h2>Stay Connected</h2>
+            <p>Get updates on new artists, featured products, and our social impact</p>
+            <form class="newsletter-form" id="newsletter-form">
+                <input 
+                    type="email" 
+                    name="email" 
+                    placeholder="Enter your email" 
+                    required
+                    aria-label="Email address"
+                >
+                <button type="submit" class="newsletter-btn">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="frontend/products.html">All Products</a></li>
+                        <li><a href="frontend/products.html?category=jewelry">Jewelry</a></li>
+                        <li><a href="frontend/products.html?category=home-decor">Home Decor</a></li>
+                        <li><a href="frontend/products.html?category=pottery">Pottery</a></li>
+                        <li><a href="frontend/products.html?featured=true">Featured Items</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Artists</h4>
+                    <ul>
+                        <li><a href="artist-cms/dashboard.html">Sell Your Work</a></li>
+                        <li><a href="frontend/artists.html">Meet Our Artists</a></li>
+                        <li><a href="/artist-faq">Artist FAQ</a></li>
+                        <li><a href="/application">Apply to Sell</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>About</h4>
+                    <ul>
+                        <li><a href="frontend/about.html">Our Mission</a></li>
+                        <li><a href="/impact">Social Impact</a></li>
+                        <li><a href="/contact">Contact Us</a></li>
+                        <li><a href="/blog">Blog</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="/shipping">Shipping Info</a></li>
+                        <li><a href="/returns">Returns</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Washington Artisan Marketplace. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook">FB</a>
+                    <a href="#" aria-label="Instagram">IG</a>
+                    <a href="#" aria-label="Twitter">TW</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="frontend/js/main.js"></script>
+    <script src="frontend/js/search.js"></script>
+</body>
+</html>

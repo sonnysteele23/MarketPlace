@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product | Artist CMS</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="stylesheet" href="../frontend/css/main.css">
+    <link rel="stylesheet" href="css/cms.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="cms-body">
+    <!-- CMS Header -->
+    <header class="cms-header">
+        <div class="cms-nav">
+            <div class="cms-logo">
+                <a href="../index.html">WA Artisan Market</a>
+            </div>
+            <div class="cms-user">
+                <span class="user-name">Welcome, <strong id="artist-name">Artist</strong></span>
+                <button id="logout-btn" class="logout-btn">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main CMS Content -->
+    <div class="cms-container">
+        <!-- Sidebar Navigation -->
+        <aside class="cms-sidebar">
+            <nav class="cms-menu">
+                <a href="dashboard.html" class="menu-item">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="add-product.html" class="menu-item active">
+                    <span class="icon">➕</span>
+                    <span>Add Product</span>
+                </a>
+                <a href="my-products.html" class="menu-item">
+                    <span class="icon">📦</span>
+                    <span>My Products</span>
+                </a>
+                <a href="orders.html" class="menu-item">
+                    <span class="icon">🛍️</span>
+                    <span>Orders</span>
+                </a>
+                <a href="profile.html" class="menu-item">
+                    <span class="icon">👤</span>
+                    <span>Profile</span>
+                </a>
+                <a href="earnings.html" class="menu-item">
+                    <span class="icon">💰</span>
+                    <span>Earnings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Add Product Content -->
+        <main class="cms-main">
+            <div class="page-header">
+                <h1>Add New Product</h1>
+                <p>Upload your handmade creation to the marketplace</p>
+            </div>
+
+            <form id="add-product-form" class="product-form" enctype="multipart/form-data">
+                <!-- Product Images -->
+                <div class="form-section">
+                    <h2 class="section-title">Product Images</h2>
+                    <p class="section-description">Upload clear, well-lit photos of your product. The first image will be the main display image.</p>
+                    
+                    <div class="image-upload-container">
+                        <div class="image-previews" id="image-previews">
+                            <!-- Image previews will appear here -->
+                        </div>
+                        
+                        <div class="upload-area" id="upload-area">
+                            <input 
+                                type="file" 
+                                id="image-input" 
+                                name="images" 
+                                accept="image/*" 
+                                multiple 
+                                hidden
+                            >
+                            <label for="image-input" class="upload-label">
+                                <div class="upload-icon">📷</div>
+                                <p><strong>Click to upload</strong> or drag and drop</p>
+                                <p class="upload-hint">PNG, JPG up to 5MB each (Max 5 images)</p>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="image-tips">
+                        <strong>Photo Tips:</strong>
+                        <ul>
+                            <li>Use natural lighting for best results</li>
+                            <li>Show multiple angles of your product</li>
+                            <li>Include scale reference if size matters</li>
+                            <li>Keep backgrounds simple and clean</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Basic Information -->
+                <div class="form-section">
+                    <h2 class="section-title">Basic Information</h2>
+                    
+                    <div class="form-group">
+                        <label for="product-name" class="required">Product Name</label>
+                        <input 
+                            type="text" 
+                            id="product-name" 
+                            name="name" 
+                            required 
+                            maxlength="100"
+                            placeholder="e.g., Handcrafted Ceramic Mug"
+                        >
+                        <span class="char-count"><span id="name-count">0</span>/100</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category" class="required">Category</label>
+                        <select id="category" name="category" required>
+                            <option value="">Select a category...</option>
+                            <option value="jewelry">Jewelry & Accessories</option>
+                            <option value="home-decor">Home Decor</option>
+                            <option value="pottery">Pottery & Ceramics</option>
+                            <option value="textiles">Textiles & Fiber Arts</option>
+                            <option value="paintings">Paintings & Wall Art</option>
+                            <option value="sculpture">Sculpture</option>
+                            <option value="woodworking">Woodworking</option>
+                            <option value="metalwork">Metalwork</option>
+                            <option value="glass">Glass Art</option>
+                            <option value="paper-arts">Paper Arts & Prints</option>
+                            <option value="photography">Photography</option>
+                            <option value="soap-candles">Soaps & Candles</option>
+                            <option value="leather">Leather Goods</option>
+                            <option value="mixed-media">Mixed Media</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description" class="required">Description</label>
+                        <textarea 
+                            id="description" 
+                            name="description" 
+                            required 
+                            rows="6"
+                            maxlength="1000"
+                            placeholder="Tell the story of your creation. Include materials used, dimensions, and what makes it special..."
+                        ></textarea>
+                        <span class="char-count"><span id="desc-count">0</span>/1000</span>
+                        <p class="field-hint">A detailed description helps customers understand your work and improves search visibility.</p>
+                    </div>
+                </div>
+
+                <!-- Pricing & Inventory -->
+                <div class="form-section">
+                    <h2 class="section-title">Pricing & Inventory</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="price" class="required">Your Price</label>
+                            <div class="input-with-prefix">
+                                <span class="prefix">$</span>
+                                <input 
+                                    type="number" 
+                                    id="price" 
+                                    name="price" 
+                                    required 
+                                    min="1" 
+                                    step="0.01"
+                                    placeholder="0.00"
+                                >
+                            </div>
+                            <p class="field-hint">You'll receive this amount (minus payment processing fees)</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Customer Pays</label>
+                            <div class="price-preview">
+                                <span class="final-price" id="final-price">$0.00</span>
+                                <span class="price-note">+10% marketplace fee</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pricing-breakdown">
+                        <div class="breakdown-row">
+                            <span>Your earnings:</span>
+                            <strong id="artist-earnings">$0.00</strong>
+                        </div>
+                        <div class="breakdown-row">
+                            <span>Marketplace fee (10%):</span>
+                            <span id="marketplace-fee">$0.00</span>
+                        </div>
+                        <div class="breakdown-row highlight">
+                            <span>To homelessness solutions (5%):</span>
+                            <strong id="homeless-contribution">$0.00</strong>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quantity" class="required">Quantity Available</label>
+                        <input 
+                            type="number" 
+                            id="quantity" 
+                            name="quantity" 
+                            required 
+                            min="1" 
+                            value="1"
+                        >
+                        <p class="field-hint">How many of this item do you have for sale?</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sku">SKU (Optional)</label>
+                        <input 
+                            type="text" 
+                            id="sku" 
+                            name="sku" 
+                            placeholder="e.g., MUG-001"
+                        >
+                        <p class="field-hint">Stock keeping unit for your own inventory tracking</p>
+                    </div>
+                </div>
+
+                <!-- Product Details -->
+                <div class="form-section">
+                    <h2 class="section-title">Product Details</h2>
+                    
+                    <div class="form-group">
+                        <label for="materials">Materials Used</label>
+                        <input 
+                            type="text" 
+                            id="materials" 
+                            name="materials" 
+                            placeholder="e.g., Stoneware clay, lead-free glaze"
+                        >
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dimensions">Dimensions</label>
+                            <input 
+                                type="text" 
+                                id="dimensions" 
+                                name="dimensions" 
+                                placeholder="e.g., 4in x 3in x 3.5in"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="weight">Weight</label>
+                            <div class="input-with-suffix">
+                                <input 
+                                    type="number" 
+                                    id="weight" 
+                                    name="weight" 
+                                    step="0.1"
+                                    placeholder="0.0"
+                                >
+                                <span class="suffix">lbs</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="care-instructions">Care Instructions</label>
+                        <textarea 
+                            id="care-instructions" 
+                            name="care_instructions" 
+                            rows="3"
+                            placeholder="How should customers care for this item?"
+                        ></textarea>
+                    </div>
+                </div>
+
+                <!-- Shipping -->
+                <div class="form-section">
+                    <h2 class="section-title">Shipping</h2>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="free-shipping" name="free_shipping">
+                            <span>Offer free shipping</span>
+                        </label>
+                    </div>
+
+                    <div id="shipping-cost-group" class="form-group">
+                        <label for="shipping-cost">Shipping Cost</label>
+                        <div class="input-with-prefix">
+                            <span class="prefix">$</span>
+                            <input 
+                                type="number" 
+                                id="shipping-cost" 
+                                name="shipping_cost" 
+                                min="0" 
+                                step="0.01"
+                                value="8.00"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="processing-time">Processing Time (days)</label>
+                        <select id="processing-time" name="processing_time">
+                            <option value="1-2">1-2 business days</option>
+                            <option value="3-5" selected>3-5 business days</option>
+                            <option value="1-2-weeks">1-2 weeks</option>
+                            <option value="custom">Custom order (specify in description)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tags -->
+                <div class="form-section">
+                    <h2 class="section-title">Tags (Optional)</h2>
+                    <p class="section-description">Add tags to help customers find your product</p>
+                    
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            id="tags-input" 
+                            placeholder="Type a tag and press Enter"
+                        >
+                        <div id="tags-container" class="tags-container"></div>
+                        <input type="hidden" id="tags" name="tags">
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="history.back()">Cancel</button>
+                    <button type="submit" class="btn-primary" id="submit-btn">
+                        <span class="btn-text">Publish Product</span>
+                        <span class="btn-loader" style="display:none;">Publishing...</span>
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav">
+        <a href="dashboard.html" class="nav-item">
+            <span class="icon">📊</span>
+            <span class="label">Dashboard</span>
+        </a>
+        <a href="add-product.html" class="nav-item active">
+            <span class="icon">➕</span>
+            <span class="label">Add</span>
+        </a>
+        <a href="my-products.html" class="nav-item">
+            <span class="icon">📦</span>
+            <span class="label">Products</span>
+        </a>
+        <a href="orders.html" class="nav-item">
+            <span class="icon">🛍️</span>
+            <span class="label">Orders</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <span class="icon">👤</span>
+            <span class="label">Profile</span>
+        </a>
+    </nav>
+
+    <script src="js/add-product.js"></script>
+</body>
+</html>
