@@ -1,12 +1,11 @@
 /**
  * Washington Artisan Marketplace - Backend Server
- * Express.js + MongoDB
+ * Express.js + Supabase
  */
 
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
@@ -68,22 +67,11 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 app.use('/artist-cms', express.static(path.join(__dirname, '../artist-cms')));
 
 // ===================================
-// Database Connection
+// Database Connection - Supabase
 // ===================================
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/wa-artisan-marketplace';
-
-mongoose.connect(MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-.then(() => {
-    console.log('✅ Connected to MongoDB');
-})
-.catch((error) => {
-    console.error('❌ MongoDB connection error:', error);
-    process.exit(1);
-});
+const { supabaseAdmin } = require('./config/supabase');
+console.log('✅ Supabase connection initialized');
 
 // ===================================
 // API Routes
@@ -171,7 +159,7 @@ app.listen(PORT, () => {
     ╠════════════════════════════════════════════╣
     ║   Port: ${PORT}                              ║
     ║   Environment: ${process.env.NODE_ENV || 'development'}             ║
-    ║   Database: MongoDB Connected              ║
+    ║   Database: Supabase (PostgreSQL)           ║
     ╚════════════════════════════════════════════╝
     `);
 });
@@ -181,10 +169,7 @@ process.on('SIGTERM', () => {
     console.log('SIGTERM signal received: closing HTTP server');
     server.close(() => {
         console.log('HTTP server closed');
-        mongoose.connection.close(false, () => {
-            console.log('MongoDB connection closed');
-            process.exit(0);
-        });
+        process.exit(0);
     });
 });
 

@@ -1,12 +1,13 @@
 /**
- * Artists Routes
+ * Artists Routes - Supabase Version
  * API endpoints for artist management
  */
 
 const express = require('express');
 const router = express.Router();
-const Artist = require('../models/Artist');
-const Product = require('../models/Product');
+const { supabaseAdmin } = require('../config/supabase');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const { authenticateToken } = require('../middleware/auth');
 
 // ===================================
@@ -17,107 +18,239 @@ const { authenticateToken } = require('../middleware/auth');
 router.get('/', async (req, res) => {
     try {
         const { 
-            city, 
-            category,
+            location, 
+            category_id,
             page = 1, 
             limit = 12,
-            sort = 'totalSales'
+            sort = 'created_at',
+            order = 'desc'
         } = req.query;
         
-        const query = { status: 'active' };
+        const from = (page - 1) * limit;
+        const to = from + Number(limit) - 1;
         
-        if (city) {
-            query.city = new RegExp(city, 'i');
+        let query = supabaseAdmin
+            .from('artists')
+            .select('*', { count: 'exact' })
+            .eq('is_verified', true);
+        
+        if (location) {
+            query = query.ilike('location', `%${location}%`);
         }
         
-        if (category) {
-            query.categories = category;
-        }
+        const { data: artists, error, count } = await query
+            .order(sort, { ascending: order === 'asc' })
+            .range(from, to);
         
-        const skip = (page - 1) * limit;
+        if (error) throw error;
         
-        const [artists, total] = await Promise.all([
-            Artist.find(query)
-                .select('-password -resetPasswordToken -resetPasswordExpires -adminNotes')
-                .sort({ [sort]: -1 })
-                .skip(skip)
-                .limit(Number(limit)),
-            Artist.countDocuments(query)
-        ]);
+        // Remove password_hash from response
+        const sanitizedArtists = artists.map(artist => {
+            const { password_hash, ...rest } = artist;
+            return rest;
+        });
         
         res.json({
-            artists,
+            artists: sanitizedArtists,
             pagination: {
                 page: Number(page),
                 limit: Number(limit),
-                total,
-                pages: Math.ceil(total / limit)
+                total: count,
+                pages: Math.ceil(count / limit)
             }
         });
     } catch (error) {
         console.error('Error fetching artists:', error);
-        res.status(500).json({ error: 'Error fetching artists' });
+        res.status(500).json({ error: 'Error fetching artists', message: error.message });
     }
 });
 
-// GET /api/artists/featured - Get featured artists
+// GET /api/artists/featured - Get featured artists (top by products or recent)
 router.get('/featured', async (req, res) => {
     try {
-        const artists = await Artist.findFeatured()
-            .select('-password -resetPasswordToken -resetPasswordExpires -adminNotes');
+        const { data: artists, error } = await supabaseAdmin
+            .from('artists')
+            .select('id, business_name, bio, profile_image_url, location')
+            .eq('is_verified', true)
+            .limit(6)
+            .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        
         res.json(artists);
     } catch (error) {
         console.error('Error fetching featured artists:', error);
-        res.status(500).json({ error: 'Error fetching featured artists' });
+        res.status(500).json({ error: 'Error fetching featured artists', message: error.message });
     }
 });
 
 // GET /api/artists/:id - Get single artist by ID
 router.get('/:id', async (req, res) => {
     try {
-        const artist = await Artist.findById(req.params.id)
-            .select('-password -resetPasswordToken -resetPasswordExpires -adminNotes');
+        const { data: artist, error } = await supabaseAdmin
+            .from('artists')
+            .select('id, business_name, bio, profile_image_url, location, website_url, phone, created_at')
+            .eq('id', req.params.id)
+            .single();
         
-        if (!artist) {
-            return res.status(404).json({ error: 'Artist not found' });
+        if (error) {
+            if (error.code === 'PGRST116') {
+                return res.status(404).json({ error: 'Artist not found' });
+            }
+            throw error;
         }
         
         res.json(artist);
     } catch (error) {
         console.error('Error fetching artist:', error);
-        res.status(500).json({ error: 'Error fetching artist' });
-    }
-});
-
-// GET /api/artists/slug/:slug - Get artist by slug
-router.get('/slug/:slug', async (req, res) => {
-    try {
-        const artist = await Artist.findOne({ slug: req.params.slug })
-            .select('-password -resetPasswordToken -resetPasswordExpires -adminNotes');
-        
-        if (!artist) {
-            return res.status(404).json({ error: 'Artist not found' });
-        }
-        
-        res.json(artist);
-    } catch (error) {
-        console.error('Error fetching artist:', error);
-        res.status(500).json({ error: 'Error fetching artist' });
+        res.status(500).json({ error: 'Error fetching artist', message: error.message });
     }
 });
 
 // GET /api/artists/:id/products - Get artist's products
 router.get('/:id/products', async (req, res) => {
     try {
-        const products = await Product.find({
-            artist: req.params.id,
-            status: 'active'
-        }).sort({ createdAt: -1 });
+        const { data: products, error } = await supabaseAdmin
+            .from('products')
+            .select(`
+                *,
+                category:categories(id, name)
+            `)
+            .eq('artist_id', req.params.id)
+            .eq('is_active', true)
+            .order('created_at', { ascending: false });
+        
+        if (error) throw error;
         
         res.json(products);
     } catch (error) {
         console.error('Error fetching artist products:', error);
-        res.status(500).json({ error: 'Error fetching artist products' });
+        res.status(500).json({ error: 'Error fetching artist products', message: error.message });
+    }
+});
+
+// ===================================
+// Authentication Routes
+// ===================================
+
+// POST /api/artists/register - Register new artist
+router.post('/register', async (req, res) => {
+    try {
+        const {
+            email,
+            password,
+            business_name,
+            bio,
+            location,
+            phone,
+            website_url
+        } = req.body;
+        
+        // Validate required fields
+        if (!email || !password || !business_name) {
+            return res.status(400).json({ 
+                error: 'Missing required fields: email, password, business_name' 
+            });
+        }
+        
+        // Check if email already exists
+        const { data: existingArtist } = await supabaseAdmin
+            .from('artists')
+            .select('id')
+            .eq('email', email.toLowerCase())
+            .single();
+        
+        if (existingArtist) {
+            return res.status(400).json({ error: 'Email already registered' });
+        }
+        
+        // Hash password
+        const password_hash = await bcrypt.hash(password, 10);
+        
+        // Create new artist
+        const { data: artist, error } = await supabaseAdmin
+            .from('artists')
+            .insert([{
+                email: email.toLowerCase(),
+                password_hash,
+                business_name,
+                bio,
+                location,
+                phone,
+                website_url,
+                is_verified: false
+            }])
+            .select('id, email, business_name, bio, location, created_at')
+            .single();
+        
+        if (error) throw error;
+        
+        // Generate JWT token
+        const token = jwt.sign(
+            { id: artist.id, email: artist.email },
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+        );
+        
+        res.status(201).json({ 
+            message: 'Artist registered successfully',
+            artist,
+            token
+        });
+    } catch (error) {
+        console.error('Error registering artist:', error);
+        res.status(400).json({ 
+            error: 'Error registering artist',
+            message: error.message 
+        });
+    }
+});
+
+// POST /api/artists/login - Artist login
+router.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
+        
+        // Find artist by email
+        const { data: artist, error } = await supabaseAdmin
+            .from('artists')
+            .select('*')
+            .eq('email', email.toLowerCase())
+            .single();
+        
+        if (error || !artist) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+        
+        // Verify password
+        const isValidPassword = await bcrypt.compare(password, artist.password_hash);
+        
+        if (!isValidPassword) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+        
+        // Generate JWT token
+        const token = jwt.sign(
+            { id: artist.id, email: artist.email },
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+        );
+        
+        // Remove password_hash from response
+        const { password_hash, ...artistData } = artist;
+        
+        res.json({ 
+            message: 'Login successful',
+            artist: artistData,
+            token
+        });
+    } catch (error) {
+        console.error('Error logging in:', error);
+        res.status(500).json({ error: 'Error logging in', message: error.message });
     }
 });
 
@@ -125,13 +258,21 @@ router.get('/:id/products', async (req, res) => {
 // Protected Routes (Artist Only)
 // ===================================
 
-// GET /api/artists/me - Get current artist profile
+// GET /api/artists/me/profile - Get current artist profile
 router.get('/me/profile', authenticateToken, async (req, res) => {
     try {
-        res.json(req.artist);
+        const { data: artist, error } = await supabaseAdmin
+            .from('artists')
+            .select('id, email, business_name, bio, profile_image_url, location, website_url, phone, is_verified, stripe_account_id, created_at')
+            .eq('id', req.artist.id)
+            .single();
+        
+        if (error) throw error;
+        
+        res.json(artist);
     } catch (error) {
         console.error('Error fetching profile:', error);
-        res.status(500).json({ error: 'Error fetching profile' });
+        res.status(500).json({ error: 'Error fetching profile', message: error.message });
     }
 });
 
@@ -139,9 +280,8 @@ router.get('/me/profile', authenticateToken, async (req, res) => {
 router.put('/me', authenticateToken, async (req, res) => {
     try {
         const allowedUpdates = [
-            'name', 'bio', 'story', 'phone', 'city', 'zipCode',
-            'profileImage', 'coverImage', 'categories', 'socialMedia',
-            'emailNotifications', 'orderNotifications'
+            'business_name', 'bio', 'phone', 'location', 'website_url',
+            'profile_image_url'
         ];
         
         const updates = {};
@@ -151,18 +291,21 @@ router.put('/me', authenticateToken, async (req, res) => {
             }
         });
         
-        const artist = await Artist.findByIdAndUpdate(
-            req.artist._id,
-            updates,
-            { new: true, runValidators: true }
-        ).select('-password');
+        const { data: artist, error } = await supabaseAdmin
+            .from('artists')
+            .update(updates)
+            .eq('id', req.artist.id)
+            .select('id, email, business_name, bio, profile_image_url, location, website_url, phone, created_at')
+            .single();
+        
+        if (error) throw error;
         
         res.json(artist);
     } catch (error) {
         console.error('Error updating profile:', error);
         res.status(400).json({ 
             error: 'Error updating profile',
-            details: error.message 
+            message: error.message 
         });
     }
 });
@@ -172,102 +315,64 @@ router.get('/me/products', authenticateToken, async (req, res) => {
     try {
         const { status = 'all' } = req.query;
         
-        const query = { artist: req.artist._id };
+        let query = supabaseAdmin
+            .from('products')
+            .select(`
+                *,
+                category:categories(id, name)
+            `)
+            .eq('artist_id', req.artist.id);
+        
         if (status !== 'all') {
-            query.status = status;
+            query = query.eq('is_active', status === 'active');
         }
         
-        const products = await Product.find(query)
-            .sort({ createdAt: -1 });
+        const { data: products, error } = await query
+            .order('created_at', { ascending: false });
+        
+        if (error) throw error;
         
         res.json(products);
     } catch (error) {
         console.error('Error fetching products:', error);
-        res.status(500).json({ error: 'Error fetching products' });
+        res.status(500).json({ error: 'Error fetching products', message: error.message });
     }
 });
 
 // GET /api/artists/me/stats - Get artist statistics
 router.get('/me/stats', authenticateToken, async (req, res) => {
     try {
-        await req.artist.updateStats();
+        // Get product counts
+        const { data: productStats, error: productError } = await supabaseAdmin
+            .from('products')
+            .select('is_active', { count: 'exact' })
+            .eq('artist_id', req.artist.id);
         
-        const stats = {
-            totalProducts: req.artist.totalProducts,
-            totalSales: req.artist.totalSales,
-            totalRevenue: req.artist.totalRevenue,
-            rating: req.artist.rating,
-            reviewCount: req.artist.reviewCount
-        };
+        if (productError) throw productError;
         
-        // Get additional stats
-        const [activeProducts, soldProducts, recentSales] = await Promise.all([
-            Product.countDocuments({ artist: req.artist._id, status: 'active' }),
-            Product.countDocuments({ artist: req.artist._id, status: 'sold' }),
-            Product.find({ artist: req.artist._id, sales: { $gt: 0 } })
-                .sort({ updatedAt: -1 })
-                .limit(5)
-                .select('name sales customerPrice updatedAt')
-        ]);
+        const activeProducts = productStats.filter(p => p.is_active).length;
+        const totalProducts = productStats.length;
         
-        stats.activeProducts = activeProducts;
-        stats.soldProducts = soldProducts;
-        stats.recentSales = recentSales;
+        // Get order counts and revenue
+        const { data: orderItems, error: orderError } = await supabaseAdmin
+            .from('order_items')
+            .select('quantity, price_at_purchase')
+            .eq('artist_id', req.artist.id);
         
-        res.json(stats);
+        if (orderError) throw orderError;
+        
+        const totalSales = orderItems.reduce((sum, item) => sum + item.quantity, 0);
+        const totalRevenue = orderItems.reduce((sum, item) => sum + (item.quantity * parseFloat(item.price_at_purchase)), 0);
+        
+        res.json({
+            totalProducts,
+            activeProducts,
+            totalSales,
+            totalRevenue: totalRevenue.toFixed(2)
+        });
     } catch (error) {
         console.error('Error fetching stats:', error);
-        res.status(500).json({ error: 'Error fetching statistics' });
-    }
-});
-
-// POST /api/artists/apply - Apply to become an artist
-router.post('/apply', async (req, res) => {
-    try {
-        const {
-            name,
-            email,
-            password,
-            phone,
-            city,
-            zipCode,
-            bio,
-            categories,
-            isHomeless
-        } = req.body;
-        
-        // Check if email already exists
-        const existingArtist = await Artist.findOne({ email: email.toLowerCase() });
-        if (existingArtist) {
-            return res.status(400).json({ error: 'Email already registered' });
-        }
-        
-        // Create new artist with pending status
-        const artist = new Artist({
-            name,
-            email,
-            password,
-            phone,
-            city,
-            zipCode,
-            bio,
-            categories,
-            isHomeless: isHomeless || false,
-            status: 'pending'
-        });
-        
-        await artist.save();
-        
-        res.status(201).json({ 
-            message: 'Application submitted successfully! We will review and get back to you soon.',
-            artistId: artist._id
-        });
-    } catch (error) {
-        console.error('Error submitting application:', error);
-        res.status(400).json({ 
-            error: 'Error submitting application',
-            details: error.message 
-        });
+        res.status(500).json({ error: 'Error fetching statistics', message: error.message });
     }
 });
 

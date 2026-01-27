@@ -1,10 +1,10 @@
 /**
- * Authentication Middleware
+ * Authentication Middleware - Supabase Version
  * JWT-based authentication for artists
  */
 
 const jwt = require('jsonwebtoken');
-const Artist = require('../models/Artist');
+const { supabaseAdmin } = require('../config/supabase');
 
 // Verify JWT token
 const authenticateToken = async (req, res, next) => {
@@ -23,17 +23,15 @@ const authenticateToken = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         
         // Get artist from database
-        const artist = await Artist.findById(decoded.artistId).select('-password');
+        const { data: artist, error } = await supabaseAdmin
+            .from('artists')
+            .select('id, email, business_name, bio, profile_image_url, location, is_verified')
+            .eq('id', decoded.id)
+            .single();
         
-        if (!artist) {
+        if (error || !artist) {
             return res.status(401).json({ 
                 error: 'Invalid token. Artist not found.' 
-            });
-        }
-        
-        if (artist.status === 'suspended') {
-            return res.status(403).json({ 
-                error: 'Account suspended. Please contact support.' 
             });
         }
         
@@ -48,6 +46,7 @@ const authenticateToken = async (req, res, next) => {
         if (error.name === 'TokenExpiredError') {
             return res.status(401).json({ error: 'Token expired.' });
         }
+        console.error('Authentication error:', error);
         return res.status(500).json({ error: 'Server error during authentication.' });
     }
 };
@@ -60,8 +59,13 @@ const optionalAuth = async (req, res, next) => {
         
         if (token) {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            const artist = await Artist.findById(decoded.artistId).select('-password');
-            if (artist && artist.status !== 'suspended') {
+            const { data: artist } = await supabaseAdmin
+                .from('artists')
+                .select('id, email, business_name, is_verified')
+                .eq('id', decoded.id)
+                .single();
+            
+            if (artist) {
                 req.artist = artist;
             }
         }
@@ -73,39 +77,9 @@ const optionalAuth = async (req, res, next) => {
     }
 };
 
-// Check if artist owns the resource
-const checkResourceOwnership = (resourceType) => {
-    return async (req, res, next) => {
-        try {
-            const resourceId = req.params.id;
-            
-            if (resourceType === 'product') {
-                const Product = require('../models/Product');
-                const product = await Product.findById(resourceId);
-                
-                if (!product) {
-                    return res.status(404).json({ error: 'Product not found.' });
-                }
-                
-                if (product.artist.toString() !== req.artist._id.toString()) {
-                    return res.status(403).json({ 
-                        error: 'Access denied. You do not own this resource.' 
-                    });
-                }
-                
-                req.resource = product;
-            }
-            
-            next();
-        } catch (error) {
-            return res.status(500).json({ error: 'Server error checking ownership.' });
-        }
-    };
-};
-
 // Check if artist is verified
 const requireVerified = (req, res, next) => {
-    if (!req.artist.verified) {
+    if (!req.artist.is_verified) {
         return res.status(403).json({ 
             error: 'Account not verified. Please complete verification process.' 
         });
@@ -113,29 +87,19 @@ const requireVerified = (req, res, next) => {
     next();
 };
 
-// Check if artist is active
-const requireActive = (req, res, next) => {
-    if (req.artist.status !== 'active') {
-        return res.status(403).json({ 
-            error: `Account is ${req.artist.status}. Please contact support.` 
-        });
-    }
-    next();
-};
-
 // Generate JWT token
-const generateToken = (artistId) => {
+const generateToken = (artistId, email) => {
     return jwt.sign(
-        { artistId },
+        { id: artistId, email },
         process.env.JWT_SECRET,
-        { expiresIn: '7d' }
+        { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
 };
 
 // Generate refresh token (longer expiry)
-const generateRefreshToken = (artistId) => {
+const generateRefreshToken = (artistId, email) => {
     return jwt.sign(
-        { artistId, type: 'refresh' },
+        { id: artistId, email, type: 'refresh' },
         process.env.JWT_SECRET,
         { expiresIn: '30d' }
     );
@@ -144,9 +108,7 @@ const generateRefreshToken = (artistId) => {
 module.exports = {
     authenticateToken,
     optionalAuth,
-    checkResourceOwnership,
     requireVerified,
-    requireActive,
     generateToken,
     generateRefreshToken
 };
