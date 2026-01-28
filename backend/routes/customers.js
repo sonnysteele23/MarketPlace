@@ -8,6 +8,7 @@ const router = express.Router();
 const { supabaseAdmin } = require('../config/supabase');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { sendWelcomeEmail } = require('../services/emailService');
 
 // Customer authentication middleware
 const authenticateCustomer = async (req, res, next) => {
@@ -111,6 +112,12 @@ router.post('/register', async (req, res) => {
             { expiresIn: '30d' }
         );
         console.log('✅ Token generated');
+        
+        // Send welcome email (don't wait for it, don't fail registration if email fails)
+        console.log('📧 Sending welcome email...');
+        sendWelcomeEmail(customer.email, customer.name).catch(err => {
+            console.error('Failed to send welcome email:', err.message);
+        });
         
         res.status(201).json({
             message: 'Registration successful',

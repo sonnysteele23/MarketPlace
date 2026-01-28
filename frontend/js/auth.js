@@ -251,6 +251,11 @@ function getRedirectUrl(userType) {
     return 'account.html';
 }
 
+// Get redirect URL after registration (always homepage)
+function getRegistrationRedirectUrl() {
+    return '../index.html';
+}
+
 // ===================================
 // Form Handlers
 // ===================================
@@ -360,11 +365,11 @@ function initRegisterForm() {
                 Auth.saveAuth(result.token, result.customer, 'customer');
             }
 
-            showSuccess('Account created successfully! Redirecting...');
+            showSuccess('Account created successfully! Check your email for a welcome message.');
 
-            // Redirect after short delay
+            // Redirect to homepage after registration
             setTimeout(() => {
-                window.location.href = getRedirectUrl(userType);
+                window.location.href = getRegistrationRedirectUrl();
             }, 1500);
 
         } catch (error) {
