@@ -6,8 +6,7 @@
   "scripts": {
     "start": "node backend/server.js",
     "dev": "nodemon backend/server.js",
-    "test": "jest",
-    "build": "webpack --mode production"
+    "test": "jest"
   },
   "keywords": [
     "marketplace",
