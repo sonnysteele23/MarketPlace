@@ -5,9 +5,9 @@
  */
 
 // API Configuration
-const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+const API_BASE_URL = const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:3000/api'
-    : 'https://your-backend-url.com/api'; // Update this for production
+    : 'https://YOUR-RAILWAY-URL.up.railway.app/api';  // Replace with your Railway URL
 
 // ===================================
 // Auth State Management
