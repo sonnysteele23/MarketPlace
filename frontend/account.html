@@ -46,21 +46,8 @@
                         <i data-lucide="shopping-bag"></i>
                         <span class="cart-count">0</span>
                     </a>
-                    <div class="user-menu">
-                        <button class="user-menu-btn">
-                            <div class="user-avatar-sm">
-                                <i data-lucide="user"></i>
-                            </div>
-                            <i data-lucide="chevron-down"></i>
-                        </button>
-                        <div class="user-dropdown">
-                            <a href="account.html"><i data-lucide="user"></i> My Account</a>
-                            <a href="account.html#orders"><i data-lucide="package"></i> Orders</a>
-                            <a href="account.html#wishlist"><i data-lucide="heart"></i> Wishlist</a>
-                            <a href="account.html#settings"><i data-lucide="settings"></i> Settings</a>
-                            <hr>
-                            <a href="#" class="logout"><i data-lucide="log-out"></i> Sign Out</a>
-                        </div>
+                    <div class="nav-auth">
+                        <!-- Will be populated by navigation.js -->
                     </div>
                 </div>
 
@@ -83,8 +70,8 @@
                         <div class="user-avatar-lg">
                             <i data-lucide="user"></i>
                         </div>
-                        <h2 id="user-name">John Doe</h2>
-                        <p id="user-email">john@example.com</p>
+                        <h2 id="profile-name">User</h2>
+                        <p id="profile-email">user@example.com</p>
                         <span class="member-since">Member since Jan 2025</span>
                     </div>
                     <nav class="account-nav">
@@ -119,7 +106,7 @@
                 <div class="account-content">
                     <!-- Dashboard Tab -->
                     <div class="tab-content active" id="dashboard-tab">
-                        <h1>Welcome back, John!</h1>
+                        <h1>Welcome back, <span id="welcome-name">User</span>!</h1>
                         
                         <div class="quick-stats">
                             <div class="stat-card">
@@ -539,6 +526,55 @@
                 }
                 lucide.createIcons();
             });
+        });
+    </script>
+    
+    <!-- Auth & Navigation -->
+    <script src="js/auth.js"></script>
+    <script src="js/navigation.js"></script>
+    
+    <!-- Account Page Personalization -->
+    <script>
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            const userStr = localStorage.getItem('user');
+            
+            if (!token || !userStr) {
+                // Not logged in - redirect to login
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Parse user data
+            const user = JSON.parse(userStr);
+            const fullName = user.name || user.business_name || 'User';
+            const firstName = fullName.split(' ')[0];
+            const email = user.email || '';
+            
+            // Update profile card
+            const profileName = document.getElementById('profile-name');
+            const profileEmail = document.getElementById('profile-email');
+            const welcomeName = document.getElementById('welcome-name');
+            
+            if (profileName) profileName.textContent = fullName;
+            if (profileEmail) profileEmail.textContent = email;
+            if (welcomeName) welcomeName.textContent = firstName;
+            
+            // Update settings form if it exists
+            const settingsFirstName = document.getElementById('settings-first-name');
+            const settingsLastName = document.getElementById('settings-last-name');
+            const settingsEmail = document.getElementById('settings-email');
+            
+            if (settingsFirstName && fullName) {
+                const nameParts = fullName.split(' ');
+                settingsFirstName.value = nameParts[0] || '';
+                if (settingsLastName && nameParts.length > 1) {
+                    settingsLastName.value = nameParts.slice(1).join(' ');
+                }
+            }
+            
+            if (settingsEmail) settingsEmail.value = email;
         });
     </script>
 </body>
