@@ -16,8 +16,8 @@ const productRoutes = require('./routes/products');
 const artistRoutes = require('./routes/artists');
 const categoryRoutes = require('./routes/categories');
 const orderRoutes = require('./routes/orders');
-const authRoutes = require('./routes/auth');
 const uploadRoutes = require('./routes/upload');
+const customerRoutes = require('./routes/customers');
 
 // Initialize Express
 const app = express();
@@ -27,22 +27,15 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 // ===================================
 
-// Security middleware
+// Security middleware - Relaxed for development
 app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-            fontSrc: ["'self'", "https://fonts.gstatic.com"],
-            imgSrc: ["'self'", "data:", "https:"],
-            scriptSrc: ["'self'", "'unsafe-inline'"]
-        }
-    }
+    contentSecurityPolicy: false, // Disable CSP for development
+    crossOriginEmbedderPolicy: false
 }));
 
-// CORS configuration
+// CORS configuration - Allow all origins in development
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: '*', // Allow all origins in development
     credentials: true
 }));
 
@@ -61,10 +54,13 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// Serve static files
+// Serve static files - Order matters!
 app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
-app.use(express.static(path.join(__dirname, '../frontend')));
+app.use('/frontend', express.static(path.join(__dirname, '../frontend')));
 app.use('/artist-cms', express.static(path.join(__dirname, '../artist-cms')));
+app.use('/public', express.static(path.join(__dirname, '../public')));
+// Serve root directory files (index.html, etc.)
+app.use(express.static(path.join(__dirname, '..')));
 
 // ===================================
 // Database Connection - Supabase
@@ -81,8 +77,8 @@ app.use('/api/products', productRoutes);
 app.use('/api/artists', artistRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/customers', customerRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
