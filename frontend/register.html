@@ -16,6 +16,153 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Auth feedback styles */
+        .auth-error, .auth-success {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-4);
+            font-size: var(--text-sm);
+            animation: slideDown 0.3s ease;
+        }
+        
+        .auth-error {
+            background: var(--error-light);
+            color: #B91C1C;
+            border: 1px solid #FECACA;
+        }
+        
+        .auth-success {
+            background: var(--success-light);
+            color: #065F46;
+            border: 1px solid #A7F3D0;
+        }
+        
+        .auth-error i, .auth-success i {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        /* Account type selection fix */
+        .account-type-selection {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+        
+        .type-option {
+            cursor: pointer;
+        }
+        
+        .type-option input[type="radio"] {
+            display: none;
+        }
+        
+        .type-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-5);
+            background: var(--white);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            transition: all var(--transition-base);
+            text-align: center;
+        }
+        
+        .type-option:hover .type-content {
+            border-color: var(--primary-300);
+        }
+        
+        .type-option input:checked + .type-content {
+            border-color: var(--primary-500);
+            background: var(--primary-50);
+        }
+        
+        .type-icon {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gray-100);
+            border-radius: var(--radius-full);
+            color: var(--gray-600);
+            transition: all var(--transition-base);
+        }
+        
+        .type-option input:checked + .type-content .type-icon {
+            background: var(--primary-100);
+            color: var(--primary-600);
+        }
+        
+        .type-icon i {
+            width: 28px;
+            height: 28px;
+        }
+        
+        .type-info strong {
+            display: block;
+            font-size: var(--text-base);
+            color: var(--gray-900);
+            margin-bottom: var(--space-1);
+        }
+        
+        .type-info span {
+            font-size: var(--text-sm);
+            color: var(--gray-500);
+        }
+        
+        .form-row-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-4);
+        }
+        
+        @media (max-width: 480px) {
+            .account-type-selection,
+            .form-row-2col {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body class="auth-body">
     <div class="auth-container">
@@ -59,7 +206,7 @@
 
                 <!-- Account Type Selection -->
                 <div class="account-type-selection">
-                    <label class="type-option active" data-type="customer">
+                    <label class="type-option">
                         <input type="radio" name="account-type" value="customer" checked>
                         <div class="type-content">
                             <div class="type-icon">
@@ -71,7 +218,7 @@
                             </div>
                         </div>
                     </label>
-                    <label class="type-option" data-type="artist">
+                    <label class="type-option">
                         <input type="radio" name="account-type" value="artist">
                         <div class="type-content">
                             <div class="type-icon">
@@ -87,7 +234,7 @@
 
                 <!-- Social Signup -->
                 <div class="social-login">
-                    <button type="button" class="social-btn google">
+                    <button type="button" class="social-btn google" onclick="alert('Google signup coming soon!')">
                         <svg viewBox="0 0 24 24" width="20" height="20">
                             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -109,14 +256,14 @@
                             <label for="first-name">First Name</label>
                             <div class="input-with-icon">
                                 <i data-lucide="user"></i>
-                                <input type="text" id="first-name" class="form-input" placeholder="John" required>
+                                <input type="text" id="first-name" name="first-name" class="form-input" placeholder="John" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="last-name">Last Name</label>
                             <div class="input-with-icon">
                                 <i data-lucide="user"></i>
-                                <input type="text" id="last-name" class="form-input" placeholder="Doe" required>
+                                <input type="text" id="last-name" name="last-name" class="form-input" placeholder="Doe" required>
                             </div>
                         </div>
                     </div>
@@ -125,7 +272,7 @@
                         <label for="email">Email Address</label>
                         <div class="input-with-icon">
                             <i data-lucide="mail"></i>
-                            <input type="email" id="email" class="form-input" placeholder="your@email.com" required>
+                            <input type="email" id="email" name="email" class="form-input" placeholder="your@email.com" required>
                         </div>
                     </div>
 
@@ -133,7 +280,7 @@
                         <label for="password">Password</label>
                         <div class="input-with-icon">
                             <i data-lucide="lock"></i>
-                            <input type="password" id="password" class="form-input" placeholder="Create a strong password" required>
+                            <input type="password" id="password" name="password" class="form-input" placeholder="Create a strong password" required minlength="8">
                             <button type="button" class="toggle-password">
                                 <i data-lucide="eye"></i>
                             </button>
@@ -150,7 +297,7 @@
                         <label for="confirm-password">Confirm Password</label>
                         <div class="input-with-icon">
                             <i data-lucide="lock"></i>
-                            <input type="password" id="confirm-password" class="form-input" placeholder="Confirm your password" required>
+                            <input type="password" id="confirm-password" name="confirm-password" class="form-input" placeholder="Confirm your password" required>
                             <button type="button" class="toggle-password">
                                 <i data-lucide="eye"></i>
                             </button>
@@ -159,7 +306,7 @@
 
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="terms" required>
+                            <input type="checkbox" id="terms" name="terms" required>
                             <span class="checkmark"></span>
                             I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
                         </label>
@@ -167,7 +314,7 @@
 
                     <div class="form-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" id="newsletter">
+                            <input type="checkbox" id="newsletter" name="newsletter">
                             <span class="checkmark"></span>
                             Send me updates about new artists and products
                         </label>
@@ -206,15 +353,6 @@
             });
         });
 
-        // Account type selection
-        document.querySelectorAll('.type-option').forEach(option => {
-            option.addEventListener('click', function() {
-                document.querySelectorAll('.type-option').forEach(o => o.classList.remove('active'));
-                this.classList.add('active');
-                this.querySelector('input').checked = true;
-            });
-        });
-
         // Password strength indicator
         document.getElementById('password').addEventListener('input', function() {
             const password = this.value;
@@ -233,14 +371,20 @@
             if (strength < 2) {
                 strengthBar.style.background = 'var(--error)';
                 strengthText.textContent = 'Weak password';
+                strengthText.style.color = 'var(--error)';
             } else if (strength < 4) {
                 strengthBar.style.background = 'var(--warning)';
                 strengthText.textContent = 'Medium strength';
+                strengthText.style.color = 'var(--warning)';
             } else {
                 strengthBar.style.background = 'var(--success)';
                 strengthText.textContent = 'Strong password';
+                strengthText.style.color = 'var(--success)';
             }
         });
     </script>
+    
+    <!-- Auth Module -->
+    <script src="js/auth.js"></script>
 </body>
 </html>
