@@ -8,7 +8,7 @@
 // After deploying to Railway, replace 'YOUR-RAILWAY-URL' with your actual Railway URL
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:3000/api'
-    : 'https://YOUR-RAILWAY-URL.up.railway.app/api';  // Replace with your Railway URL
+    : 'https://marketplace-production-57b7.up.railway.app/api';
 
 // ===================================
 // Auth State Management
