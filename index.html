@@ -31,12 +31,17 @@
     <link rel="icon" type="image/png" href="/images/favicon.png">
     
     <!-- Stylesheets -->
+    <link rel="stylesheet" href="frontend/css/design-system.css">
+    <link rel="stylesheet" href="frontend/css/icons.css">
     <link rel="stylesheet" href="frontend/css/main.css">
+    
+    <!-- Lucide Icons (Line Art Icons) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     
     <!-- Preconnect to optimize loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Schema.org markup for Google -->
     <script type="application/ld+json">
@@ -59,7 +64,10 @@
         <nav class="nav-container">
             <div class="nav-wrapper">
                 <a href="/" class="logo">
-                    <h1>WA Artisan Market</h1>
+                    <div class="logo-icon">
+                        <i data-lucide="store"></i>
+                    </div>
+                    <h1>WA Artisan</h1>
                 </a>
                 
                 <div class="search-bar-container">
@@ -72,10 +80,7 @@
                             aria-label="Search products"
                         >
                         <button type="submit" class="search-btn" aria-label="Search">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <path d="m21 21-4.35-4.35"></path>
-                            </svg>
+                            <i data-lucide="search"></i>
                         </button>
                     </form>
                 </div>
@@ -85,8 +90,18 @@
                     <a href="frontend/about.html">Our Mission</a>
                     <a href="artist-cms/dashboard.html">Sell</a>
                     <a href="#" class="cart-link">
-                        Cart <span class="cart-count">0</span>
+                        <i data-lucide="shopping-bag"></i>
+                        <span class="cart-count">0</span>
                     </a>
+                    <div class="nav-auth">
+                        <a href="frontend/login.html" class="btn btn-ghost btn-sm">
+                            <i data-lucide="log-in"></i>
+                            <span>Login</span>
+                        </a>
+                        <a href="frontend/register.html" class="btn btn-primary btn-sm">
+                            Sign Up
+                        </a>
+                    </div>
                 </div>
 
                 <button class="mobile-menu-btn" aria-label="Toggle menu">
@@ -117,14 +132,20 @@
                     <span>Handmade Items</span>
                 </div>
             </div>
-            <a href="frontend/products.html" class="cta-btn">Shop Now</a>
+            <a href="frontend/products.html" class="cta-btn">
+                Shop Now
+                <i data-lucide="arrow-right"></i>
+            </a>
         </div>
     </section>
 
     <!-- Impact Banner -->
     <section class="impact-banner">
         <div class="container">
-            <p>💙 Every purchase contributes 5% to solving homelessness in Washington state</p>
+            <p>
+                <i data-lucide="heart" class="icon-sm"></i>
+                Every purchase contributes 5% to solving homelessness in Washington state
+            </p>
         </div>
     </section>
 
@@ -134,55 +155,74 @@
             <h2 class="section-title">Shop by Category</h2>
             <div class="categories-grid">
                 <a href="frontend/products.html?category=jewelry" class="category-card">
-                    <div class="category-icon">💎</div>
+                    <div class="category-icon">
+                        <i data-lucide="gem"></i>
+                    </div>
                     <h3>Jewelry & Accessories</h3>
                     <p>Handcrafted jewelry and unique accessories</p>
                 </a>
                 
                 <a href="frontend/products.html?category=home-decor" class="category-card">
-                    <div class="category-icon">🏠</div>
+                    <div class="category-icon">
+                        <i data-lucide="home"></i>
+                    </div>
                     <h3>Home Decor</h3>
                     <p>Beautiful pieces for your living space</p>
                 </a>
                 
                 <a href="frontend/products.html?category=pottery" class="category-card">
-                    <div class="category-icon">🏺</div>
+                    <div class="category-icon">
+                        <i data-lucide="coffee"></i>
+                    </div>
                     <h3>Pottery & Ceramics</h3>
                     <p>Functional art for everyday use</p>
                 </a>
                 
                 <a href="frontend/products.html?category=textiles" class="category-card">
-                    <div class="category-icon">🧵</div>
+                    <div class="category-icon">
+                        <i data-lucide="shirt"></i>
+                    </div>
                     <h3>Textiles & Fiber Arts</h3>
                     <p>Woven, knitted, and sewn creations</p>
                 </a>
                 
                 <a href="frontend/products.html?category=paintings" class="category-card">
-                    <div class="category-icon">🎨</div>
+                    <div class="category-icon">
+                        <i data-lucide="palette"></i>
+                    </div>
                     <h3>Paintings & Wall Art</h3>
                     <p>Original artwork to brighten your walls</p>
                 </a>
                 
                 <a href="frontend/products.html?category=woodworking" class="category-card">
-                    <div class="category-icon">🪵</div>
+                    <div class="category-icon">
+                        <i data-lucide="trees"></i>
+                    </div>
                     <h3>Woodworking</h3>
                     <p>Crafted wood furniture and decor</p>
                 </a>
                 
                 <a href="frontend/products.html?category=glass" class="category-card">
-                    <div class="category-icon">🔮</div>
+                    <div class="category-icon">
+                        <i data-lucide="sparkles"></i>
+                    </div>
                     <h3>Glass Art</h3>
                     <p>Stunning blown and fused glass pieces</p>
                 </a>
                 
                 <a href="frontend/products.html?category=soap-candles" class="category-card">
-                    <div class="category-icon">🕯️</div>
+                    <div class="category-icon">
+                        <i data-lucide="flame"></i>
+                    </div>
                     <h3>Soaps & Candles</h3>
                     <p>Handmade aromatics for your home</p>
                 </a>
             </div>
             <div class="text-center">
-                <a href="frontend/products.html" class="view-all-btn">View All Categories →</a>
+                <a href="frontend/products.html" class="view-all-btn">
+                    View All Categories
+                    <i data-lucide="arrow-right"></i>
+                </a>
             </div>
         </div>
     </section>
@@ -208,6 +248,10 @@
             <div class="spotlight-content">
                 <div class="spotlight-image">
                     <img src="/images/artist-placeholder.jpg" alt="Featured Artist" loading="lazy">
+                    <div class="spotlight-badge">
+                        <i data-lucide="award" class="icon-sm"></i>
+                        <span>Featured Artist</span>
+                    </div>
                 </div>
                 <div class="spotlight-text">
                     <h3>Meet Sarah Thompson</h3>
@@ -217,7 +261,10 @@
                         This marketplace gave me a platform to share my work and rebuild my life. 
                         Each piece I create is a reminder that everyone deserves a second chance."
                     </p>
-                    <a href="frontend/artist-profile.html?id=sample" class="learn-more-btn">View Profile →</a>
+                    <a href="frontend/artist-profile.html?id=sample" class="learn-more-btn">
+                        View Profile
+                        <i data-lucide="arrow-right"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -235,19 +282,31 @@
                 </p>
                 <div class="mission-grid">
                     <div class="mission-item">
-                        <h3>🎯 Support Artists</h3>
+                        <div class="icon-container">
+                            <i data-lucide="target"></i>
+                        </div>
+                        <h3>Support Artists</h3>
                         <p>Provide a platform for local creators to showcase and sell their work</p>
                     </div>
                     <div class="mission-item">
-                        <h3>💰 Fight Homelessness</h3>
+                        <div class="icon-container">
+                            <i data-lucide="hand-heart"></i>
+                        </div>
+                        <h3>Fight Homelessness</h3>
                         <p>5% of every sale goes to homelessness solutions in Washington</p>
                     </div>
                     <div class="mission-item">
-                        <h3>🌱 Build Community</h3>
+                        <div class="icon-container">
+                            <i data-lucide="users"></i>
+                        </div>
+                        <h3>Build Community</h3>
                         <p>Connect buyers with the stories behind each handmade creation</p>
                     </div>
                 </div>
-                <a href="frontend/about.html" class="cta-btn-secondary">Learn More About Our Impact</a>
+                <a href="frontend/about.html" class="cta-btn-secondary">
+                    Learn More About Our Impact
+                    <i data-lucide="arrow-right"></i>
+                </a>
             </div>
         </div>
     </section>
@@ -265,7 +324,9 @@
                     required
                     aria-label="Email address"
                 >
-                <button type="submit" class="newsletter-btn">Subscribe</button>
+                <button type="submit" class="newsletter-btn">
+                    Subscribe
+                </button>
             </form>
         </div>
     </section>
@@ -319,9 +380,15 @@
             <div class="footer-bottom">
                 <p>&copy; 2025 Washington Artisan Marketplace. All rights reserved.</p>
                 <div class="social-links">
-                    <a href="#" aria-label="Facebook">FB</a>
-                    <a href="#" aria-label="Instagram">IG</a>
-                    <a href="#" aria-label="Twitter">TW</a>
+                    <a href="#" aria-label="Facebook">
+                        <i data-lucide="facebook"></i>
+                    </a>
+                    <a href="#" aria-label="Instagram">
+                        <i data-lucide="instagram"></i>
+                    </a>
+                    <a href="#" aria-label="Twitter">
+                        <i data-lucide="twitter"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -330,5 +397,11 @@
     <!-- Scripts -->
     <script src="frontend/js/main.js"></script>
     <script src="frontend/js/search.js"></script>
+    
+    <!-- Initialize Lucide Icons -->
+    <script>
+        // Initialize all Lucide icons on the page
+        lucide.createIcons();
+    </script>
 </body>
 </html>

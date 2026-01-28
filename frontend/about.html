@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Mission | Washington Artisan Marketplace</title>
+    <meta name="description" content="Learn about our mission to support Washington artists and fight homelessness through every purchase.">
+    
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/icons.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/about.css">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="nav-wrapper">
+                <a href="../index.html" class="logo">
+                    <div class="logo-icon">
+                        <i data-lucide="store"></i>
+                    </div>
+                    <h1>WA Artisan</h1>
+                </a>
+                
+                <div class="search-bar-container">
+                    <form class="search-form" action="/search" method="GET">
+                        <input type="search" name="q" placeholder="Search handmade items..." class="search-input">
+                        <button type="submit" class="search-btn">
+                            <i data-lucide="search"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="nav-links">
+                    <a href="products.html">Shop</a>
+                    <a href="about.html" class="active">Our Mission</a>
+                    <a href="../artist-cms/dashboard.html">Sell</a>
+                    <a href="#" class="cart-link">
+                        <i data-lucide="shopping-bag"></i>
+                        <span class="cart-count">0</span>
+                    </a>
+                    <div class="nav-auth">
+                        <a href="login.html" class="btn btn-ghost btn-sm">
+                            <i data-lucide="log-in"></i>
+                            <span>Login</span>
+                        </a>
+                        <a href="register.html" class="btn btn-primary btn-sm">Sign Up</a>
+                    </div>
+                </div>
+
+                <button class="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <div class="container">
+            <div class="about-hero-content">
+                <span class="hero-badge">
+                    <i data-lucide="heart"></i>
+                    Our Story
+                </span>
+                <h1>Crafting Change, One Purchase at a Time</h1>
+                <p>We're building a community where talented Washington artists can thrive while every sale contributes to solving homelessness in our state.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Statement -->
+    <section class="mission-statement">
+        <div class="container">
+            <div class="mission-card">
+                <div class="mission-icon">
+                    <i data-lucide="target"></i>
+                </div>
+                <h2>Our Mission</h2>
+                <p class="mission-text">
+                    To create economic opportunity for Washington's artists—including those experiencing 
+                    homelessness—while funding solutions to our state's homelessness crisis through 
+                    every transaction on our platform.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">01</div>
+                    <div class="step-icon">
+                        <i data-lucide="user-plus"></i>
+                    </div>
+                    <h3>Artists Join</h3>
+                    <p>Local Washington artists create free accounts and list their handmade products on our marketplace.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">02</div>
+                    <div class="step-icon">
+                        <i data-lucide="shopping-cart"></i>
+                    </div>
+                    <h3>You Shop</h3>
+                    <p>Browse unique, handcrafted items and purchase directly from talented creators.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">03</div>
+                    <div class="step-icon">
+                        <i data-lucide="hand-heart"></i>
+                    </div>
+                    <h3>Impact Made</h3>
+                    <p>5% of every sale goes directly to organizations fighting homelessness in Washington.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Stats -->
+    <section class="impact-stats">
+        <div class="container">
+            <h2 class="section-title">Our Impact</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper">
+                        <i data-lucide="users"></i>
+                    </div>
+                    <div class="stat-number">150+</div>
+                    <div class="stat-label">Local Artists Supported</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper">
+                        <i data-lucide="dollar-sign"></i>
+                    </div>
+                    <div class="stat-number">$25,000+</div>
+                    <div class="stat-label">Donated to Homelessness Solutions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper">
+                        <i data-lucide="package"></i>
+                    </div>
+                    <div class="stat-number">2,500+</div>
+                    <div class="stat-label">Products Sold</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper">
+                        <i data-lucide="home"></i>
+                    </div>
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Formerly Homeless Artists</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="values-section">
+        <div class="container">
+            <h2 class="section-title">What We Believe</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i data-lucide="sparkles"></i>
+                    </div>
+                    <h3>Creativity Heals</h3>
+                    <p>Art provides not just income, but purpose, dignity, and a path forward for those facing challenges.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i data-lucide="link"></i>
+                    </div>
+                    <h3>Connection Matters</h3>
+                    <p>When you buy handmade, you're not just getting a product—you're supporting a real person's story.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i data-lucide="trending-up"></i>
+                    </div>
+                    <h3>Small Actions Add Up</h3>
+                    <p>5% from each sale might seem small, but together we're building real change in our communities.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i data-lucide="shield-check"></i>
+                    </div>
+                    <h3>Transparency First</h3>
+                    <p>We publish quarterly impact reports so you can see exactly where your contribution goes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partner Organizations -->
+    <section class="partners-section">
+        <div class="container">
+            <h2 class="section-title">Our Partners</h2>
+            <p class="section-subtitle">We work with these trusted organizations to maximize our impact</p>
+            <div class="partners-grid">
+                <div class="partner-card">
+                    <div class="partner-icon">
+                        <i data-lucide="building-2"></i>
+                    </div>
+                    <h3>Seattle Housing Alliance</h3>
+                    <p>Providing transitional housing and support services</p>
+                </div>
+                <div class="partner-card">
+                    <div class="partner-icon">
+                        <i data-lucide="heart-handshake"></i>
+                    </div>
+                    <h3>WA Community Action Network</h3>
+                    <p>Advocacy and direct assistance programs</p>
+                </div>
+                <div class="partner-card">
+                    <div class="partner-icon">
+                        <i data-lucide="graduation-cap"></i>
+                    </div>
+                    <h3>Artisan Skills Foundation</h3>
+                    <p>Teaching craft skills to those seeking new paths</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section">
+        <div class="container">
+            <h2 class="section-title">Meet Our Team</h2>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <i data-lucide="user"></i>
+                    </div>
+                    <h3>Sarah Mitchell</h3>
+                    <p class="team-role">Founder & CEO</p>
+                    <p class="team-bio">Former social worker passionate about creative solutions to homelessness.</p>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <i data-lucide="user"></i>
+                    </div>
+                    <h3>David Chen</h3>
+                    <p class="team-role">Head of Artist Relations</p>
+                    <p class="team-bio">Ceramic artist who helps onboard and support our creator community.</p>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <i data-lucide="user"></i>
+                    </div>
+                    <h3>Maria Rodriguez</h3>
+                    <p class="team-role">Impact Director</p>
+                    <p class="team-bio">Ensures our donations reach the right organizations effectively.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="about-cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Make a Difference?</h2>
+                <p>Every purchase supports local artists and contributes to solving homelessness.</p>
+                <div class="cta-buttons">
+                    <a href="products.html" class="btn btn-white btn-lg">
+                        <i data-lucide="shopping-bag"></i>
+                        Shop Now
+                    </a>
+                    <a href="../artist-cms/dashboard.html" class="btn btn-outline-white btn-lg">
+                        <i data-lucide="palette"></i>
+                        Become a Seller
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="products.html">All Products</a></li>
+                        <li><a href="products.html?category=jewelry">Jewelry</a></li>
+                        <li><a href="products.html?category=home-decor">Home Decor</a></li>
+                        <li><a href="products.html?category=pottery">Pottery</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Artists</h4>
+                    <ul>
+                        <li><a href="../artist-cms/dashboard.html">Sell Your Work</a></li>
+                        <li><a href="artists.html">Meet Our Artists</a></li>
+                        <li><a href="#">Artist FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>About</h4>
+                    <ul>
+                        <li><a href="about.html">Our Mission</a></li>
+                        <li><a href="#">Social Impact</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Washington Artisan Marketplace. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i data-lucide="facebook"></i></a>
+                    <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

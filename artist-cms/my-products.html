@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Products | WA Artisan Marketplace</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="stylesheet" href="../frontend/css/design-system.css">
+    <link rel="stylesheet" href="../frontend/css/icons.css">
+    <link rel="stylesheet" href="../frontend/css/main.css">
+    <link rel="stylesheet" href="css/cms.css">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="cms-body">
+    <!-- CMS Header -->
+    <header class="cms-header">
+        <div class="cms-nav">
+            <div class="cms-logo">
+                <a href="../index.html">
+                    <i data-lucide="store"></i>
+                    <span>WA Artisan</span>
+                </a>
+            </div>
+            <div class="cms-user">
+                <div class="user-avatar">
+                    <i data-lucide="user"></i>
+                </div>
+                <span class="user-name">Welcome, <strong id="artist-name">Artist</strong></span>
+                <button id="logout-btn" class="logout-btn">
+                    <i data-lucide="log-out"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main CMS Content -->
+    <div class="cms-container">
+        <!-- Sidebar Navigation -->
+        <aside class="cms-sidebar">
+            <nav class="cms-menu">
+                <a href="dashboard.html" class="menu-item">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="add-product.html" class="menu-item">
+                    <i data-lucide="plus-circle"></i>
+                    <span>Add Product</span>
+                </a>
+                <a href="my-products.html" class="menu-item active">
+                    <i data-lucide="package"></i>
+                    <span>My Products</span>
+                </a>
+                <a href="orders.html" class="menu-item">
+                    <i data-lucide="shopping-bag"></i>
+                    <span>Orders</span>
+                </a>
+                <a href="earnings.html" class="menu-item">
+                    <i data-lucide="wallet"></i>
+                    <span>Earnings</span>
+                </a>
+                <a href="profile.html" class="menu-item">
+                    <i data-lucide="settings"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="cms-main">
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>
+                        <i data-lucide="package"></i>
+                        My Products
+                    </h1>
+                    <p>Manage and edit your product listings</p>
+                </div>
+                <a href="add-product.html" class="btn btn-primary">
+                    <i data-lucide="plus"></i>
+                    <span>Add Product</span>
+                </a>
+            </div>
+
+            <!-- Filters & Search -->
+            <div class="products-toolbar">
+                <div class="search-box">
+                    <i data-lucide="search"></i>
+                    <input type="search" placeholder="Search products..." id="product-search">
+                </div>
+                <div class="filter-group">
+                    <select id="status-filter" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="draft">Draft</option>
+                        <option value="sold">Sold Out</option>
+                    </select>
+                    <select id="category-filter" class="form-select">
+                        <option value="">All Categories</option>
+                        <option value="jewelry">Jewelry</option>
+                        <option value="pottery">Pottery</option>
+                        <option value="textiles">Textiles</option>
+                        <option value="woodworking">Woodworking</option>
+                        <option value="paintings">Paintings</option>
+                    </select>
+                    <select id="sort-filter" class="form-select">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="price-low">Price: Low to High</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="products-management" id="products-grid">
+                <!-- Sample Product Card -->
+                <div class="product-manage-card">
+                    <div class="product-image">
+                        <img src="../images/placeholder-product.jpg" alt="Product">
+                        <span class="product-status active">Active</span>
+                    </div>
+                    <div class="product-details">
+                        <h3>Handcrafted Ceramic Vase</h3>
+                        <p class="product-category">
+                            <i data-lucide="tag"></i>
+                            Pottery & Ceramics
+                        </p>
+                        <div class="product-meta">
+                            <span class="price">$45.00</span>
+                            <span class="stock">
+                                <i data-lucide="box"></i>
+                                5 in stock
+                            </span>
+                        </div>
+                        <div class="product-stats">
+                            <span>
+                                <i data-lucide="eye"></i>
+                                124 views
+                            </span>
+                            <span>
+                                <i data-lucide="shopping-cart"></i>
+                                8 sold
+                            </span>
+                            <span>
+                                <i data-lucide="star"></i>
+                                4.8
+                            </span>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="action-btn-icon" title="Edit">
+                            <i data-lucide="edit-2"></i>
+                        </button>
+                        <button class="action-btn-icon" title="View">
+                            <i data-lucide="external-link"></i>
+                        </button>
+                        <button class="action-btn-icon" title="Duplicate">
+                            <i data-lucide="copy"></i>
+                        </button>
+                        <button class="action-btn-icon danger" title="Delete">
+                            <i data-lucide="trash-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="empty-products" style="display: none;">
+                    <div class="empty-icon">
+                        <i data-lucide="package-open"></i>
+                    </div>
+                    <h3>No products found</h3>
+                    <p>Start selling by adding your first product to the marketplace.</p>
+                    <a href="add-product.html" class="btn btn-primary">
+                        <i data-lucide="plus"></i>
+                        Add Your First Product
+                    </a>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="pagination-btn" disabled>
+                    <i data-lucide="chevron-left"></i>
+                </button>
+                <span class="pagination-info">Page 1 of 1</span>
+                <button class="pagination-btn" disabled>
+                    <i data-lucide="chevron-right"></i>
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav">
+        <a href="dashboard.html" class="nav-item">
+            <i data-lucide="layout-dashboard"></i>
+            <span class="label">Dashboard</span>
+        </a>
+        <a href="add-product.html" class="nav-item">
+            <i data-lucide="plus-circle"></i>
+            <span class="label">Add</span>
+        </a>
+        <a href="my-products.html" class="nav-item active">
+            <i data-lucide="package"></i>
+            <span class="label">Products</span>
+        </a>
+        <a href="orders.html" class="nav-item">
+            <i data-lucide="shopping-bag"></i>
+            <span class="label">Orders</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i data-lucide="user"></i>
+            <span class="label">Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

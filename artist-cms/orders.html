@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders | WA Artisan Marketplace</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="stylesheet" href="../frontend/css/design-system.css">
+    <link rel="stylesheet" href="../frontend/css/icons.css">
+    <link rel="stylesheet" href="../frontend/css/main.css">
+    <link rel="stylesheet" href="css/cms.css">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="cms-body">
+    <!-- CMS Header -->
+    <header class="cms-header">
+        <div class="cms-nav">
+            <div class="cms-logo">
+                <a href="../index.html">
+                    <i data-lucide="store"></i>
+                    <span>WA Artisan</span>
+                </a>
+            </div>
+            <div class="cms-user">
+                <div class="user-avatar">
+                    <i data-lucide="user"></i>
+                </div>
+                <span class="user-name">Welcome, <strong id="artist-name">Artist</strong></span>
+                <button id="logout-btn" class="logout-btn">
+                    <i data-lucide="log-out"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main CMS Content -->
+    <div class="cms-container">
+        <!-- Sidebar Navigation -->
+        <aside class="cms-sidebar">
+            <nav class="cms-menu">
+                <a href="dashboard.html" class="menu-item">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="add-product.html" class="menu-item">
+                    <i data-lucide="plus-circle"></i>
+                    <span>Add Product</span>
+                </a>
+                <a href="my-products.html" class="menu-item">
+                    <i data-lucide="package"></i>
+                    <span>My Products</span>
+                </a>
+                <a href="orders.html" class="menu-item active">
+                    <i data-lucide="shopping-bag"></i>
+                    <span>Orders</span>
+                </a>
+                <a href="earnings.html" class="menu-item">
+                    <i data-lucide="wallet"></i>
+                    <span>Earnings</span>
+                </a>
+                <a href="profile.html" class="menu-item">
+                    <i data-lucide="settings"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="cms-main">
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>
+                        <i data-lucide="shopping-bag"></i>
+                        Orders
+                    </h1>
+                    <p>Track and manage customer orders</p>
+                </div>
+            </div>
+
+            <!-- Order Stats -->
+            <div class="order-stats">
+                <div class="stat-mini">
+                    <span class="stat-mini-label">Pending</span>
+                    <span class="stat-mini-value warning" id="pending-count">0</span>
+                </div>
+                <div class="stat-mini">
+                    <span class="stat-mini-label">Processing</span>
+                    <span class="stat-mini-value info" id="processing-count">0</span>
+                </div>
+                <div class="stat-mini">
+                    <span class="stat-mini-label">Shipped</span>
+                    <span class="stat-mini-value primary" id="shipped-count">0</span>
+                </div>
+                <div class="stat-mini">
+                    <span class="stat-mini-label">Completed</span>
+                    <span class="stat-mini-value success" id="completed-count">0</span>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="orders-toolbar">
+                <div class="search-box">
+                    <i data-lucide="search"></i>
+                    <input type="search" placeholder="Search orders..." id="order-search">
+                </div>
+                <div class="filter-group">
+                    <select id="status-filter" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="processing">Processing</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <select id="date-filter" class="form-select">
+                        <option value="">All Time</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="year">This Year</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Orders List -->
+            <div class="orders-list" id="orders-list">
+                <!-- Sample Order -->
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-id">
+                            <span class="order-number">#ORD-2025-001</span>
+                            <span class="order-date">
+                                <i data-lucide="calendar"></i>
+                                Jan 15, 2025
+                            </span>
+                        </div>
+                        <span class="order-status pending">Pending</span>
+                    </div>
+                    <div class="order-body">
+                        <div class="order-items">
+                            <div class="order-item">
+                                <img src="../images/placeholder-product.jpg" alt="Product">
+                                <div class="item-details">
+                                    <h4>Handcrafted Ceramic Vase</h4>
+                                    <p>Qty: 1</p>
+                                </div>
+                                <span class="item-price">$45.00</span>
+                            </div>
+                        </div>
+                        <div class="order-customer">
+                            <i data-lucide="user"></i>
+                            <div>
+                                <strong>John Doe</strong>
+                                <p>Seattle, WA</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="order-footer">
+                        <div class="order-total">
+                            <span>Total:</span>
+                            <strong>$49.50</strong>
+                        </div>
+                        <div class="order-actions">
+                            <button class="btn btn-sm btn-ghost">
+                                <i data-lucide="eye"></i>
+                                View Details
+                            </button>
+                            <button class="btn btn-sm btn-primary">
+                                <i data-lucide="truck"></i>
+                                Mark Shipped
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="empty-orders" style="display: none;">
+                    <div class="empty-icon">
+                        <i data-lucide="inbox"></i>
+                    </div>
+                    <h3>No orders yet</h3>
+                    <p>When customers purchase your products, orders will appear here.</p>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="pagination-btn" disabled>
+                    <i data-lucide="chevron-left"></i>
+                </button>
+                <span class="pagination-info">Page 1 of 1</span>
+                <button class="pagination-btn" disabled>
+                    <i data-lucide="chevron-right"></i>
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav">
+        <a href="dashboard.html" class="nav-item">
+            <i data-lucide="layout-dashboard"></i>
+            <span class="label">Dashboard</span>
+        </a>
+        <a href="add-product.html" class="nav-item">
+            <i data-lucide="plus-circle"></i>
+            <span class="label">Add</span>
+        </a>
+        <a href="my-products.html" class="nav-item">
+            <i data-lucide="package"></i>
+            <span class="label">Products</span>
+        </a>
+        <a href="orders.html" class="nav-item active">
+            <i data-lucide="shopping-bag"></i>
+            <span class="label">Orders</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i data-lucide="user"></i>
+            <span class="label">Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

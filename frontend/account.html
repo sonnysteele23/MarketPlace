@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | WA Artisan Marketplace</title>
+    <meta name="description" content="Manage your WA Artisan Marketplace account">
+    
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/icons.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/account.css">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="nav-wrapper">
+                <a href="../index.html" class="logo">
+                    <div class="logo-icon">
+                        <i data-lucide="store"></i>
+                    </div>
+                    <h1>WA Artisan</h1>
+                </a>
+                
+                <div class="search-bar-container">
+                    <form class="search-form" action="/search" method="GET">
+                        <input type="search" name="q" placeholder="Search handmade items..." class="search-input">
+                        <button type="submit" class="search-btn">
+                            <i data-lucide="search"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="nav-links">
+                    <a href="products.html">Shop</a>
+                    <a href="about.html">Our Mission</a>
+                    <a href="../artist-cms/dashboard.html">Sell</a>
+                    <a href="#" class="cart-link">
+                        <i data-lucide="shopping-bag"></i>
+                        <span class="cart-count">0</span>
+                    </a>
+                    <div class="user-menu">
+                        <button class="user-menu-btn">
+                            <div class="user-avatar-sm">
+                                <i data-lucide="user"></i>
+                            </div>
+                            <i data-lucide="chevron-down"></i>
+                        </button>
+                        <div class="user-dropdown">
+                            <a href="account.html"><i data-lucide="user"></i> My Account</a>
+                            <a href="account.html#orders"><i data-lucide="package"></i> Orders</a>
+                            <a href="account.html#wishlist"><i data-lucide="heart"></i> Wishlist</a>
+                            <a href="account.html#settings"><i data-lucide="settings"></i> Settings</a>
+                            <hr>
+                            <a href="#" class="logout"><i data-lucide="log-out"></i> Sign Out</a>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="account-main">
+        <div class="container">
+            <div class="account-layout">
+                <!-- Sidebar -->
+                <aside class="account-sidebar">
+                    <div class="user-profile-card">
+                        <div class="user-avatar-lg">
+                            <i data-lucide="user"></i>
+                        </div>
+                        <h2 id="user-name">John Doe</h2>
+                        <p id="user-email">john@example.com</p>
+                        <span class="member-since">Member since Jan 2025</span>
+                    </div>
+                    <nav class="account-nav">
+                        <a href="#dashboard" class="nav-item active" data-tab="dashboard">
+                            <i data-lucide="layout-dashboard"></i>
+                            Dashboard
+                        </a>
+                        <a href="#orders" class="nav-item" data-tab="orders">
+                            <i data-lucide="package"></i>
+                            Orders
+                        </a>
+                        <a href="#wishlist" class="nav-item" data-tab="wishlist">
+                            <i data-lucide="heart"></i>
+                            Wishlist
+                        </a>
+                        <a href="#addresses" class="nav-item" data-tab="addresses">
+                            <i data-lucide="map-pin"></i>
+                            Addresses
+                        </a>
+                        <a href="#payment" class="nav-item" data-tab="payment">
+                            <i data-lucide="credit-card"></i>
+                            Payment Methods
+                        </a>
+                        <a href="#settings" class="nav-item" data-tab="settings">
+                            <i data-lucide="settings"></i>
+                            Settings
+                        </a>
+                    </nav>
+                </aside>
+
+                <!-- Content Area -->
+                <div class="account-content">
+                    <!-- Dashboard Tab -->
+                    <div class="tab-content active" id="dashboard-tab">
+                        <h1>Welcome back, John!</h1>
+                        
+                        <div class="quick-stats">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i data-lucide="package"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-value">3</span>
+                                    <span class="stat-label">Orders</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i data-lucide="heart"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-value">12</span>
+                                    <span class="stat-label">Wishlist Items</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i data-lucide="star"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-value">5</span>
+                                    <span class="stat-label">Reviews</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="recent-orders-section">
+                            <div class="section-header">
+                                <h2>Recent Orders</h2>
+                                <a href="#orders" class="view-all">View All</a>
+                            </div>
+                            <div class="orders-list">
+                                <div class="order-card">
+                                    <div class="order-header">
+                                        <span class="order-number">#ORD-2025-001</span>
+                                        <span class="order-status delivered">Delivered</span>
+                                    </div>
+                                    <div class="order-items">
+                                        <img src="../images/placeholder-product.jpg" alt="Product">
+                                        <div class="order-details">
+                                            <h4>Handcrafted Ceramic Vase</h4>
+                                            <p>Jan 15, 2025</p>
+                                        </div>
+                                        <span class="order-total">$49.50</span>
+                                    </div>
+                                    <div class="order-actions">
+                                        <button class="btn btn-ghost btn-sm">
+                                            <i data-lucide="eye"></i>
+                                            View Details
+                                        </button>
+                                        <button class="btn btn-ghost btn-sm">
+                                            <i data-lucide="repeat"></i>
+                                            Buy Again
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="impact-card">
+                            <div class="impact-icon">
+                                <i data-lucide="heart"></i>
+                            </div>
+                            <div class="impact-content">
+                                <h3>Your Impact</h3>
+                                <p>Your purchases have contributed <strong>$12.50</strong> to fighting homelessness in Washington!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Orders Tab -->
+                    <div class="tab-content" id="orders-tab">
+                        <h1>My Orders</h1>
+                        
+                        <div class="orders-filter">
+                            <select class="form-select">
+                                <option value="all">All Orders</option>
+                                <option value="processing">Processing</option>
+                                <option value="shipped">Shipped</option>
+                                <option value="delivered">Delivered</option>
+                            </select>
+                        </div>
+
+                        <div class="orders-list">
+                            <div class="order-card detailed">
+                                <div class="order-header">
+                                    <div class="order-info">
+                                        <span class="order-number">#ORD-2025-001</span>
+                                        <span class="order-date">January 15, 2025</span>
+                                    </div>
+                                    <span class="order-status delivered">Delivered</span>
+                                </div>
+                                <div class="order-items">
+                                    <div class="order-item">
+                                        <img src="../images/placeholder-product.jpg" alt="Product">
+                                        <div class="item-details">
+                                            <h4>Handcrafted Ceramic Vase</h4>
+                                            <p>By: Sarah's Pottery</p>
+                                            <span class="item-qty">Qty: 1</span>
+                                        </div>
+                                        <span class="item-price">$45.00</span>
+                                    </div>
+                                </div>
+                                <div class="order-footer">
+                                    <div class="order-total">
+                                        <span>Total:</span>
+                                        <strong>$49.50</strong>
+                                    </div>
+                                    <div class="order-actions">
+                                        <button class="btn btn-ghost btn-sm">
+                                            <i data-lucide="truck"></i>
+                                            Track Order
+                                        </button>
+                                        <button class="btn btn-ghost btn-sm">
+                                            <i data-lucide="file-text"></i>
+                                            Invoice
+                                        </button>
+                                        <button class="btn btn-primary btn-sm">
+                                            <i data-lucide="star"></i>
+                                            Leave Review
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wishlist Tab -->
+                    <div class="tab-content" id="wishlist-tab">
+                        <h1>My Wishlist</h1>
+                        
+                        <div class="wishlist-grid">
+                            <div class="wishlist-item">
+                                <button class="remove-wishlist">
+                                    <i data-lucide="x"></i>
+                                </button>
+                                <img src="../images/placeholder-product.jpg" alt="Product">
+                                <div class="wishlist-details">
+                                    <h4>Woven Wall Hanging</h4>
+                                    <p class="artist">By: Mountain Fiber Arts</p>
+                                    <span class="price">$65.00</span>
+                                </div>
+                                <button class="btn btn-primary btn-sm btn-full">
+                                    <i data-lucide="shopping-cart"></i>
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Addresses Tab -->
+                    <div class="tab-content" id="addresses-tab">
+                        <div class="section-header">
+                            <h1>My Addresses</h1>
+                            <button class="btn btn-primary">
+                                <i data-lucide="plus"></i>
+                                Add Address
+                            </button>
+                        </div>
+                        
+                        <div class="addresses-grid">
+                            <div class="address-card default">
+                                <span class="default-badge">Default</span>
+                                <h3>Home</h3>
+                                <p>John Doe</p>
+                                <p>123 Main Street, Apt 4B</p>
+                                <p>Seattle, WA 98101</p>
+                                <p>United States</p>
+                                <p>Phone: (555) 123-4567</p>
+                                <div class="address-actions">
+                                    <button class="btn btn-ghost btn-sm">
+                                        <i data-lucide="edit"></i>
+                                        Edit
+                                    </button>
+                                    <button class="btn btn-ghost btn-sm">
+                                        <i data-lucide="trash-2"></i>
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="address-card add-new">
+                                <i data-lucide="plus"></i>
+                                <span>Add New Address</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Methods Tab -->
+                    <div class="tab-content" id="payment-tab">
+                        <div class="section-header">
+                            <h1>Payment Methods</h1>
+                            <button class="btn btn-primary">
+                                <i data-lucide="plus"></i>
+                                Add Card
+                            </button>
+                        </div>
+                        
+                        <div class="payment-cards">
+                            <div class="payment-card default">
+                                <span class="default-badge">Default</span>
+                                <div class="card-brand">
+                                    <i data-lucide="credit-card"></i>
+                                    <span>Visa</span>
+                                </div>
+                                <div class="card-number">•••• •••• •••• 4242</div>
+                                <div class="card-expiry">Expires 12/26</div>
+                                <div class="card-actions">
+                                    <button class="btn btn-ghost btn-sm">
+                                        <i data-lucide="edit"></i>
+                                        Edit
+                                    </button>
+                                    <button class="btn btn-ghost btn-sm">
+                                        <i data-lucide="trash-2"></i>
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="payment-card add-new">
+                                <i data-lucide="plus"></i>
+                                <span>Add Payment Method</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Tab -->
+                    <div class="tab-content" id="settings-tab">
+                        <h1>Account Settings</h1>
+                        
+                        <form class="settings-form">
+                            <!-- Profile Section -->
+                            <div class="settings-section">
+                                <h2>
+                                    <i data-lucide="user"></i>
+                                    Profile Information
+                                </h2>
+                                <div class="profile-photo-edit">
+                                    <div class="photo-preview">
+                                        <i data-lucide="user"></i>
+                                    </div>
+                                    <button type="button" class="btn btn-ghost btn-sm">Change Photo</button>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="first-name">First Name</label>
+                                        <input type="text" id="first-name" class="form-input" value="John">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="last-name">Last Name</label>
+                                        <input type="text" id="last-name" class="form-input" value="Doe">
+                                    </div>
+                                    <div class="form-group full-width">
+                                        <label for="email">Email Address</label>
+                                        <input type="email" id="email" class="form-input" value="john@example.com">
+                                    </div>
+                                    <div class="form-group full-width">
+                                        <label for="phone">Phone Number</label>
+                                        <input type="tel" id="phone" class="form-input" value="(555) 123-4567">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Password Section -->
+                            <div class="settings-section">
+                                <h2>
+                                    <i data-lucide="lock"></i>
+                                    Change Password
+                                </h2>
+                                <div class="form-grid">
+                                    <div class="form-group full-width">
+                                        <label for="current-password">Current Password</label>
+                                        <div class="password-input">
+                                            <input type="password" id="current-password" class="form-input" placeholder="Enter current password">
+                                            <button type="button" class="toggle-password">
+                                                <i data-lucide="eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="new-password">New Password</label>
+                                        <div class="password-input">
+                                            <input type="password" id="new-password" class="form-input" placeholder="Enter new password">
+                                            <button type="button" class="toggle-password">
+                                                <i data-lucide="eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirm-password">Confirm Password</label>
+                                        <div class="password-input">
+                                            <input type="password" id="confirm-password" class="form-input" placeholder="Confirm new password">
+                                            <button type="button" class="toggle-password">
+                                                <i data-lucide="eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-ghost">Update Password</button>
+                            </div>
+
+                            <!-- Notifications Section -->
+                            <div class="settings-section">
+                                <h2>
+                                    <i data-lucide="bell"></i>
+                                    Notifications
+                                </h2>
+                                <div class="notification-toggles">
+                                    <label class="toggle-option">
+                                        <div class="option-info">
+                                            <strong>Order Updates</strong>
+                                            <p>Get notified about order status changes</p>
+                                        </div>
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <label class="toggle-option">
+                                        <div class="option-info">
+                                            <strong>Promotions</strong>
+                                            <p>Receive special offers and discounts</p>
+                                        </div>
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <label class="toggle-option">
+                                        <div class="option-info">
+                                            <strong>New Artists</strong>
+                                            <p>Discover new artists on the platform</p>
+                                        </div>
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i data-lucide="save"></i>
+                                    Save Changes
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Danger Zone -->
+                        <div class="danger-zone">
+                            <h2>
+                                <i data-lucide="alert-triangle"></i>
+                                Danger Zone
+                            </h2>
+                            <div class="danger-option">
+                                <div class="option-info">
+                                    <strong>Delete Account</strong>
+                                    <p>Permanently delete your account and all associated data</p>
+                                </div>
+                                <button class="btn btn-danger btn-sm">Delete Account</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2025 Washington Artisan Marketplace. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Tab navigation
+        document.querySelectorAll('.account-nav .nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active nav
+                document.querySelectorAll('.account-nav .nav-item').forEach(n => n.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show corresponding tab
+                const tabId = this.dataset.tab + '-tab';
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(tabId).classList.add('active');
+                
+                // Update URL
+                history.pushState(null, null, '#' + this.dataset.tab);
+            });
+        });
+
+        // Handle initial hash
+        if (window.location.hash) {
+            const tab = window.location.hash.substring(1);
+            const navItem = document.querySelector(`[data-tab="${tab}"]`);
+            if (navItem) navItem.click();
+        }
+
+        // Toggle password visibility
+        document.querySelectorAll('.toggle-password').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const input = this.parentElement.querySelector('input');
+                const icon = this.querySelector('i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.setAttribute('data-lucide', 'eye-off');
+                } else {
+                    input.type = 'password';
+                    icon.setAttribute('data-lucide', 'eye');
+                }
+                lucide.createIcons();
+            });
+        });
+    </script>
+</body>
+</html>

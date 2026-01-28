@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earnings | WA Artisan Marketplace</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="stylesheet" href="../frontend/css/design-system.css">
+    <link rel="stylesheet" href="../frontend/css/icons.css">
+    <link rel="stylesheet" href="../frontend/css/main.css">
+    <link rel="stylesheet" href="css/cms.css">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="cms-body">
+    <!-- CMS Header -->
+    <header class="cms-header">
+        <div class="cms-nav">
+            <div class="cms-logo">
+                <a href="../index.html">
+                    <i data-lucide="store"></i>
+                    <span>WA Artisan</span>
+                </a>
+            </div>
+            <div class="cms-user">
+                <div class="user-avatar">
+                    <i data-lucide="user"></i>
+                </div>
+                <span class="user-name">Welcome, <strong id="artist-name">Artist</strong></span>
+                <button id="logout-btn" class="logout-btn">
+                    <i data-lucide="log-out"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main CMS Content -->
+    <div class="cms-container">
+        <!-- Sidebar Navigation -->
+        <aside class="cms-sidebar">
+            <nav class="cms-menu">
+                <a href="dashboard.html" class="menu-item">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="add-product.html" class="menu-item">
+                    <i data-lucide="plus-circle"></i>
+                    <span>Add Product</span>
+                </a>
+                <a href="my-products.html" class="menu-item">
+                    <i data-lucide="package"></i>
+                    <span>My Products</span>
+                </a>
+                <a href="orders.html" class="menu-item">
+                    <i data-lucide="shopping-bag"></i>
+                    <span>Orders</span>
+                </a>
+                <a href="earnings.html" class="menu-item active">
+                    <i data-lucide="wallet"></i>
+                    <span>Earnings</span>
+                </a>
+                <a href="profile.html" class="menu-item">
+                    <i data-lucide="settings"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="cms-main">
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>
+                        <i data-lucide="wallet"></i>
+                        Earnings
+                    </h1>
+                    <p>Track your revenue and payouts</p>
+                </div>
+                <button class="btn btn-primary" id="request-payout">
+                    <i data-lucide="banknote"></i>
+                    <span>Request Payout</span>
+                </button>
+            </div>
+
+            <!-- Earnings Overview -->
+            <div class="earnings-overview">
+                <div class="earnings-card main">
+                    <div class="earnings-icon">
+                        <i data-lucide="wallet"></i>
+                    </div>
+                    <div class="earnings-content">
+                        <span class="earnings-label">Available Balance</span>
+                        <span class="earnings-value" id="available-balance">$0.00</span>
+                        <span class="earnings-note">Ready to withdraw</span>
+                    </div>
+                </div>
+                <div class="earnings-card">
+                    <div class="earnings-icon pending">
+                        <i data-lucide="clock"></i>
+                    </div>
+                    <div class="earnings-content">
+                        <span class="earnings-label">Pending</span>
+                        <span class="earnings-value" id="pending-earnings">$0.00</span>
+                        <span class="earnings-note">Processing</span>
+                    </div>
+                </div>
+                <div class="earnings-card">
+                    <div class="earnings-icon success">
+                        <i data-lucide="check-circle"></i>
+                    </div>
+                    <div class="earnings-content">
+                        <span class="earnings-label">Total Paid</span>
+                        <span class="earnings-value" id="total-paid">$0.00</span>
+                        <span class="earnings-note">All time</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Earnings Chart -->
+            <div class="earnings-chart-section">
+                <div class="section-header">
+                    <h2>
+                        <i data-lucide="trending-up"></i>
+                        Revenue Overview
+                    </h2>
+                    <div class="chart-filters">
+                        <button class="chart-filter active" data-period="week">7 Days</button>
+                        <button class="chart-filter" data-period="month">30 Days</button>
+                        <button class="chart-filter" data-period="year">12 Months</button>
+                    </div>
+                </div>
+                <div class="chart-container" id="earnings-chart">
+                    <div class="chart-placeholder">
+                        <i data-lucide="bar-chart-3"></i>
+                        <p>Earnings data will appear here once you make sales</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revenue Breakdown -->
+            <div class="revenue-breakdown">
+                <h2>
+                    <i data-lucide="pie-chart"></i>
+                    Revenue Breakdown
+                </h2>
+                <div class="breakdown-grid">
+                    <div class="breakdown-item">
+                        <div class="breakdown-icon">
+                            <i data-lucide="shopping-cart"></i>
+                        </div>
+                        <div class="breakdown-details">
+                            <span class="breakdown-label">Gross Sales</span>
+                            <span class="breakdown-value" id="gross-sales">$0.00</span>
+                        </div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-icon deduction">
+                            <i data-lucide="minus-circle"></i>
+                        </div>
+                        <div class="breakdown-details">
+                            <span class="breakdown-label">Platform Fee (10%)</span>
+                            <span class="breakdown-value deduction" id="platform-fee">-$0.00</span>
+                        </div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-icon impact">
+                            <i data-lucide="heart"></i>
+                        </div>
+                        <div class="breakdown-details">
+                            <span class="breakdown-label">Social Impact (5%)</span>
+                            <span class="breakdown-value impact" id="social-impact">-$0.00</span>
+                        </div>
+                    </div>
+                    <div class="breakdown-item total">
+                        <div class="breakdown-icon total">
+                            <i data-lucide="dollar-sign"></i>
+                        </div>
+                        <div class="breakdown-details">
+                            <span class="breakdown-label">Net Earnings</span>
+                            <span class="breakdown-value total" id="net-earnings">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payout History -->
+            <div class="payout-history">
+                <div class="section-header">
+                    <h2>
+                        <i data-lucide="history"></i>
+                        Payout History
+                    </h2>
+                </div>
+                <div class="payout-list" id="payout-list">
+                    <!-- Sample Payout -->
+                    <div class="payout-item" style="display: none;">
+                        <div class="payout-info">
+                            <div class="payout-icon">
+                                <i data-lucide="banknote"></i>
+                            </div>
+                            <div class="payout-details">
+                                <strong>Payout to Bank ****1234</strong>
+                                <span>Jan 15, 2025</span>
+                            </div>
+                        </div>
+                        <div class="payout-amount success">+$125.00</div>
+                        <span class="payout-status completed">Completed</span>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="empty-state" id="empty-payouts">
+                        <div class="empty-icon">
+                            <i data-lucide="receipt"></i>
+                        </div>
+                        <h3>No payouts yet</h3>
+                        <p>Your payout history will appear here once you request a withdrawal.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payout Settings -->
+            <div class="payout-settings">
+                <h2>
+                    <i data-lucide="settings"></i>
+                    Payout Settings
+                </h2>
+                <div class="settings-card">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i data-lucide="building"></i>
+                            <div>
+                                <strong>Bank Account</strong>
+                                <p>Add a bank account for payouts</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-ghost btn-sm">
+                            <i data-lucide="plus"></i>
+                            Add
+                        </button>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i data-lucide="credit-card"></i>
+                            <div>
+                                <strong>PayPal</strong>
+                                <p>Connect your PayPal account</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-ghost btn-sm">
+                            <i data-lucide="link"></i>
+                            Connect
+                        </button>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i data-lucide="calendar"></i>
+                            <div>
+                                <strong>Automatic Payouts</strong>
+                                <p>Receive payouts automatically</p>
+                            </div>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="auto-payout">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav">
+        <a href="dashboard.html" class="nav-item">
+            <i data-lucide="layout-dashboard"></i>
+            <span class="label">Dashboard</span>
+        </a>
+        <a href="add-product.html" class="nav-item">
+            <i data-lucide="plus-circle"></i>
+            <span class="label">Add</span>
+        </a>
+        <a href="my-products.html" class="nav-item">
+            <i data-lucide="package"></i>
+            <span class="label">Products</span>
+        </a>
+        <a href="orders.html" class="nav-item">
+            <i data-lucide="shopping-bag"></i>
+            <span class="label">Orders</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i data-lucide="user"></i>
+            <span class="label">Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
