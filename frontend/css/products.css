@@ -780,13 +780,18 @@
 }
 
 .filter-count {
-    color: #9CA3AF;
+    color: #8B5CF6;
     font-size: 0.875rem;
     font-weight: 500;
+    padding: 2px 8px;
+    border: 1.5px solid #C4B5FD;
+    border-radius: 12px;
+    background: transparent;
 }
 
 .filter-option:hover .filter-count {
-    color: #8B5CF6;
+    color: #7C3AED;
+    border-color: #8B5CF6;
 }
 
 /* Active Filters Tags */
