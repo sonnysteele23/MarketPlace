@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details | WA Artisan Marketplace</title>
+    <meta name="description" content="View product details from Washington artisans">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/icons.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/product-detail.css">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="nav-wrapper">
+                <a href="../index.html" class="logo">
+                    <div class="logo-icon">
+                        <i data-lucide="store"></i>
+                    </div>
+                    <h1>WA Artisan</h1>
+                </a>
+                
+                <div class="search-bar-container">
+                    <form class="search-form" action="products.html" method="GET">
+                        <input type="search" name="q" placeholder="Search handmade items..." class="search-input">
+                        <button type="submit" class="search-btn">
+                            <i data-lucide="search"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="nav-links">
+                    <a href="products.html">Shop</a>
+                    <a href="about.html">Our Mission</a>
+                    <a href="../artist-cms/dashboard.html">Sell</a>
+                    <a href="#" class="cart-link">
+                        <i data-lucide="shopping-bag"></i>
+                        <span class="cart-count">0</span>
+                    </a>
+                    <div class="nav-auth">
+                        <a href="login.html" class="btn-text">
+                            <i data-lucide="log-in"></i>
+                            Login
+                        </a>
+                        <a href="register.html" class="btn-primary btn-sm">Sign Up</a>
+                    </div>
+                </div>
+
+                <button class="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <div class="container">
+            <ol>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="products.html">Shop</a></li>
+                <li><span id="breadcrumb-product" aria-current="page">Loading...</span></li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="product-detail-page">
+        <div class="container">
+            <!-- Loading State -->
+            <div id="loading-state" class="loading-state">
+                <div class="loading-spinner"></div>
+                <p>Loading product details...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="error-state" class="error-state" style="display: none;">
+                <i data-lucide="alert-circle"></i>
+                <h2>Product Not Found</h2>
+                <p>Sorry, we couldn't find the product you're looking for.</p>
+                <a href="products.html" class="btn-primary">Browse All Products</a>
+            </div>
+
+            <!-- Product Content -->
+            <div id="product-content" class="product-content" style="display: none;">
+                <div class="product-layout">
+                    <!-- Product Images -->
+                    <div class="product-gallery">
+                        <div class="main-image">
+                            <img id="main-product-image" src="" alt="Product image">
+                            <span id="featured-badge" class="badge badge-featured" style="display: none;">Featured</span>
+                        </div>
+                        <div class="thumbnail-gallery" id="thumbnail-gallery">
+                            <!-- Thumbnails will be added here -->
+                        </div>
+                    </div>
+
+                    <!-- Product Info -->
+                    <div class="product-info-panel">
+                        <!-- Category & Artist -->
+                        <div class="product-meta-top">
+                            <a href="#" id="product-category" class="category-link">
+                                <i data-lucide="tag"></i>
+                                <span>Category</span>
+                            </a>
+                        </div>
+
+                        <!-- Product Title -->
+                        <h1 id="product-title" class="product-title">Product Name</h1>
+
+                        <!-- Artist Info -->
+                        <div class="artist-info">
+                            <div class="artist-avatar">
+                                <img id="artist-avatar" src="" alt="Artist">
+                            </div>
+                            <div class="artist-details">
+                                <span class="artist-label">Handcrafted by</span>
+                                <a href="#" id="artist-name" class="artist-name">Artist Name</a>
+                                <span id="artist-location" class="artist-location">
+                                    <i data-lucide="map-pin"></i>
+                                    <span>Location</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="price-section">
+                            <span id="product-price" class="product-price">$0.00</span>
+                            <span class="price-note">+ shipping</span>
+                        </div>
+
+                        <!-- Stock Status -->
+                        <div id="stock-status" class="stock-status in-stock">
+                            <i data-lucide="check-circle"></i>
+                            <span>In Stock</span>
+                        </div>
+
+                        <!-- Quantity & Add to Cart -->
+                        <div class="purchase-section">
+                            <div class="quantity-selector">
+                                <label for="quantity">Quantity:</label>
+                                <div class="quantity-input">
+                                    <button type="button" class="qty-btn" id="qty-decrease">
+                                        <i data-lucide="minus"></i>
+                                    </button>
+                                    <input type="number" id="quantity" value="1" min="1" max="99">
+                                    <button type="button" class="qty-btn" id="qty-increase">
+                                        <i data-lucide="plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button id="add-to-cart-btn" class="btn-primary btn-lg add-to-cart-btn">
+                                <i data-lucide="shopping-bag"></i>
+                                Add to Cart
+                            </button>
+                        </div>
+
+                        <!-- Wishlist & Share -->
+                        <div class="action-buttons">
+                            <button class="btn-secondary btn-icon" id="wishlist-btn">
+                                <i data-lucide="heart"></i>
+                                Save to Wishlist
+                            </button>
+                            <button class="btn-secondary btn-icon" id="share-btn">
+                                <i data-lucide="share-2"></i>
+                                Share
+                            </button>
+                        </div>
+
+                        <!-- Impact Badge -->
+                        <div class="impact-badge">
+                            <i data-lucide="heart-handshake"></i>
+                            <div class="impact-text">
+                                <strong>5% of your purchase</strong> goes to homelessness solutions in Washington State
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Details Tabs -->
+                <div class="product-details-section">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="description">Description</button>
+                        <button class="tab-btn" data-tab="details">Product Details</button>
+                        <button class="tab-btn" data-tab="shipping">Shipping & Returns</button>
+                        <button class="tab-btn" data-tab="artist">About the Artist</button>
+                    </div>
+
+                    <div class="tab-content">
+                        <!-- Description Tab -->
+                        <div id="tab-description" class="tab-panel active">
+                            <div id="product-description" class="product-description">
+                                <!-- Description will be loaded here -->
+                            </div>
+                        </div>
+
+                        <!-- Details Tab -->
+                        <div id="tab-details" class="tab-panel">
+                            <div class="details-grid">
+                                <div class="detail-item" id="detail-materials">
+                                    <i data-lucide="layers"></i>
+                                    <div class="detail-content">
+                                        <span class="detail-label">Materials</span>
+                                        <span class="detail-value">-</span>
+                                    </div>
+                                </div>
+                                <div class="detail-item" id="detail-dimensions">
+                                    <i data-lucide="ruler"></i>
+                                    <div class="detail-content">
+                                        <span class="detail-label">Dimensions</span>
+                                        <span class="detail-value">-</span>
+                                    </div>
+                                </div>
+                                <div class="detail-item" id="detail-weight">
+                                    <i data-lucide="weight"></i>
+                                    <div class="detail-content">
+                                        <span class="detail-label">Weight</span>
+                                        <span class="detail-value">-</span>
+                                    </div>
+                                </div>
+                                <div class="detail-item" id="detail-category">
+                                    <i data-lucide="folder"></i>
+                                    <div class="detail-content">
+                                        <span class="detail-label">Category</span>
+                                        <span class="detail-value">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Shipping Tab -->
+                        <div id="tab-shipping" class="tab-panel">
+                            <div class="shipping-info">
+                                <div class="shipping-item">
+                                    <i data-lucide="truck"></i>
+                                    <div>
+                                        <h4>Shipping</h4>
+                                        <p>Ships within 3-5 business days. Delivery typically takes 5-7 business days.</p>
+                                    </div>
+                                </div>
+                                <div class="shipping-item">
+                                    <i data-lucide="rotate-ccw"></i>
+                                    <div>
+                                        <h4>Returns</h4>
+                                        <p>We accept returns within 14 days of delivery. Items must be unused and in original packaging.</p>
+                                    </div>
+                                </div>
+                                <div class="shipping-item">
+                                    <i data-lucide="shield-check"></i>
+                                    <div>
+                                        <h4>Buyer Protection</h4>
+                                        <p>All purchases are protected. Contact us if there's any issue with your order.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Artist Tab -->
+                        <div id="tab-artist" class="tab-panel">
+                            <div class="artist-profile" id="artist-profile">
+                                <div class="artist-header">
+                                    <img id="artist-profile-image" src="" alt="Artist" class="artist-profile-img">
+                                    <div class="artist-profile-info">
+                                        <h3 id="artist-profile-name">Artist Name</h3>
+                                        <p id="artist-profile-location" class="artist-profile-location">
+                                            <i data-lucide="map-pin"></i>
+                                            <span>Location</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <p id="artist-bio" class="artist-bio">Artist bio will appear here.</p>
+                                <a href="#" id="view-artist-shop" class="btn-secondary">
+                                    <i data-lucide="store"></i>
+                                    View All Products by This Artist
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Related Products -->
+                <section class="related-products-section">
+                    <h2 class="section-title">You May Also Like</h2>
+                    <div id="related-products" class="related-products-grid">
+                        <!-- Related products will be loaded here -->
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="products.html">All Products</a></li>
+                        <li><a href="products.html?category=jewelry">Jewelry</a></li>
+                        <li><a href="products.html?category=pottery">Pottery</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Artists</h4>
+                    <ul>
+                        <li><a href="../artist-cms/dashboard.html">Sell Your Work</a></li>
+                        <li><a href="artists.html">Meet Our Artists</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>About</h4>
+                    <ul>
+                        <li><a href="about.html">Our Mission</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="shipping.html">Shipping Info</a></li>
+                        <li><a href="returns.html">Returns</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Washington Artisan Marketplace. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/navigation.js"></script>
+    <script src="js/product-detail.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

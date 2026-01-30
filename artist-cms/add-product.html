@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Product | Artist CMS</title>
+    <title>Add Product | WA Artisan Marketplace</title>
     <meta name="robots" content="noindex, nofollow">
     
+    <link rel="stylesheet" href="../frontend/css/design-system.css">
+    <link rel="stylesheet" href="../frontend/css/icons.css">
     <link rel="stylesheet" href="../frontend/css/main.css">
     <link rel="stylesheet" href="css/cms.css">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body class="cms-body">
@@ -15,11 +22,20 @@
     <header class="cms-header">
         <div class="cms-nav">
             <div class="cms-logo">
-                <a href="../index.html">WA Artisan Market</a>
+                <a href="../frontend/index.html">
+                    <i data-lucide="store"></i>
+                    <span>WA Artisan</span>
+                </a>
             </div>
             <div class="cms-user">
+                <div class="user-avatar">
+                    <i data-lucide="user"></i>
+                </div>
                 <span class="user-name">Welcome, <strong id="artist-name">Artist</strong></span>
-                <button id="logout-btn" class="logout-btn">Logout</button>
+                <button id="logout-btn" class="logout-btn">
+                    <i data-lucide="log-out"></i>
+                    <span>Logout</span>
+                </button>
             </div>
         </div>
     </header>
@@ -30,28 +46,28 @@
         <aside class="cms-sidebar">
             <nav class="cms-menu">
                 <a href="dashboard.html" class="menu-item">
-                    <span class="icon">📊</span>
+                    <i data-lucide="layout-dashboard"></i>
                     <span>Dashboard</span>
                 </a>
                 <a href="add-product.html" class="menu-item active">
-                    <span class="icon">➕</span>
+                    <i data-lucide="plus-circle"></i>
                     <span>Add Product</span>
                 </a>
                 <a href="my-products.html" class="menu-item">
-                    <span class="icon">📦</span>
+                    <i data-lucide="package"></i>
                     <span>My Products</span>
                 </a>
                 <a href="orders.html" class="menu-item">
-                    <span class="icon">🛍️</span>
+                    <i data-lucide="shopping-bag"></i>
                     <span>Orders</span>
                 </a>
-                <a href="profile.html" class="menu-item">
-                    <span class="icon">👤</span>
-                    <span>Profile</span>
-                </a>
                 <a href="earnings.html" class="menu-item">
-                    <span class="icon">💰</span>
+                    <i data-lucide="wallet"></i>
                     <span>Earnings</span>
+                </a>
+                <a href="profile.html" class="menu-item">
+                    <i data-lucide="settings"></i>
+                    <span>Settings</span>
                 </a>
             </nav>
         </aside>
@@ -59,14 +75,22 @@
         <!-- Main Add Product Content -->
         <main class="cms-main">
             <div class="page-header">
-                <h1>Add New Product</h1>
-                <p>Upload your handmade creation to the marketplace</p>
+                <div class="page-title">
+                    <h1>
+                        <i data-lucide="plus-circle"></i>
+                        Add New Product
+                    </h1>
+                    <p>Upload your handmade creation to the marketplace</p>
+                </div>
             </div>
 
             <form id="add-product-form" class="product-form" enctype="multipart/form-data">
                 <!-- Product Images -->
                 <div class="form-section">
-                    <h2 class="section-title">Product Images</h2>
+                    <h2 class="section-title">
+                        <i data-lucide="image"></i>
+                        Product Images
+                    </h2>
                     <p class="section-description">Upload clear, well-lit photos of your product. The first image will be the main display image.</p>
                     
                     <div class="image-upload-container">
@@ -84,7 +108,9 @@
                                 hidden
                             >
                             <label for="image-input" class="upload-label">
-                                <div class="upload-icon">📷</div>
+                                <div class="upload-icon">
+                                    <i data-lucide="upload-cloud"></i>
+                                </div>
                                 <p><strong>Click to upload</strong> or drag and drop</p>
                                 <p class="upload-hint">PNG, JPG up to 5MB each (Max 5 images)</p>
                             </label>
@@ -92,19 +118,25 @@
                     </div>
                     
                     <div class="image-tips">
-                        <strong>Photo Tips:</strong>
-                        <ul>
-                            <li>Use natural lighting for best results</li>
-                            <li>Show multiple angles of your product</li>
-                            <li>Include scale reference if size matters</li>
-                            <li>Keep backgrounds simple and clean</li>
-                        </ul>
+                        <i data-lucide="lightbulb"></i>
+                        <div class="image-tips-content">
+                            <strong>Photo Tips:</strong>
+                            <ul>
+                                <li>Use natural lighting for best results</li>
+                                <li>Show multiple angles of your product</li>
+                                <li>Include scale reference if size matters</li>
+                                <li>Keep backgrounds simple and clean</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Basic Information -->
                 <div class="form-section">
-                    <h2 class="section-title">Basic Information</h2>
+                    <h2 class="section-title">
+                        <i data-lucide="file-text"></i>
+                        Basic Information
+                    </h2>
                     
                     <div class="form-group">
                         <label for="product-name" class="required">Product Name</label>
@@ -157,7 +189,10 @@
 
                 <!-- Pricing & Inventory -->
                 <div class="form-section">
-                    <h2 class="section-title">Pricing & Inventory</h2>
+                    <h2 class="section-title">
+                        <i data-lucide="dollar-sign"></i>
+                        Pricing & Inventory
+                    </h2>
                     
                     <div class="form-row">
                         <div class="form-group">
@@ -228,7 +263,10 @@
 
                 <!-- Product Details -->
                 <div class="form-section">
-                    <h2 class="section-title">Product Details</h2>
+                    <h2 class="section-title">
+                        <i data-lucide="list"></i>
+                        Product Details
+                    </h2>
                     
                     <div class="form-group">
                         <label for="materials">Materials Used</label>
@@ -279,7 +317,10 @@
 
                 <!-- Shipping -->
                 <div class="form-section">
-                    <h2 class="section-title">Shipping</h2>
+                    <h2 class="section-title">
+                        <i data-lucide="truck"></i>
+                        Shipping
+                    </h2>
                     
                     <div class="form-group">
                         <label class="checkbox-label">
@@ -304,7 +345,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="processing-time">Processing Time (days)</label>
+                        <label for="processing-time">Processing Time</label>
                         <select id="processing-time" name="processing_time">
                             <option value="1-2">1-2 business days</option>
                             <option value="3-5" selected>3-5 business days</option>
@@ -316,7 +357,10 @@
 
                 <!-- Tags -->
                 <div class="form-section">
-                    <h2 class="section-title">Tags (Optional)</h2>
+                    <h2 class="section-title">
+                        <i data-lucide="tag"></i>
+                        Tags (Optional)
+                    </h2>
                     <p class="section-description">Add tags to help customers find your product</p>
                     
                     <div class="form-group">
@@ -332,10 +376,13 @@
 
                 <!-- Form Actions -->
                 <div class="form-actions">
-                    <button type="button" class="btn-secondary" onclick="history.back()">Cancel</button>
+                    <button type="button" class="btn-secondary" onclick="history.back()">
+                        <i data-lucide="x"></i>
+                        Cancel
+                    </button>
                     <button type="submit" class="btn-primary" id="submit-btn">
+                        <i data-lucide="check"></i>
                         <span class="btn-text">Publish Product</span>
-                        <span class="btn-loader" style="display:none;">Publishing...</span>
                     </button>
                 </div>
             </form>
@@ -345,27 +392,30 @@
     <!-- Mobile Bottom Navigation -->
     <nav class="mobile-bottom-nav">
         <a href="dashboard.html" class="nav-item">
-            <span class="icon">📊</span>
+            <i data-lucide="layout-dashboard"></i>
             <span class="label">Dashboard</span>
         </a>
         <a href="add-product.html" class="nav-item active">
-            <span class="icon">➕</span>
+            <i data-lucide="plus-circle"></i>
             <span class="label">Add</span>
         </a>
         <a href="my-products.html" class="nav-item">
-            <span class="icon">📦</span>
+            <i data-lucide="package"></i>
             <span class="label">Products</span>
         </a>
         <a href="orders.html" class="nav-item">
-            <span class="icon">🛍️</span>
+            <i data-lucide="shopping-bag"></i>
             <span class="label">Orders</span>
         </a>
         <a href="profile.html" class="nav-item">
-            <span class="icon">👤</span>
+            <i data-lucide="user"></i>
             <span class="label">Profile</span>
         </a>
     </nav>
 
+    <script>
+        lucide.createIcons();
+    </script>
     <script src="js/add-product.js"></script>
 </body>
 </html>
