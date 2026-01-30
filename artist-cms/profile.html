@@ -490,19 +490,6 @@
         </a>
     </nav>
 
-    <script>
-        lucide.createIcons();
-        
-        // Tab switching functionality
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                
-                btn.classList.add('active');
-                document.getElementById(btn.dataset.tab + '-tab').classList.add('active');
-            });
-        });
-    </script>
+    <script src="js/profile.js"></script>
 </body>
 </html>
