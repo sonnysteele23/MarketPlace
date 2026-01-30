@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Washington Artisan Marketplace</title>
+    <meta name="description" content="Complete your purchase and support Washington artisans.">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/icons.css">
+    <link rel="stylesheet" href="css/main.css">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        .checkout-page {
+            padding: 40px 0 80px;
+            min-height: 60vh;
+            background: var(--gray-50);
+        }
+        
+        .checkout-page .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .checkout-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .checkout-header h1 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin: 0 0 8px 0;
+        }
+        
+        .checkout-header p {
+            color: var(--gray-500);
+            margin: 0;
+        }
+        
+        .checkout-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 40px;
+        }
+        
+        @media (max-width: 900px) {
+            .checkout-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Form Sections */
+        .checkout-section {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--gray-200);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .checkout-section h2 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin: 0 0 20px 0;
+        }
+        
+        .checkout-section h2 .step-number {
+            width: 28px;
+            height: 28px;
+            background: var(--primary-600);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .form-row.single {
+            grid-template-columns: 1fr;
+        }
+        
+        @media (max-width: 500px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 6px;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 10px;
+            font-size: 1rem;
+            color: var(--gray-900);
+            transition: border-color 0.2s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-500);
+        }
+        
+        /* Payment placeholder */
+        .payment-placeholder {
+            background: var(--gray-50);
+            border: 2px dashed var(--gray-300);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            color: var(--gray-500);
+        }
+        
+        .payment-placeholder i {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 16px;
+            color: var(--gray-400);
+        }
+        
+        .payment-placeholder h3 {
+            font-size: 1rem;
+            color: var(--gray-700);
+            margin: 0 0 8px 0;
+        }
+        
+        .payment-placeholder p {
+            font-size: 0.875rem;
+            margin: 0;
+        }
+        
+        /* Order Summary */
+        .order-summary {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--gray-200);
+            padding: 24px;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .order-summary h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin: 0 0 20px 0;
+        }
+        
+        .order-items {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        
+        .order-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        
+        .order-item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        
+        .order-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .order-item-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-900);
+            margin: 0 0 4px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .order-item-qty {
+            font-size: 0.8125rem;
+            color: var(--gray-500);
+        }
+        
+        .order-item-price {
+            font-weight: 600;
+            color: var(--gray-900);
+            white-space: nowrap;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 0.9375rem;
+        }
+        
+        .summary-row span:first-child {
+            color: var(--gray-600);
+        }
+        
+        .summary-row span:last-child {
+            color: var(--gray-900);
+            font-weight: 500;
+        }
+        
+        .summary-row.donation {
+            background: #ECFDF5;
+            padding: 12px;
+            margin: 16px -12px;
+            border-radius: 8px;
+        }
+        
+        .summary-row.donation span {
+            color: #059669;
+        }
+        
+        .summary-divider {
+            height: 1px;
+            background: var(--gray-200);
+            margin: 16px 0;
+        }
+        
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 24px;
+        }
+        
+        .btn-place-order {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-600);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .btn-place-order:hover {
+            background: var(--primary-700);
+        }
+        
+        .btn-place-order:disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+        }
+        
+        .secure-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+            font-size: 0.8125rem;
+            color: var(--gray-500);
+        }
+        
+        .secure-note i {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .back-to-cart {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            color: var(--primary-600);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .back-to-cart:hover {
+            text-decoration: underline;
+        }
+        
+        .back-to-cart i {
+            width: 18px;
+            height: 18px;
+        }
+        
+        /* Empty state */
+        .checkout-empty {
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 16px;
+        }
+        
+        .checkout-empty i {
+            width: 64px;
+            height: 64px;
+            color: var(--gray-400);
+            margin-bottom: 20px;
+        }
+        
+        .checkout-empty h2 {
+            font-size: 1.5rem;
+            color: var(--gray-900);
+            margin: 0 0 8px 0;
+        }
+        
+        .checkout-empty p {
+            color: var(--gray-500);
+            margin: 0 0 24px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="nav-wrapper">
+                <a href="../index.html" class="logo">
+                    <h1>WA Artisan Market</h1>
+                </a>
+
+                <div class="nav-links">
+                    <a href="products.html">Shop</a>
+                    <a href="about.html">Our Mission</a>
+                    <a href="../artist-cms/dashboard.html">Sell</a>
+                    <a href="cart.html" class="cart-link">
+                        <i data-lucide="shopping-bag"></i>
+                        <span class="cart-count" style="display: none;">0</span>
+                    </a>
+                    <div class="nav-auth"></div>
+                </div>
+
+                <button class="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <div class="container">
+            <ol>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="cart.html">Cart</a></li>
+                <li><span aria-current="page">Checkout</span></li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="checkout-page">
+        <div class="container">
+            <a href="cart.html" class="back-to-cart">
+                <i data-lucide="arrow-left"></i>
+                Back to Cart
+            </a>
+            
+            <div class="checkout-header">
+                <h1>Checkout</h1>
+                <p>Complete your order and support local artisans</p>
+            </div>
+
+            <div id="checkout-content">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="products.html">All Products</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>About</h4>
+                    <ul>
+                        <li><a href="about.html">Our Mission</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Washington Artisan Marketplace. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/navigation.js"></script>
+    
+    <script>
+        lucide.createIcons();
+        
+        function renderCheckout() {
+            const container = document.getElementById('checkout-content');
+            
+            if (!window.CartManager || window.CartManager.items.length === 0) {
+                container.innerHTML = `
+                    <div class="checkout-empty">
+                        <i data-lucide="shopping-cart"></i>
+                        <h2>Your cart is empty</h2>
+                        <p>Add some items to your cart before checking out.</p>
+                        <a href="products.html" class="btn-primary">Start Shopping</a>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+            
+            const items = window.CartManager.items;
+            const totals = window.CartManager.getTotals();
+            
+            const itemsHtml = items.map(item => `
+                <div class="order-item">
+                    <img src="${item.image || 'https://via.placeholder.com/60x60?text=No+Image'}" alt="${escapeHtml(item.name)}" class="order-item-image">
+                    <div class="order-item-info">
+                        <p class="order-item-name">${escapeHtml(item.name)}</p>
+                        <span class="order-item-qty">Qty: ${item.quantity}</span>
+                    </div>
+                    <span class="order-item-price">$${(item.price * item.quantity).toFixed(2)}</span>
+                </div>
+            `).join('');
+            
+            container.innerHTML = `
+                <div class="checkout-layout">
+                    <div class="checkout-forms">
+                        <!-- Contact Information -->
+                        <div class="checkout-section">
+                            <h2><span class="step-number">1</span> Contact Information</h2>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" id="email" placeholder="your@email.com" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" id="phone" placeholder="(555) 123-4567">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Shipping Address -->
+                        <div class="checkout-section">
+                            <h2><span class="step-number">2</span> Shipping Address</h2>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="firstName">First Name</label>
+                                    <input type="text" id="firstName" placeholder="John" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="lastName">Last Name</label>
+                                    <input type="text" id="lastName" placeholder="Doe" required>
+                                </div>
+                            </div>
+                            <div class="form-row single">
+                                <div class="form-group">
+                                    <label for="address">Street Address</label>
+                                    <input type="text" id="address" placeholder="123 Main Street" required>
+                                </div>
+                            </div>
+                            <div class="form-row single">
+                                <div class="form-group">
+                                    <label for="address2">Apartment, suite, etc. (optional)</label>
+                                    <input type="text" id="address2" placeholder="Apt 4B">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="city">City</label>
+                                    <input type="text" id="city" placeholder="Seattle" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="state">State</label>
+                                    <select id="state" required>
+                                        <option value="">Select State</option>
+                                        <option value="WA" selected>Washington</option>
+                                        <option value="OR">Oregon</option>
+                                        <option value="CA">California</option>
+                                        <option value="ID">Idaho</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="zip">ZIP Code</label>
+                                    <input type="text" id="zip" placeholder="98101" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="country">Country</label>
+                                    <select id="country" required>
+                                        <option value="US" selected>United States</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Payment -->
+                        <div class="checkout-section">
+                            <h2><span class="step-number">3</span> Payment</h2>
+                            <div class="payment-placeholder">
+                                <i data-lucide="credit-card"></i>
+                                <h3>Payment Integration Coming Soon</h3>
+                                <p>Stripe payment processing will be integrated here.<br>For now, this is a demo checkout flow.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Order Summary -->
+                    <div class="order-summary">
+                        <h2>Order Summary</h2>
+                        
+                        <div class="order-items">
+                            ${itemsHtml}
+                        </div>
+                        
+                        <div class="summary-row">
+                            <span>Subtotal (${totals.itemCount} items)</span>
+                            <span>$${totals.subtotal.toFixed(2)}</span>
+                        </div>
+                        
+                        <div class="summary-row">
+                            <span>Shipping</span>
+                            <span>${totals.shipping > 0 ? '$' + totals.shipping.toFixed(2) : 'FREE'}</span>
+                        </div>
+                        
+                        <div class="summary-row donation">
+                            <span>🌟 5% to end homelessness</span>
+                            <span>$${totals.donation.toFixed(2)}</span>
+                        </div>
+                        
+                        <div class="summary-divider"></div>
+                        
+                        <div class="summary-total">
+                            <span>Total</span>
+                            <span>$${totals.total.toFixed(2)}</span>
+                        </div>
+                        
+                        <button class="btn-place-order" onclick="placeOrder()">
+                            Place Order
+                        </button>
+                        
+                        <div class="secure-note">
+                            <i data-lucide="shield-check"></i>
+                            <span>Secure checkout - Your data is protected</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            lucide.createIcons();
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function placeOrder() {
+            // Demo - show success message
+            alert('Thank you for your order! (This is a demo - no actual order was placed)\n\nIn production, this would process payment via Stripe and create the order in the database.');
+            
+            // Clear cart and redirect
+            if (window.CartManager) {
+                window.CartManager.clear();
+            }
+            window.location.href = 'products.html';
+        }
+        
+        // Render on load
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(renderCheckout, 100);
+        });
+    </script>
+</body>
+</html>
