@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../frontend/css/icons.css">
     <link rel="stylesheet" href="../frontend/css/main.css">
     <link rel="stylesheet" href="css/cms.css">
+    <link rel="stylesheet" href="css/cms-pages.css">
     
     <script src="https://unpkg.com/lucide@latest"></script>
     
@@ -120,68 +121,7 @@
 
             <!-- Products Grid -->
             <div class="products-management" id="products-grid">
-                <!-- Sample Product Card -->
-                <div class="product-manage-card">
-                    <div class="product-image">
-                        <img src="../images/placeholder-product.jpg" alt="Product">
-                        <span class="product-status active">Active</span>
-                    </div>
-                    <div class="product-details">
-                        <h3>Handcrafted Ceramic Vase</h3>
-                        <p class="product-category">
-                            <i data-lucide="tag"></i>
-                            Pottery & Ceramics
-                        </p>
-                        <div class="product-meta">
-                            <span class="price">$45.00</span>
-                            <span class="stock">
-                                <i data-lucide="box"></i>
-                                5 in stock
-                            </span>
-                        </div>
-                        <div class="product-stats">
-                            <span>
-                                <i data-lucide="eye"></i>
-                                124 views
-                            </span>
-                            <span>
-                                <i data-lucide="shopping-cart"></i>
-                                8 sold
-                            </span>
-                            <span>
-                                <i data-lucide="star"></i>
-                                4.8
-                            </span>
-                        </div>
-                    </div>
-                    <div class="product-actions">
-                        <button class="action-btn-icon" title="Edit">
-                            <i data-lucide="edit-2"></i>
-                        </button>
-                        <button class="action-btn-icon" title="View">
-                            <i data-lucide="external-link"></i>
-                        </button>
-                        <button class="action-btn-icon" title="Duplicate">
-                            <i data-lucide="copy"></i>
-                        </button>
-                        <button class="action-btn-icon danger" title="Delete">
-                            <i data-lucide="trash-2"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Empty State -->
-                <div class="empty-state" id="empty-products" style="display: none;">
-                    <div class="empty-icon">
-                        <i data-lucide="package-open"></i>
-                    </div>
-                    <h3>No products found</h3>
-                    <p>Start selling by adding your first product to the marketplace.</p>
-                    <a href="add-product.html" class="btn btn-primary">
-                        <i data-lucide="plus"></i>
-                        Add Your First Product
-                    </a>
-                </div>
+                <!-- Products will be loaded here by JavaScript -->
             </div>
 
             <!-- Pagination -->

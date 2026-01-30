@@ -1,532 +1,746 @@
 /**
  * Icon System - Lucide Icons
  * Light line art icons for modern UI
+ * Ensures consistent alignment across all pages
  */
 
 /* ============================================
-   BASE ICON STYLES
+   BASE ICON STYLES - CRITICAL
+   These rules apply to icons before AND after 
+   Lucide.js renders them to SVGs
    ============================================ */
-i[data-lucide], 
+
+/* Before rendering (data-lucide attribute) */
+i[data-lucide] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    vertical-align: middle;
+}
+
+/* After rendering (becomes SVG) */
 svg.lucide,
+[data-lucide] svg {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    flex-shrink: 0;
+    vertical-align: middle;
+}
+
+/* Generic icon class */
 .icon {
-  width: 24px;
-  height: 24px;
-  stroke: currentColor;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  fill: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    vertical-align: middle;
+}
+
+/* ============================================
+   CRITICAL: Text + Icon Alignment
+   This is the core fix for alignment issues
+   ============================================ */
+
+/* Any element containing an icon and text should align them */
+h1, h2, h3, h4, h5, h6,
+.page-title h1,
+.section-title,
+.form-section h3,
+.menu-item,
+.nav-item,
+.btn,
+.feature-item,
+.branding-impact,
+a {
+    display: flex;
+    align-items: center;
+}
+
+/* Headings with icons */
+h1 > i[data-lucide],
+h1 > svg.lucide,
+h2 > i[data-lucide],
+h2 > svg.lucide,
+h3 > i[data-lucide],
+h3 > svg.lucide,
+h4 > i[data-lucide],
+h4 > svg.lucide {
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* Reset block display for headings that shouldn't flex */
+h1:not(:has(i[data-lucide])):not(:has(svg.lucide)),
+h2:not(:has(i[data-lucide])):not(:has(svg.lucide)),
+h3:not(:has(i[data-lucide])):not(:has(svg.lucide)),
+h4:not(:has(i[data-lucide])):not(:has(svg.lucide)),
+h5:not(:has(i[data-lucide])):not(:has(svg.lucide)),
+h6:not(:has(i[data-lucide])):not(:has(svg.lucide)) {
+    display: block;
+}
+
+/* Labels with icons */
+label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+label > i[data-lucide],
+label > svg.lucide {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
 }
 
 /* ============================================
    ICON SIZES
    ============================================ */
 .icon-xs,
-.icon-xs svg {
-  width: 14px;
-  height: 14px;
+.icon-xs svg,
+i[data-lucide].icon-xs {
+    width: 14px;
+    height: 14px;
 }
 
 .icon-sm,
-.icon-sm svg {
-  width: 18px;
-  height: 18px;
+.icon-sm svg,
+i[data-lucide].icon-sm {
+    width: 18px;
+    height: 18px;
 }
 
 .icon-md,
-.icon-md svg {
-  width: 24px;
-  height: 24px;
+.icon-md svg,
+i[data-lucide].icon-md {
+    width: 24px;
+    height: 24px;
 }
 
 .icon-lg,
-.icon-lg svg {
-  width: 32px;
-  height: 32px;
+.icon-lg svg,
+i[data-lucide].icon-lg {
+    width: 32px;
+    height: 32px;
 }
 
 .icon-xl,
-.icon-xl svg {
-  width: 40px;
-  height: 40px;
+.icon-xl svg,
+i[data-lucide].icon-xl {
+    width: 40px;
+    height: 40px;
 }
 
 .icon-2xl,
-.icon-2xl svg {
-  width: 48px;
-  height: 48px;
+.icon-2xl svg,
+i[data-lucide].icon-2xl {
+    width: 48px;
+    height: 48px;
 }
 
 /* ============================================
    ICON COLORS
    ============================================ */
 .icon-primary {
-  color: var(--primary-500);
+    color: var(--primary-500);
 }
 
 .icon-secondary {
-  color: var(--gray-500);
+    color: var(--gray-500);
 }
 
 .icon-muted {
-  color: var(--gray-400);
+    color: var(--gray-400);
 }
 
 .icon-success {
-  color: var(--success);
+    color: var(--success);
 }
 
 .icon-error {
-  color: var(--error);
+    color: var(--error);
 }
 
 .icon-warning {
-  color: var(--warning);
+    color: var(--warning);
 }
 
 .icon-info {
-  color: var(--info);
+    color: var(--info);
 }
 
 .icon-white {
-  color: var(--white);
+    color: var(--white);
 }
 
 .icon-dark {
-  color: var(--gray-900);
+    color: var(--gray-900);
 }
 
 /* ============================================
    ICON IN BUTTONS
    ============================================ */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
 .btn i[data-lucide],
 .btn svg.lucide,
 .btn .icon {
-  width: 18px;
-  height: 18px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
 }
 
 .btn-sm i[data-lucide],
 .btn-sm svg.lucide,
 .btn-sm .icon {
-  width: 16px;
-  height: 16px;
+    width: 16px;
+    height: 16px;
 }
 
 .btn-lg i[data-lucide],
 .btn-lg svg.lucide,
 .btn-lg .icon {
-  width: 20px;
-  height: 20px;
+    width: 20px;
+    height: 20px;
 }
 
 .btn-xl i[data-lucide],
 .btn-xl svg.lucide,
 .btn-xl .icon {
-  width: 24px;
-  height: 24px;
+    width: 24px;
+    height: 24px;
 }
 
 /* Icon-only buttons */
+.btn-icon {
+    padding: 0.5rem;
+}
+
 .btn-icon i[data-lucide],
 .btn-icon svg.lucide,
 .btn-icon .icon {
-  margin: 0;
+    margin: 0;
 }
 
 /* ============================================
-   ICON WITH TEXT
+   ICON WITH TEXT UTILITY
    ============================================ */
 .icon-text {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .icon-text-sm {
-  gap: var(--space-1);
+    gap: 0.25rem;
 }
 
 .icon-text-lg {
-  gap: var(--space-3);
+    gap: 0.75rem;
 }
 
 /* ============================================
    ICON CONTAINERS
    ============================================ */
-/* Rounded icon container */
 .icon-container {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-lg);
-  background: var(--gray-100);
-  color: var(--gray-600);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-lg);
+    background: var(--gray-100);
+    color: var(--gray-600);
+    flex-shrink: 0;
+}
+
+.icon-container i[data-lucide],
+.icon-container svg.lucide {
+    width: 20px;
+    height: 20px;
 }
 
 .icon-container-sm {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-md);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+}
+
+.icon-container-sm i[data-lucide],
+.icon-container-sm svg.lucide {
+    width: 16px;
+    height: 16px;
 }
 
 .icon-container-lg {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-xl);
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-xl);
+}
+
+.icon-container-lg i[data-lucide],
+.icon-container-lg svg.lucide {
+    width: 24px;
+    height: 24px;
 }
 
 .icon-container-xl {
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-xl);
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-xl);
+}
+
+.icon-container-xl i[data-lucide],
+.icon-container-xl svg.lucide {
+    width: 28px;
+    height: 28px;
 }
 
 /* Colored icon containers */
 .icon-container-primary {
-  background: var(--primary-100);
-  color: var(--primary-600);
+    background: var(--primary-100);
+    color: var(--primary-600);
 }
 
 .icon-container-success {
-  background: var(--success-light);
-  color: var(--success);
+    background: var(--success-light);
+    color: var(--success);
 }
 
 .icon-container-warning {
-  background: var(--warning-light);
-  color: var(--warning);
+    background: var(--warning-light);
+    color: var(--warning);
 }
 
 .icon-container-error {
-  background: var(--error-light);
-  color: var(--error);
+    background: var(--error-light);
+    color: var(--error);
 }
 
 .icon-container-info {
-  background: var(--info-light);
-  color: var(--info);
+    background: var(--info-light);
+    color: var(--info);
 }
 
 /* Feature icon - larger with gradient */
 .icon-feature {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-xl);
-  background: var(--gradient-primary);
-  color: var(--white);
-  box-shadow: var(--shadow-purple);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-xl);
+    background: var(--gradient-primary);
+    color: var(--white);
+    box-shadow: var(--shadow-purple);
+    flex-shrink: 0;
 }
 
 .icon-feature svg,
 .icon-feature i[data-lucide] {
-  width: 28px;
-  height: 28px;
+    width: 28px;
+    height: 28px;
 }
 
 /* Circular icon container */
 .icon-circle {
-  border-radius: var(--radius-full);
+    border-radius: var(--radius-full);
 }
 
 /* ============================================
    NAVIGATION ICONS
    ============================================ */
-.nav-icon {
-  width: 20px;
-  height: 20px;
-  color: var(--gray-500);
-  transition: color var(--transition-fast);
+.nav-icon,
+.menu-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--gray-500);
+    transition: color var(--transition-fast);
+    flex-shrink: 0;
 }
 
 .nav-item:hover .nav-icon,
-.nav-item.active .nav-icon {
-  color: var(--primary-600);
+.nav-item.active .nav-icon,
+.menu-item:hover .menu-icon,
+.menu-item.active .menu-icon {
+    color: var(--primary-600);
+}
+
+/* Menu items in sidebar */
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.menu-item i[data-lucide],
+.menu-item svg.lucide {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
 }
 
 /* ============================================
    HEADER ICONS
    ============================================ */
 .header-icon {
-  width: 24px;
-  height: 24px;
-  color: var(--gray-600);
-  cursor: pointer;
-  transition: color var(--transition-fast);
+    width: 24px;
+    height: 24px;
+    color: var(--gray-600);
+    cursor: pointer;
+    transition: color var(--transition-fast);
 }
 
 .header-icon:hover {
-  color: var(--primary-600);
+    color: var(--primary-600);
 }
 
 /* ============================================
    STATUS ICONS
    ============================================ */
 .status-icon {
-  width: 16px;
-  height: 16px;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
 }
 
 .status-icon-success {
-  color: var(--success);
+    color: var(--success);
 }
 
 .status-icon-warning {
-  color: var(--warning);
+    color: var(--warning);
 }
 
 .status-icon-error {
-  color: var(--error);
+    color: var(--error);
 }
 
 /* ============================================
    ANIMATED ICONS
    ============================================ */
 .icon-spin {
-  animation: icon-spin 1s linear infinite;
+    animation: icon-spin 1s linear infinite;
 }
 
 @keyframes icon-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .icon-pulse {
-  animation: icon-pulse 2s ease-in-out infinite;
+    animation: icon-pulse 2s ease-in-out infinite;
 }
 
 @keyframes icon-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
 }
 
 .icon-bounce {
-  animation: icon-bounce 1s ease infinite;
+    animation: icon-bounce 1s ease infinite;
 }
 
 @keyframes icon-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
 }
 
 /* ============================================
    HOVER EFFECTS
    ============================================ */
 .icon-hover {
-  transition: all var(--transition-fast);
+    transition: all var(--transition-fast);
 }
 
 .icon-hover:hover {
-  transform: scale(1.1);
-  color: var(--primary-600);
+    transform: scale(1.1);
+    color: var(--primary-600);
 }
 
 .icon-hover-lift:hover {
-  transform: translateY(-2px);
+    transform: translateY(-2px);
 }
 
 .icon-hover-rotate:hover {
-  transform: rotate(15deg);
+    transform: rotate(15deg);
 }
 
 /* ============================================
    ICON LISTS
    ============================================ */
 .icon-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .icon-list-item {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
-  padding: var(--space-2) 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
 }
 
 .icon-list-item i[data-lucide],
 .icon-list-item svg.lucide,
 .icon-list-item .icon {
-  flex-shrink: 0;
-  margin-top: 2px;
-  color: var(--primary-500);
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--primary-500);
 }
 
 /* ============================================
-   SPECIFIC ICON STYLES
+   STAR RATING ICONS
    ============================================ */
-/* Star rating icons */
 .star-icon {
-  width: 16px;
-  height: 16px;
-  color: var(--star-color);
+    width: 16px;
+    height: 16px;
+    color: var(--star-color, #FBBF24);
 }
 
 .star-icon.empty {
-  color: var(--star-empty);
+    color: var(--star-empty, #E5E7EB);
 }
 
-/* Cart badge icon */
+/* ============================================
+   CART BADGE ICON
+   ============================================ */
 .cart-icon-wrapper {
-  position: relative;
+    position: relative;
+    display: inline-flex;
 }
 
 .cart-badge {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  font-size: 11px;
-  font-weight: var(--font-bold);
-  line-height: 18px;
-  text-align: center;
-  color: var(--white);
-  background: var(--primary-600);
-  border-radius: var(--radius-full);
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    font-size: 11px;
+    font-weight: var(--font-bold);
+    line-height: 18px;
+    text-align: center;
+    color: var(--white);
+    background: var(--primary-600);
+    border-radius: var(--radius-full);
 }
 
 /* Notification indicator */
 .icon-notification {
-  position: relative;
+    position: relative;
 }
 
 .icon-notification::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 8px;
-  height: 8px;
-  background: var(--error);
-  border-radius: var(--radius-full);
-  border: 2px solid var(--white);
-}
-
-/* ============================================
-   MENU/SIDEBAR ICONS
-   ============================================ */
-.menu-icon {
-  width: 22px;
-  height: 22px;
-  color: var(--gray-500);
-  flex-shrink: 0;
-}
-
-.menu-item:hover .menu-icon,
-.menu-item.active .menu-icon {
-  color: var(--primary-600);
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    background: var(--error);
+    border-radius: var(--radius-full);
+    border: 2px solid var(--white);
 }
 
 /* ============================================
    STAT CARD ICONS
    ============================================ */
 .stat-icon-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-lg);
-  background: var(--primary-100);
-  color: var(--primary-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-lg);
+    background: var(--primary-100);
+    color: var(--primary-600);
+    flex-shrink: 0;
 }
 
 .stat-icon-container svg,
 .stat-icon-container i[data-lucide] {
-  width: 24px;
-  height: 24px;
+    width: 24px;
+    height: 24px;
 }
 
-/* Different stat colors */
 .stat-icon-container.green {
-  background: var(--success-light);
-  color: var(--success);
+    background: var(--success-light);
+    color: var(--success);
 }
 
 .stat-icon-container.orange {
-  background: var(--warning-light);
-  color: var(--warning);
+    background: var(--warning-light);
+    color: var(--warning);
 }
 
 .stat-icon-container.blue {
-  background: var(--info-light);
-  color: var(--info);
+    background: var(--info-light);
+    color: var(--info);
 }
 
 /* ============================================
    ACTION ICONS
    ============================================ */
 .action-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-md);
-  color: var(--gray-500);
-  cursor: pointer;
-  transition: all var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    color: var(--gray-500);
+    cursor: pointer;
+    transition: all var(--transition-fast);
 }
 
 .action-icon:hover {
-  background: var(--gray-100);
-  color: var(--gray-700);
+    background: var(--gray-100);
+    color: var(--gray-700);
 }
 
 .action-icon-danger:hover {
-  background: var(--error-light);
-  color: var(--error);
+    background: var(--error-light);
+    color: var(--error);
 }
 
 /* ============================================
    SOCIAL ICONS
    ============================================ */
 .social-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--white);
-  transition: all var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--white);
+    transition: all var(--transition-fast);
 }
 
 .social-icon:hover {
-  background: var(--primary-500);
-  transform: translateY(-2px);
+    background: var(--primary-500);
+    transform: translateY(-2px);
 }
 
 /* ============================================
    EMPTY STATE ICONS
    ============================================ */
-.empty-state-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 80px;
-  height: 80px;
-  border-radius: var(--radius-full);
-  background: var(--gray-100);
-  color: var(--gray-400);
-  margin: 0 auto var(--space-4);
+.empty-state-icon,
+.empty-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-full);
+    background: var(--gray-100);
+    color: var(--gray-400);
+    margin: 0 auto 1rem;
 }
 
 .empty-state-icon svg,
-.empty-state-icon i[data-lucide] {
-  width: 40px;
-  height: 40px;
+.empty-state-icon i[data-lucide],
+.empty-icon svg,
+.empty-icon i[data-lucide] {
+    width: 40px;
+    height: 40px;
+}
+
+/* ============================================
+   INPUT ICONS
+   ============================================ */
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon > i[data-lucide]:first-child,
+.input-with-icon > svg.lucide:first-child {
+    position: absolute;
+    left: 0.75rem;
+    width: 18px;
+    height: 18px;
+    color: var(--gray-400);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.input-with-icon input,
+.input-with-icon .form-input {
+    padding-left: 2.5rem;
+}
+
+/* Toggle password button */
+.toggle-password {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    cursor: pointer;
+    color: var(--gray-400);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-password:hover {
+    color: var(--gray-600);
+}
+
+.toggle-password i[data-lucide],
+.toggle-password svg.lucide {
+    width: 18px;
+    height: 18px;
+}
+
+/* ============================================
+   PASSWORD REQUIREMENTS ICONS
+   ============================================ */
+.password-requirements ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.password-requirements li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--gray-500);
+    padding: 0.25rem 0;
+}
+
+.password-requirements li i[data-lucide],
+.password-requirements li svg.lucide {
+    width: 16px;
+    height: 16px;
+    color: var(--gray-400);
+    flex-shrink: 0;
+}
+
+.password-requirements li.valid i[data-lucide],
+.password-requirements li.valid svg.lucide {
+    color: var(--success);
 }
