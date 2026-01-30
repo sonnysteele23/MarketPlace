@@ -13,14 +13,20 @@ const authenticateToken = async (req, res, next) => {
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
         
+        console.log('Auth header:', authHeader ? 'present' : 'missing');
+        console.log('Token:', token ? token.substring(0, 20) + '...' : 'missing');
+        
         if (!token) {
+            console.log('No token provided');
             return res.status(401).json({ 
                 error: 'Access denied. No token provided.' 
             });
         }
         
         // Verify token
+        console.log('JWT_SECRET exists:', !!process.env.JWT_SECRET);
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log('Decoded token:', decoded);
         
         // Get artist from database
         const { data: artist, error } = await supabaseAdmin
@@ -28,6 +34,8 @@ const authenticateToken = async (req, res, next) => {
             .select('id, email, business_name, bio, profile_image_url, location, is_verified')
             .eq('id', decoded.id)
             .single();
+        
+        console.log('Artist lookup result:', artist ? 'found' : 'not found', error ? error.message : '');
         
         if (error || !artist) {
             return res.status(401).json({ 
@@ -40,6 +48,8 @@ const authenticateToken = async (req, res, next) => {
         next();
         
     } catch (error) {
+        console.error('Auth error type:', error.name);
+        console.error('Auth error message:', error.message);
         if (error.name === 'JsonWebTokenError') {
             return res.status(401).json({ error: 'Invalid token.' });
         }
