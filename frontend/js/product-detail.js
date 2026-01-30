@@ -11,6 +11,9 @@
         ? 'http://localhost:3000/api'
         : 'https://marketplace-production-57b7.up.railway.app/api';
 
+    // Store current product data
+    let currentProduct = null;
+
     // Get product ID from URL
     function getProductId() {
         const params = new URLSearchParams(window.location.search);
@@ -39,6 +42,7 @@
             const product = await response.json();
             console.log('Product data:', product);
             
+            currentProduct = product; // Store for later use
             displayProduct(product);
             fetchRelatedProducts(product.category_id);
             
@@ -272,17 +276,24 @@
         
         // Add to cart
         document.getElementById('add-to-cart-btn').addEventListener('click', function() {
-            var productId = getProductId();
             var quantity = parseInt(document.getElementById('quantity').value) || 1;
             
-            // TODO: Implement cart functionality
-            console.log('Add to cart:', productId, 'Quantity:', quantity);
-            showNotification('Added to cart!', 'success');
+            if (!currentProduct) {
+                showNotification('Error: Product data not loaded', 'error');
+                return;
+            }
+            
+            // Use CartManager if available
+            if (window.CartManager) {
+                window.CartManager.addItem(currentProduct, quantity);
+            } else {
+                console.log('Add to cart:', currentProduct.id, 'Quantity:', quantity);
+                showNotification('Added to cart!', 'success');
+            }
         });
         
         // Wishlist
         document.getElementById('wishlist-btn').addEventListener('click', function() {
-            // TODO: Implement wishlist functionality
             showNotification('Added to wishlist!', 'success');
         });
         
@@ -294,7 +305,6 @@
                     url: window.location.href
                 });
             } else {
-                // Fallback: copy to clipboard
                 navigator.clipboard.writeText(window.location.href);
                 showNotification('Link copied to clipboard!', 'success');
             }
@@ -306,6 +316,12 @@
     // ===================================
     function showNotification(message, type) {
         type = type || 'info';
+        
+        // Use CartManager notification if available
+        if (window.CartManager && window.CartManager.showNotification) {
+            window.CartManager.showNotification(message, type);
+            return;
+        }
         
         var existing = document.querySelector('.notification');
         if (existing) existing.remove();

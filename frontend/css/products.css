@@ -747,3 +747,91 @@
     background: var(--error);
     color: white;
 }
+
+/* ===================================
+   Filter Options with Counts
+   =================================== */
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.filter-option:hover {
+    color: #8B5CF6;
+}
+
+.filter-option input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #8B5CF6;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.filter-label-text {
+    flex: 1;
+    font-size: 0.9375rem;
+    color: #374151;
+}
+
+.filter-count {
+    color: #9CA3AF;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.filter-option:hover .filter-count {
+    color: #8B5CF6;
+}
+
+/* Active Filters Tags */
+.active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+    min-height: 0;
+}
+
+.active-filters:empty {
+    display: none;
+}
+
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #F3E8FF;
+    color: #7C3AED;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.filter-tag .remove-filter {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    color: #7C3AED;
+    transition: color 0.15s ease;
+}
+
+.filter-tag .remove-filter:hover {
+    color: #5B21B6;
+}
+
+/* Price Tag Active State */
+.price-tag.active {
+    background: #8B5CF6;
+    color: white;
+    border-color: #8B5CF6;
+}

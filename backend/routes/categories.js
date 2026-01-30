@@ -11,6 +11,45 @@ const { supabaseAdmin } = require('../config/supabase');
 // Public Routes
 // ===================================
 
+// GET /api/categories/stats/counts - Get categories with product counts
+// NOTE: This route must come BEFORE /:id to avoid conflicts
+router.get('/stats/counts', async (req, res) => {
+    try {
+        // Get all categories
+        const { data: categories, error: catError } = await supabaseAdmin
+            .from('categories')
+            .select('id, name, slug, icon')
+            .order('name', { ascending: true });
+        
+        if (catError) throw catError;
+        
+        // Get product counts for active products per category
+        const { data: counts, error: countError } = await supabaseAdmin
+            .from('products')
+            .select('category_id')
+            .eq('is_active', true);
+        
+        if (countError) throw countError;
+        
+        // Calculate counts
+        const countMap = {};
+        counts.forEach(product => {
+            countMap[product.category_id] = (countMap[product.category_id] || 0) + 1;
+        });
+        
+        // Combine categories with their counts
+        const categoriesWithCounts = categories.map(category => ({
+            ...category,
+            product_count: countMap[category.id] || 0
+        }));
+        
+        res.json(categoriesWithCounts);
+    } catch (error) {
+        console.error('Error fetching category counts:', error);
+        res.status(500).json({ error: 'Error fetching category counts', message: error.message });
+    }
+});
+
 // GET /api/categories - Get all categories
 router.get('/', async (req, res) => {
     try {
@@ -91,33 +130,6 @@ router.get('/:id/products', async (req, res) => {
     } catch (error) {
         console.error('Error fetching category products:', error);
         res.status(500).json({ error: 'Error fetching category products', message: error.message });
-    }
-});
-
-// GET /api/categories/stats/counts - Get product counts for all categories
-router.get('/stats/counts', async (req, res) => {
-    try {
-        // Get all categories with product counts
-        const { data: categories, error } = await supabaseAdmin
-            .from('categories')
-            .select(`
-                id,
-                name,
-                products:products(count)
-            `);
-        
-        if (error) throw error;
-        
-        // Format response as map
-        const countMap = {};
-        categories.forEach(category => {
-            countMap[category.id] = category.products[0]?.count || 0;
-        });
-        
-        res.json(countMap);
-    } catch (error) {
-        console.error('Error fetching category counts:', error);
-        res.status(500).json({ error: 'Error fetching category counts', message: error.message });
     }
 });
 

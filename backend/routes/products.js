@@ -42,7 +42,13 @@ router.get('/', async (req, res) => {
         
         // Apply filters
         if (category_id) {
-            query = query.eq('category_id', category_id);
+            // Support multiple category IDs (comma-separated)
+            const categoryIds = category_id.split(',').map(id => id.trim()).filter(id => id);
+            if (categoryIds.length === 1) {
+                query = query.eq('category_id', categoryIds[0]);
+            } else if (categoryIds.length > 1) {
+                query = query.in('category_id', categoryIds);
+            }
         }
         
         if (artist_id) {
