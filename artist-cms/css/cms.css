@@ -191,11 +191,60 @@
 
 .dashboard-header h1,
 .page-header h1 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
   font-family: var(--font-display);
   font-size: var(--text-2xl);
   font-weight: var(--font-bold);
   color: var(--gray-900);
-  margin-bottom: var(--space-1);
+  margin: 0 0 var(--space-1) 0;
+  padding: 0;
+  line-height: 1.2;
+}
+
+.dashboard-header h1 i[data-lucide],
+.dashboard-header h1 svg.lucide,
+.page-header h1 i[data-lucide],
+.page-header h1 svg.lucide {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  color: var(--primary-600);
+  flex-shrink: 0;
+}
+
+.page-title {
+  /* Container for h1 and description */
+}
+
+.page-title h1 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--gray-900);
+  margin: 0 0 var(--space-1) 0;
+  padding: 0;
+  line-height: 1.2;
+}
+
+.page-title h1 i[data-lucide],
+.page-title h1 svg.lucide {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  color: var(--primary-600);
+  flex-shrink: 0;
+}
+
+.page-title p {
+  color: var(--gray-500);
+  font-size: var(--text-sm);
+  margin: 0;
+  padding: 0;
 }
 
 .welcome-text,
@@ -203,6 +252,7 @@
   color: var(--gray-500);
   font-size: var(--text-sm);
   margin: 0;
+  padding: 0;
 }
 
 /* ===================================

@@ -118,13 +118,17 @@
   font-weight: var(--font-semibold);
   color: var(--gray-900);
   margin: 0;
+  padding: 0;
+  line-height: 1.2;
 }
 
 .earnings-chart-section h2 i[data-lucide],
 .earnings-chart-section h2 svg {
   width: 20px;
   height: 20px;
+  min-width: 20px;
   color: var(--primary-600);
+  flex-shrink: 0;
 }
 
 .chart-filters {
@@ -189,14 +193,18 @@
   font-size: var(--text-lg);
   font-weight: var(--font-semibold);
   color: var(--gray-900);
-  margin-bottom: var(--space-5);
+  margin: 0 0 var(--space-5) 0;
+  padding: 0;
+  line-height: 1.2;
 }
 
 .revenue-breakdown h2 i[data-lucide],
 .revenue-breakdown h2 svg {
   width: 20px;
   height: 20px;
+  min-width: 20px;
   color: var(--primary-600);
+  flex-shrink: 0;
 }
 
 .breakdown-grid {
@@ -298,13 +306,17 @@
   font-weight: var(--font-semibold);
   color: var(--gray-900);
   margin: 0;
+  padding: 0;
+  line-height: 1.2;
 }
 
 .payout-history .section-header h2 i[data-lucide],
 .payout-history .section-header h2 svg {
   width: 20px;
   height: 20px;
+  min-width: 20px;
   color: var(--primary-600);
+  flex-shrink: 0;
 }
 
 .payout-list {
@@ -404,14 +416,18 @@
   font-size: var(--text-lg);
   font-weight: var(--font-semibold);
   color: var(--gray-900);
-  margin-bottom: var(--space-5);
+  margin: 0 0 var(--space-5) 0;
+  padding: 0;
+  line-height: 1.2;
 }
 
 .payout-settings h2 i[data-lucide],
 .payout-settings h2 svg {
   width: 20px;
   height: 20px;
+  min-width: 20px;
   color: var(--primary-600);
+  flex-shrink: 0;
 }
 
 .settings-card {
@@ -616,13 +632,16 @@
   font-size: var(--text-base);
   font-weight: var(--font-semibold);
   color: var(--gray-900);
-  margin-bottom: var(--space-1);
+  margin: 0 0 var(--space-1) 0;
+  padding: 0;
+  line-height: 1.2;
 }
 
 .photo-info p {
   font-size: var(--text-sm);
   color: var(--gray-500);
-  margin-bottom: var(--space-3);
+  margin: 0 0 var(--space-3) 0;
+  padding: 0;
 }
 
 /* Settings Form Sections */
@@ -641,16 +660,19 @@
   font-size: var(--text-base);
   font-weight: var(--font-semibold);
   color: var(--gray-900);
-  margin-bottom: var(--space-4);
-  padding-bottom: var(--space-3);
+  margin: 0 0 var(--space-4) 0;
+  padding: 0 0 var(--space-3) 0;
   border-bottom: 1px solid var(--gray-100);
+  line-height: 1.2;
 }
 
 .settings-form .form-section h3 i[data-lucide],
 .settings-form .form-section h3 svg {
   width: 20px;
   height: 20px;
+  min-width: 20px;
   color: var(--primary-600);
+  flex-shrink: 0;
 }
 
 /* Form Grid */
