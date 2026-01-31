@@ -61,6 +61,11 @@
     height: 32px;
 }
 
+.auth-logo-img {
+    height: 40px;
+    width: auto;
+}
+
 .branding-content {
     flex: 1;
     display: flex;

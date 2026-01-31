@@ -55,6 +55,27 @@
   color: var(--white);
 }
 
+/* Logo Image Styles */
+.logo-img {
+  height: auto;
+  width: auto;
+}
+
+.logo-img.logo-horizontal {
+  height: 48px;
+  max-width: 200px;
+}
+
+.logo-img.logo-vertical {
+  height: 80px;
+  max-width: 150px;
+}
+
+.logo-img.logo-icon {
+  height: 40px;
+  width: 40px;
+}
+
 /* Search Bar */
 .search-bar-container {
   flex: 1;

@@ -50,6 +50,11 @@
   height: 24px;
 }
 
+.cms-logo-img {
+  height: 32px;
+  width: auto;
+}
+
 .cms-user {
   display: flex;
   align-items: center;
