@@ -66,6 +66,21 @@
     width: auto;
 }
 
+/* Large vertical logo for auth branding area */
+.auth-logo-large {
+    display: block;
+    text-decoration: none;
+    margin-bottom: var(--space-6);
+}
+
+.auth-logo-vertical {
+    height: auto;
+    width: 100%;
+    max-width: 220px;
+    /* Invert dark colors to white for purple background */
+    filter: brightness(0) invert(1);
+}
+
 .branding-content {
     flex: 1;
     display: flex;
@@ -257,27 +272,34 @@
     position: relative;
     display: flex;
     align-items: center;
+    gap: var(--space-3);
 }
 
 .input-with-icon > i[data-lucide]:first-child {
-    position: absolute;
-    left: var(--space-3);
-    width: 18px;
-    height: 18px;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
     color: var(--gray-400);
-    pointer-events: none;
 }
 
 .input-with-icon .form-input {
-    padding-left: var(--space-10);
+    flex: 1;
+    padding: var(--space-3) var(--space-4);
+}
+
+/* Password fields with toggle button need extra right padding */
+.input-with-icon .form-input[type="password"],
+.input-with-icon .form-input.has-toggle {
+    padding-right: var(--space-10);
 }
 
 .form-input {
     width: 100%;
     padding: var(--space-3) var(--space-4);
-    border: 1px solid var(--gray-200);
+    border: 2px solid var(--gray-200);
     border-radius: var(--radius-lg);
     font-size: var(--text-base);
+    font-family: var(--font-sans);
     color: var(--gray-900);
     background: var(--white);
     transition: all var(--transition-base);
@@ -296,12 +318,15 @@
 .toggle-password {
     position: absolute;
     right: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
     background: none;
     border: none;
     padding: var(--space-1);
     cursor: pointer;
     color: var(--gray-400);
     transition: color var(--transition-base);
+    z-index: 1;
 }
 
 .toggle-password:hover {
