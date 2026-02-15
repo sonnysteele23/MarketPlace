@@ -10,6 +10,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
+const supabaseStorage = require('./services/supabaseStorage');
 
 // Import routes
 const productRoutes = require('./routes/products');
@@ -170,6 +171,8 @@ app.use((err, req, res, next) => {
 // ===================================
 // Start Server
 // ===================================
+
+supabaseStorage.initializeBuckets().catch(console.error);
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`

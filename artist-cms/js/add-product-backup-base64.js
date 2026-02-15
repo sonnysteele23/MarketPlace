@@ -411,40 +411,6 @@ function showNotification(message, type = 'info') {
     }, 4000);
 }
 
-// ===================================
-// Upload Images to Supabase Storage
-// ===================================
-async function uploadImagesToSupabase(auth) {
-    try {
-        const formData = new FormData();
-        
-        // Append all uploaded images
-        uploadedImages.forEach((img, index) => {
-            formData.append('images', img.file);
-        });
-        
-        // Upload to backend API which will handle Supabase Storage
-        const response = await fetch(`${API_BASE_URL}/upload/product-images`, {  // ← Fixed: added ()
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${auth.token}`
-            },
-            body: formData
-        });
-        
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Failed to upload images');
-        }
-        
-        const result = await response.json();
-        return result.images; // Array of { imageUrl, thumbnailUrl, filename }
-    } catch (error) {
-        console.error('Error uploading images:', error);
-        throw error;
-    }
-}
-
 // Add animation styles
 const style = document.createElement('style');
 style.textContent = `
