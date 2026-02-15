@@ -297,21 +297,23 @@ async function handleFormSubmit(e) {
     if (btnText) btnText.textContent = 'Publishing...';
     
     try {
+        // Validate that at least one image was uploaded
+        if (uploadedImages.length === 0) {
+            showNotification('Please upload at least one product image', 'error');
+            return;
+        }
+        
         // Get form data
         const form = document.getElementById('add-product-form');
         const formData = new FormData(form);
         
-        // For now, we'll use a placeholder image URL
-        // In production, you'd upload to Supabase Storage or another service
-        let imageUrl = 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=800&h=800&fit=crop';
-        let thumbnailUrl = 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=400&h=400&fit=crop';
+        // Use the uploaded images' data URLs
+        // The main image is the first uploaded image
+        const imageUrl = uploadedImages[0].dataUrl;
+        const thumbnailUrl = uploadedImages[0].dataUrl; // You can create a smaller version if needed
         
-        // If images were uploaded, use the first one's data URL (in production, upload to storage)
-        if (uploadedImages.length > 0) {
-            // TODO: Upload to Supabase Storage and get URL
-            // For now, just show a message
-            console.log('Images to upload:', uploadedImages.length);
-        }
+        // Prepare additional images array (all uploaded images)
+        const additionalImages = uploadedImages.slice(1).map(img => img.dataUrl);
         
         // Prepare product data
         const productData = {
@@ -324,7 +326,8 @@ async function handleFormSubmit(e) {
             dimensions: formData.get('dimensions') || null,
             weight: formData.get('weight') || null,
             image_url: imageUrl,
-            thumbnail_url: thumbnailUrl
+            thumbnail_url: thumbnailUrl,
+            additional_images: additionalImages.length > 0 ? additionalImages : null
         };
         
         // Send to API
