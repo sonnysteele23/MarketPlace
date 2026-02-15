@@ -298,9 +298,10 @@ ul, ol {
 /* Primary Button - Purple Gradient */
 .btn-primary {
   background: var(--gradient-primary);
-  color: var(--white);
+  color: var(--white) !important;
   border-color: transparent;
   box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-6);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -343,6 +344,7 @@ ul, ol {
   color: var(--primary-600);
   border-color: var(--white);
   box-shadow: var(--shadow-md);
+  padding: var(--space-3) var(--space-6);
 }
 
 .btn-white:hover:not(:disabled) {

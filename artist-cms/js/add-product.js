@@ -1,6 +1,6 @@
 /**
- * Add Product Page - SIMPLIFIED VERSION
- * Using native label behavior
+ * Add Product Page - MULTI-IMAGE VERSION
+ * Supports up to 5 images per product
  */
 (function() {
     'use strict';
@@ -324,6 +324,7 @@
             const form = document.getElementById('add-product-form');
             const formData = new FormData(form);
             
+            // Build product data with ALL images
             const productData = {
                 name: formData.get('name'),
                 description: formData.get('description'),
@@ -333,11 +334,22 @@
                 materials: formData.get('materials') || null,
                 dimensions: formData.get('dimensions') || null,
                 weight: formData.get('weight') || null,
+                // Main image (first one)
                 image_url: uploadedImageUrls[0].imageUrl,
-                thumbnail_url: uploadedImageUrls[0].thumbnailUrl
+                thumbnail_url: uploadedImageUrls[0].thumbnailUrl,
+                // Additional images (images 2-5)
+                additional_images: uploadedImageUrls.length > 1 
+                    ? uploadedImageUrls.slice(1).map(function(img) {
+                        return {
+                            imageUrl: img.imageUrl,
+                            thumbnailUrl: img.thumbnailUrl,
+                            filename: img.filename
+                        };
+                    })
+                    : []
             };
             
-            console.log('[Marketplace] Creating product:', productData);
+            console.log('[Marketplace] Creating product with', uploadedImageUrls.length, 'images:', productData);
             
             const response = await fetch(API_BASE_URL + '/products', {
                 method: 'POST',
@@ -356,7 +368,7 @@
             const newProduct = await response.json();
             console.log('[Marketplace] Product created:', newProduct);
             
-            showNotification('Product published successfully!', 'success');
+            showNotification('Product published successfully with ' + uploadedImageUrls.length + ' images!', 'success');
             
             setTimeout(function() {
                 window.location.href = 'my-products.html';
