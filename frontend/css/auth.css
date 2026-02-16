@@ -393,10 +393,6 @@
 .account-type-prominent {
     margin-top: 0;
     margin-bottom: var(--space-6);
-    padding: var(--space-5);
-    background: var(--gray-50);
-    border-radius: var(--radius-xl);
-    border: 2px solid var(--gray-200);
 }
 
 .account-type-prominent p {
@@ -410,6 +406,13 @@
     display: flex;
     gap: var(--space-3);
     justify-content: center;
+}
+
+/* Full width buttons for prominent version */
+.account-type-prominent .toggle-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
 }
 
 .toggle-btn {
@@ -432,7 +435,7 @@
     font-size: var(--text-base);
     font-weight: var(--font-semibold);
     border: 2px solid var(--gray-200);
-    min-width: 140px;
+    justify-content: center;
 }
 
 .toggle-btn i[data-lucide] {
