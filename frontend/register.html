@@ -62,7 +62,7 @@
                         <input type="radio" name="account-type" value="customer" checked>
                         <div class="type-content">
                             <div class="type-icon">
-                                <i data-lucide="user"></i>
+                                <i data-lucide="shopping-bag"></i>
                             </div>
                             <div class="type-info">
                                 <strong>I want to shop</strong>
@@ -79,6 +79,18 @@
                             <div class="type-info">
                                 <strong>I want to sell</strong>
                                 <span>List and sell your creations</span>
+                            </div>
+                        </div>
+                    </label>
+                    <label class="type-option">
+                        <input type="radio" name="account-type" value="donor">
+                        <div class="type-content">
+                            <div class="type-icon">
+                                <i data-lucide="heart"></i>
+                            </div>
+                            <div class="type-info">
+                                <strong>I just want to donate</strong>
+                                <span>Support our mission directly</span>
                             </div>
                         </div>
                     </label>
@@ -170,6 +182,38 @@
 
     <script>
         lucide.createIcons();
+
+        // Handle account type changes
+        document.querySelectorAll('input[name="account-type"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const selectedType = this.value;
+                const nameFields = document.querySelector('.form-row-2col');
+                const firstNameInput = document.getElementById('first-name');
+                const lastNameInput = document.getElementById('last-name');
+                
+                // For customer: hide name fields, make them not required
+                if (selectedType === 'customer') {
+                    nameFields.style.display = 'none';
+                    firstNameInput.required = false;
+                    lastNameInput.required = false;
+                } else {
+                    // For artist and donor: show name fields, make them required
+                    nameFields.style.display = 'grid';
+                    firstNameInput.required = true;
+                    lastNameInput.required = true;
+                }
+            });
+        });
+
+        // Hide name fields by default for customers
+        document.addEventListener('DOMContentLoaded', () => {
+            const nameFields = document.querySelector('.form-row-2col');
+            const firstNameInput = document.getElementById('first-name');
+            const lastNameInput = document.getElementById('last-name');
+            nameFields.style.display = 'none';
+            firstNameInput.required = false;
+            lastNameInput.required = false;
+        });
 
         // Toggle password visibility
         document.querySelectorAll('.toggle-password').forEach(btn => {
