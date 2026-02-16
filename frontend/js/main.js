@@ -137,7 +137,15 @@ async function loadFeaturedProducts() {
             throw new Error('Failed to fetch products');
         }
         
-        const products = await response.json();
+        const data = await response.json();
+        
+        // Handle both array response and object with products array
+        const products = Array.isArray(data) ? data : (data.products || []);
+        
+        if (!Array.isArray(products)) {
+            console.error('Invalid products data:', data);
+            throw new Error('Invalid response format');
+        }
         
         if (products.length === 0) {
             container.innerHTML = `
