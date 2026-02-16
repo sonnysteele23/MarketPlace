@@ -324,7 +324,12 @@ async function deleteProduct(id) {
         allProducts = allProducts.filter(p => p.id !== id);
         
         applyFiltersAndDisplay();
-        showNotification('Product deleted', 'success');
+        showNotification('Product deleted successfully!', 'success');
+        
+        // Reload products after a short delay to ensure backend is updated
+        setTimeout(() => {
+            loadProducts();
+        }, 500);
         
     } catch (error) {
         console.error('Error deleting product:', error);
