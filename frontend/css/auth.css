@@ -389,6 +389,23 @@
     margin-bottom: var(--space-3);
 }
 
+/* Prominent version - larger and more visible */
+.account-type-prominent {
+    margin-top: 0;
+    margin-bottom: var(--space-6);
+    padding: var(--space-5);
+    background: var(--gray-50);
+    border-radius: var(--radius-xl);
+    border: 2px solid var(--gray-200);
+}
+
+.account-type-prominent p {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    color: var(--gray-700);
+    margin-bottom: var(--space-4);
+}
+
 .toggle-buttons {
     display: flex;
     gap: var(--space-3);
@@ -409,9 +426,23 @@
     transition: all var(--transition-base);
 }
 
+/* Prominent toggle buttons - larger */
+.account-type-prominent .toggle-btn {
+    padding: var(--space-4) var(--space-6);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    border: 2px solid var(--gray-200);
+    min-width: 140px;
+}
+
 .toggle-btn i[data-lucide] {
     width: 16px;
     height: 16px;
+}
+
+.account-type-prominent .toggle-btn i[data-lucide] {
+    width: 20px;
+    height: 20px;
 }
 
 .toggle-btn:hover {
@@ -423,6 +454,13 @@
     background: var(--primary-50);
     border-color: var(--primary-500);
     color: var(--primary-700);
+}
+
+.account-type-prominent .toggle-btn.active {
+    background: var(--gradient-primary);
+    border-color: var(--primary-600);
+    color: var(--white);
+    box-shadow: var(--shadow-purple);
 }
 
 /* ============================================
