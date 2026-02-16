@@ -1,0 +1,25 @@
+# robots.txt for Amy's Haven
+# https://amyshaven.com/robots.txt
+
+User-agent: *
+Allow: /
+
+# Disallow admin and auth pages
+Disallow: /artist-cms/
+Disallow: /frontend/login.html
+Disallow: /frontend/register.html
+Disallow: /frontend/forgot-password.html
+
+# Allow specific directories
+Allow: /frontend/products.html
+Allow: /frontend/about.html
+Allow: /frontend/artists.html
+Allow: /frontend/images/
+Allow: /frontend/css/
+Allow: /frontend/js/
+
+# Crawl-delay (be nice to servers)
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://amyshaven.com/sitemap.xml

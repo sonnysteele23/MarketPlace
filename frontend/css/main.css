@@ -197,6 +197,11 @@
   white-space: nowrap;
 }
 
+.nav-auth .btn-primary {
+  padding-left: var(--space-6);
+  padding-right: var(--space-6);
+}
+
 .nav-auth .btn i[data-lucide] {
   width: 16px;
   height: 16px;
