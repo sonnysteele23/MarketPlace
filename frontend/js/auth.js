@@ -350,11 +350,21 @@ function initRegisterForm() {
             const name = `${firstName} ${lastName}`.trim();
 
             if (userType === 'artist') {
+                // Get all artist-specific fields
+                const businessName = document.getElementById('business-name')?.value.trim() || name;
+                const bio = document.getElementById('bio')?.value.trim() || '';
+                const location = document.getElementById('location')?.value.trim() || '';
+                const phone = document.getElementById('phone')?.value.trim() || '';
+                const website = document.getElementById('website')?.value.trim() || '';
+                
                 result = await registerArtist({
                     email,
                     password,
-                    business_name: name, // Use name as business name initially
-                    bio: ''
+                    business_name: businessName,
+                    bio,
+                    location,
+                    phone,
+                    website_url: website
                 });
                 Auth.saveAuth(result.token, result.artist, 'artist');
             } else {

@@ -100,23 +100,67 @@
 
                 <!-- Registration Form -->
                 <form class="auth-form" id="register-form">
-                    <div class="form-row-2col">
+                    <!-- Name Fields (hidden for customers) -->
+                    <div class="form-row-2col" id="name-fields">
                         <div class="form-group">
                             <label for="first-name">First Name</label>
                             <div class="input-with-icon">
                                 <i data-lucide="user"></i>
-                                <input type="text" id="first-name" name="first-name" class="form-input" placeholder="John" required>
+                                <input type="text" id="first-name" name="first-name" class="form-input" placeholder="John">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="last-name">Last Name</label>
                             <div class="input-with-icon">
                                 <i data-lucide="user"></i>
-                                <input type="text" id="last-name" name="last-name" class="form-input" placeholder="Doe" required>
+                                <input type="text" id="last-name" name="last-name" class="form-input" placeholder="Doe">
                             </div>
                         </div>
                     </div>
 
+                    <!-- Business Name (artist only) -->
+                    <div class="form-group" id="business-name-field">
+                        <label for="business-name">Business Name</label>
+                        <div class="input-with-icon">
+                            <i data-lucide="store"></i>
+                            <input type="text" id="business-name" name="business-name" class="form-input" placeholder="Your Shop Name">
+                        </div>
+                    </div>
+
+                    <!-- Bio (artist only) -->
+                    <div class="form-group" id="bio-field">
+                        <label for="bio">Bio</label>
+                        <textarea id="bio" name="bio" class="form-input" rows="3" placeholder="Tell us about your creative work..." style="min-height: 80px; resize: vertical;"></textarea>
+                    </div>
+
+                    <!-- Location (artist and donor) -->
+                    <div class="form-group" id="location-field">
+                        <label for="location">Location</label>
+                        <div class="input-with-icon">
+                            <i data-lucide="map-pin"></i>
+                            <input type="text" id="location" name="location" class="form-input" placeholder="Seattle, WA">
+                        </div>
+                    </div>
+
+                    <!-- Phone (artist and donor) -->
+                    <div class="form-group" id="phone-field">
+                        <label for="phone">Phone Number</label>
+                        <div class="input-with-icon">
+                            <i data-lucide="phone"></i>
+                            <input type="tel" id="phone" name="phone" class="form-input" placeholder="(555) 123-4567">
+                        </div>
+                    </div>
+
+                    <!-- Website (artist only) -->
+                    <div class="form-group" id="website-field">
+                        <label for="website">Website (Optional)</label>
+                        <div class="input-with-icon">
+                            <i data-lucide="globe"></i>
+                            <input type="url" id="website" name="website" class="form-input" placeholder="https://yourwebsite.com">
+                        </div>
+                    </div>
+
+                    <!-- Email (all types) -->
                     <div class="form-group">
                         <label for="email">Email Address</label>
                         <div class="input-with-icon">
@@ -125,6 +169,7 @@
                         </div>
                     </div>
 
+                    <!-- Password (all types) -->
                     <div class="form-group">
                         <label for="password">Password</label>
                         <div class="input-with-icon">
@@ -142,6 +187,7 @@
                         </div>
                     </div>
 
+                    <!-- Confirm Password (all types) -->
                     <div class="form-group">
                         <label for="confirm-password">Confirm Password</label>
                         <div class="input-with-icon">
@@ -153,6 +199,7 @@
                         </div>
                     </div>
 
+                    <!-- Terms (all types) -->
                     <div class="form-group">
                         <label class="checkbox-label">
                             <input type="checkbox" id="terms" name="terms" required>
@@ -161,6 +208,7 @@
                         </label>
                     </div>
 
+                    <!-- Newsletter (all types) -->
                     <div class="form-group">
                         <label class="checkbox-label">
                             <input type="checkbox" id="newsletter" name="newsletter">
@@ -188,20 +236,66 @@
         // Function to update form fields based on account type
         function updateFormFields() {
             const selectedType = document.querySelector('input[name="account-type"]:checked').value;
-            const nameFields = document.querySelector('.form-row-2col');
+            
+            // Get all conditional field containers
+            const nameFields = document.getElementById('name-fields');
+            const businessNameField = document.getElementById('business-name-field');
+            const bioField = document.getElementById('bio-field');
+            const locationField = document.getElementById('location-field');
+            const phoneField = document.getElementById('phone-field');
+            const websiteField = document.getElementById('website-field');
+            
+            // Get inputs for setting required attribute
             const firstNameInput = document.getElementById('first-name');
             const lastNameInput = document.getElementById('last-name');
+            const businessNameInput = document.getElementById('business-name');
+            const locationInput = document.getElementById('location');
+            const phoneInput = document.getElementById('phone');
             
-            // For customer: hide name fields, make them not required
             if (selectedType === 'customer') {
+                // Customer: Only email + password
                 nameFields.style.display = 'none';
+                businessNameField.style.display = 'none';
+                bioField.style.display = 'none';
+                locationField.style.display = 'none';
+                phoneField.style.display = 'none';
+                websiteField.style.display = 'none';
+                
                 firstNameInput.required = false;
                 lastNameInput.required = false;
-            } else {
-                // For artist and donor: show name fields, make them required
+                businessNameInput.required = false;
+                locationInput.required = false;
+                phoneInput.required = false;
+                
+            } else if (selectedType === 'artist') {
+                // Artist: All fields
                 nameFields.style.display = 'grid';
+                businessNameField.style.display = 'block';
+                bioField.style.display = 'block';
+                locationField.style.display = 'block';
+                phoneField.style.display = 'block';
+                websiteField.style.display = 'block';
+                
                 firstNameInput.required = true;
                 lastNameInput.required = true;
+                businessNameInput.required = true;
+                locationInput.required = false; // Optional
+                phoneInput.required = false; // Optional
+                
+            } else if (selectedType === 'donor') {
+                // Donor: Name, location, phone + email + password
+                nameFields.style.display = 'grid';
+                businessNameField.style.display = 'none';
+                bioField.style.display = 'none';
+                locationField.style.display = 'block';
+                phoneField.style.display = 'block';
+                websiteField.style.display = 'none';
+                
+                firstNameInput.required = true;
+                lastNameInput.required = true;
+                businessNameInput.required = false;
+                locationInput.required = false; // Optional
+                phoneInput.required = false; // Optional
             }
         }
 

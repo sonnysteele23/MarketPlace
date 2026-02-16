@@ -351,7 +351,8 @@ router.delete('/:id', authenticateToken, async (req, res) => {
         
         if (error) throw error;
         
-        res.json({ message: 'Product archived successfully', product });
+        // Return 204 No Content for successful deletion
+        res.status(204).send();
     } catch (error) {
         console.error('Error deleting product:', error);
         res.status(500).json({ error: 'Error deleting product', message: error.message });
