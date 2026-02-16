@@ -308,6 +308,13 @@ async function deleteProduct(id) {
     const auth = checkAuth();
     if (!auth) return;
     
+    // Find the product card and add deleting state
+    const productCard = document.querySelector(`[data-id="${id}"]`);
+    if (productCard) {
+        productCard.style.opacity = '0.5';
+        productCard.style.pointerEvents = 'none';
+    }
+    
     try {
         const response = await fetch(`${API_BASE_URL}/products/${id}`, {
             method: 'DELETE',
@@ -316,24 +323,32 @@ async function deleteProduct(id) {
             }
         });
         
-        if (!response.ok) {
+        // Check for both 200 and 204 status codes (both mean success)
+        if (!response.ok && response.status !== 204) {
             throw new Error('Failed to delete product');
         }
         
-        // Remove from local state
+        console.log('Product deleted successfully:', id);
+        
+        // Remove from local state immediately
         allProducts = allProducts.filter(p => p.id !== id);
+        filteredProducts = filteredProducts.filter(p => p.id !== id);
         
-        applyFiltersAndDisplay();
+        // Update display immediately
+        displayProducts();
+        
         showNotification('Product deleted successfully!', 'success');
-        
-        // Reload products after a short delay to ensure backend is updated
-        setTimeout(() => {
-            loadProducts();
-        }, 500);
         
     } catch (error) {
         console.error('Error deleting product:', error);
-        showNotification('Failed to delete product', 'error');
+        
+        // Restore product card on error
+        if (productCard) {
+            productCard.style.opacity = '1';
+            productCard.style.pointerEvents = 'auto';
+        }
+        
+        showNotification('Failed to delete product: ' + error.message, 'error');
     }
 }
 
