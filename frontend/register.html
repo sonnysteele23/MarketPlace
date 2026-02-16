@@ -58,31 +58,33 @@
 
                 <!-- Account Type Selection -->
                 <div class="account-type-selection">
-                    <label class="type-option">
-                        <input type="radio" name="account-type" value="customer" checked>
-                        <div class="type-content">
-                            <div class="type-icon">
-                                <i data-lucide="shopping-bag"></i>
+                    <div style="display: flex; gap: var(--space-3); margin-bottom: var(--space-3);">
+                        <label class="type-option" style="flex: 1;">
+                            <input type="radio" name="account-type" value="customer" checked>
+                            <div class="type-content">
+                                <div class="type-icon">
+                                    <i data-lucide="shopping-bag"></i>
+                                </div>
+                                <div class="type-info">
+                                    <strong>I want to shop</strong>
+                                    <span>Browse and buy handmade items</span>
+                                </div>
                             </div>
-                            <div class="type-info">
-                                <strong>I want to shop</strong>
-                                <span>Browse and buy handmade items</span>
+                        </label>
+                        <label class="type-option" style="flex: 1;">
+                            <input type="radio" name="account-type" value="artist">
+                            <div class="type-content">
+                                <div class="type-icon">
+                                    <i data-lucide="palette"></i>
+                                </div>
+                                <div class="type-info">
+                                    <strong>I want to sell</strong>
+                                    <span>List and sell your creations</span>
+                                </div>
                             </div>
-                        </div>
-                    </label>
-                    <label class="type-option">
-                        <input type="radio" name="account-type" value="artist">
-                        <div class="type-content">
-                            <div class="type-icon">
-                                <i data-lucide="palette"></i>
-                            </div>
-                            <div class="type-info">
-                                <strong>I want to sell</strong>
-                                <span>List and sell your creations</span>
-                            </div>
-                        </div>
-                    </label>
-                    <label class="type-option">
+                        </label>
+                    </div>
+                    <label class="type-option" style="width: 100%;">
                         <input type="radio" name="account-type" value="donor">
                         <div class="type-content">
                             <div class="type-icon">
