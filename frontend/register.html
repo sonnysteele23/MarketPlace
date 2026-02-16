@@ -183,36 +183,34 @@
     <script>
         lucide.createIcons();
 
-        // Handle account type changes
-        document.querySelectorAll('input[name="account-type"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const selectedType = this.value;
-                const nameFields = document.querySelector('.form-row-2col');
-                const firstNameInput = document.getElementById('first-name');
-                const lastNameInput = document.getElementById('last-name');
-                
-                // For customer: hide name fields, make them not required
-                if (selectedType === 'customer') {
-                    nameFields.style.display = 'none';
-                    firstNameInput.required = false;
-                    lastNameInput.required = false;
-                } else {
-                    // For artist and donor: show name fields, make them required
-                    nameFields.style.display = 'grid';
-                    firstNameInput.required = true;
-                    lastNameInput.required = true;
-                }
-            });
-        });
-
-        // Hide name fields by default for customers
-        document.addEventListener('DOMContentLoaded', () => {
+        // Function to update form fields based on account type
+        function updateFormFields() {
+            const selectedType = document.querySelector('input[name="account-type"]:checked').value;
             const nameFields = document.querySelector('.form-row-2col');
             const firstNameInput = document.getElementById('first-name');
             const lastNameInput = document.getElementById('last-name');
-            nameFields.style.display = 'none';
-            firstNameInput.required = false;
-            lastNameInput.required = false;
+            
+            // For customer: hide name fields, make them not required
+            if (selectedType === 'customer') {
+                nameFields.style.display = 'none';
+                firstNameInput.required = false;
+                lastNameInput.required = false;
+            } else {
+                // For artist and donor: show name fields, make them required
+                nameFields.style.display = 'grid';
+                firstNameInput.required = true;
+                lastNameInput.required = true;
+            }
+        }
+
+        // Handle account type changes
+        document.querySelectorAll('input[name="account-type"]').forEach(radio => {
+            radio.addEventListener('change', updateFormFields);
+        });
+
+        // Set initial state on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateFormFields();
         });
 
         // Toggle password visibility
