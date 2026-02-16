@@ -126,56 +126,35 @@ async function loadFeaturedProducts() {
     if (!container) return;
     
     try {
-        // Simulated API call - replace with actual API endpoint
-        const response = await fetch(`${AppState.apiUrl}/products/featured`);
+        // Fetch real products from API
+        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000/api'
+            : 'https://marketplace-production-57b7.up.railway.app/api';
         
-        // For demo, using sample data
-        const sampleProducts = [
-            {
-                id: 1,
-                name: 'Handcrafted Ceramic Mug',
-                price: 32.00,
-                category: 'Pottery',
-                artist: 'Sarah Thompson',
-                image: '/images/products/ceramic-mug.jpg',
-                featured: true
-            },
-            {
-                id: 2,
-                name: 'Woven Wall Hanging',
-                price: 125.00,
-                category: 'Textiles',
-                artist: 'Maria Garcia',
-                image: '/images/products/wall-hanging.jpg',
-                featured: true
-            },
-            {
-                id: 3,
-                name: 'Silver Ring with Turquoise',
-                price: 68.00,
-                category: 'Jewelry',
-                artist: 'David Chen',
-                image: '/images/products/silver-ring.jpg',
-                featured: true
-            },
-            {
-                id: 4,
-                name: 'Reclaimed Wood Shelf',
-                price: 145.00,
-                category: 'Woodworking',
-                artist: 'James Wilson',
-                image: '/images/products/wood-shelf.jpg',
-                featured: true
-            }
-        ];
+        const response = await fetch(`${API_BASE_URL}/products?limit=4`);
         
-        container.innerHTML = sampleProducts.map(product => createProductCard(product)).join('');
+        if (!response.ok) {
+            throw new Error('Failed to fetch products');
+        }
+        
+        const products = await response.json();
+        
+        if (products.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #6B7280;">
+                    <p>No products available yet. Check back soon!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = products.map(product => createProductCard(product)).join('');
         
         // Add event listeners to "Add to Cart" buttons
         container.querySelectorAll('.add-to-cart-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const productId = parseInt(e.target.dataset.productId);
-                const product = sampleProducts.find(p => p.id === productId);
+                const productId = e.target.dataset.productId;
+                const product = products.find(p => p.id === productId);
                 if (product) {
                     Cart.addItem(product);
                 }
@@ -184,30 +163,38 @@ async function loadFeaturedProducts() {
         
     } catch (error) {
         console.error('Error loading featured products:', error);
-        container.innerHTML = '<p>Error loading products. Please try again later.</p>';
+        container.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #6B7280;">
+                <p>Unable to load products. Please try again later.</p>
+            </div>
+        `;
     }
 }
 
 function createProductCard(product) {
+    const imageUrl = product.thumbnail_url || product.image_url || 'https://via.placeholder.com/300x300?text=No+Image';
+    const categoryName = product.category?.name || product.category || 'Uncategorized';
+    const artistName = product.artist?.business_name || product.artist_name || 'Unknown Artist';
+    
     return `
         <article class="product-card">
             <a href="frontend/product-detail.html?id=${product.id}">
                 <img 
-                    src="${product.image}" 
+                    src="${imageUrl}" 
                     alt="${product.name}" 
                     class="product-image"
                     loading="lazy"
-                    onerror="this.src='/images/placeholder.jpg'"
+                    onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'"
                 >
             </a>
             <div class="product-info">
-                <span class="product-category">${product.category}</span>
+                <span class="product-category">${categoryName}</span>
                 <h3 class="product-title">
                     <a href="frontend/product-detail.html?id=${product.id}">${product.name}</a>
                 </h3>
-                <p class="product-artist">by ${product.artist}</p>
+                <p class="product-artist">by ${artistName}</p>
                 <div class="product-footer">
-                    <span class="product-price">$${product.price.toFixed(2)}</span>
+                    <span class="product-price">${parseFloat(product.price).toFixed(2)}</span>
                     <button class="add-to-cart-btn" data-product-id="${product.id}">
                         Add to Cart
                     </button>

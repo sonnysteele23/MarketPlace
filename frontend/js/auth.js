@@ -419,7 +419,8 @@ function initForgotPasswordForm() {
 // Handle Logout
 function logout() {
     Auth.clearAuth();
-    window.location.href = 'login.html';
+    // Redirect to homepage after logout
+    window.location.href = '/index.html';
 }
 
 // ===================================
