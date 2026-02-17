@@ -791,7 +791,7 @@
 
 .newsletter-section h2 {
   font-family: var(--font-display);
-  color: var(--white);
+  color: var(--white) !important;
   margin-bottom: var(--space-2);
 }
 
