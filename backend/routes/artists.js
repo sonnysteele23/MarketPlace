@@ -196,7 +196,7 @@ router.get('/me/products', authenticateToken, async (req, res) => {
     try {
         console.log('Fetching products for artist:', req.artist.id);
         
-        const { status = 'all' } = req.query;
+        const { status = 'active' } = req.query;
         
         let query = supabaseAdmin
             .from('products')
@@ -226,16 +226,17 @@ router.get('/me/products', authenticateToken, async (req, res) => {
 // GET /api/artists/me/stats - Get artist statistics
 router.get('/me/stats', authenticateToken, async (req, res) => {
     try {
-        // Get product counts
-        const { data: productStats, error: productError } = await supabaseAdmin
+        // Get product counts - only count active products
+        const { data: activeProductStats, error: activeError } = await supabaseAdmin
             .from('products')
-            .select('is_active', { count: 'exact' })
-            .eq('artist_id', req.artist.id);
+            .select('id', { count: 'exact' })
+            .eq('artist_id', req.artist.id)
+            .eq('is_active', true);
         
-        if (productError) throw productError;
+        if (activeError) throw activeError;
         
-        const activeProducts = productStats?.filter(p => p.is_active).length || 0;
-        const totalProducts = productStats?.length || 0;
+        const totalProducts = activeProductStats?.length || 0;
+        const activeProducts = totalProducts; // Same as total since we're only querying active
         
         // Get order counts and revenue
         const { data: orderItems, error: orderError } = await supabaseAdmin

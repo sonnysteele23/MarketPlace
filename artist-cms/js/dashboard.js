@@ -44,9 +44,12 @@ async function loadStats() {
     if (!auth) return;
     
     try {
-        const response = await fetch(`${API_BASE_URL}/artists/me/stats`, {
+        const timestamp = new Date().getTime();
+        const response = await fetch(`${API_BASE_URL}/artists/me/stats?_=${timestamp}`, {
             headers: {
-                'Authorization': `Bearer ${auth.token}`
+                'Authorization': `Bearer ${auth.token}`,
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache'
             }
         });
         
@@ -83,9 +86,12 @@ async function loadRecentProducts() {
     if (!auth) return;
     
     try {
-        const response = await fetch(`${API_BASE_URL}/artists/me/products?limit=5`, {
+        const timestamp = new Date().getTime();
+        const response = await fetch(`${API_BASE_URL}/artists/me/products?limit=5&_=${timestamp}`, {
             headers: {
-                'Authorization': `Bearer ${auth.token}`
+                'Authorization': `Bearer ${auth.token}`,
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache'
             }
         });
         
