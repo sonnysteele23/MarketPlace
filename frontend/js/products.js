@@ -499,6 +499,7 @@
         '.error-message { text-align: center; padding: 60px 20px; color: #6B7280; grid-column: 1 / -1; }' +
         '.no-products { text-align: center; padding: 60px 20px; color: #6B7280; grid-column: 1 / -1; }' +
         '.no-products h3 { font-size: 1.25rem; color: #374151; margin-bottom: 8px; }' +
+        '.filter-loading { text-align: center; padding: 20px; color: #9CA3AF; font-size: 0.875rem; }' +
         '.filter-option { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 6px 0; }' +
         '.filter-label-text { flex: 1; }' +
         '.filter-count { color: #9CA3AF; font-size: 0.875rem; }' +
