@@ -1,0 +1,14 @@
+{
+  "name": "amyshaven-scripts",
+  "version": "1.0.0",
+  "description": "Database management and utility scripts for Amy's Haven",
+  "scripts": {
+    "check-db": "node check-database.js",
+    "clean-db": "node clean-database.js",
+    "add-analytics": "node add-analytics.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "dotenv": "^16.3.1"
+  }
+}
