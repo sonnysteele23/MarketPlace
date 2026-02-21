@@ -202,20 +202,21 @@
 
     // Character counters
     function initCharCounters() {
-        const nameInput = document.getElementById('name');
-        const descInput = document.getElementById('description');
+        const nameInput = document.getElementById('product-name');
+        const nameCount = document.getElementById('name-count');
         
-        if (nameInput) {
+        if (nameInput && nameCount) {
             nameInput.addEventListener('input', () => {
-                const countEl = document.getElementById('name-count');
-                if (countEl) countEl.textContent = nameInput.value.length + '/100';
+                nameCount.textContent = nameInput.value.length;
             });
         }
         
-        if (descInput) {
+        const descInput = document.getElementById('description');
+        const descCount = document.getElementById('desc-count');
+        
+        if (descInput && descCount) {
             descInput.addEventListener('input', () => {
-                const countEl = document.getElementById('desc-count');
-                if (countEl) countEl.textContent = descInput.value.length + '/500';
+                descCount.textContent = descInput.value.length;
             });
         }
     }
@@ -223,7 +224,11 @@
     // Tags
     function initTags() {
         const tagsInput = document.getElementById('tags-input');
-        if (!tagsInput) return;
+        const tagsContainer = document.getElementById('tags-container');
+        if (!tagsInput || !tagsContainer) {
+            console.log('[Marketplace] Tags elements not found, skipping');
+            return;
+        }
         
         tagsInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
