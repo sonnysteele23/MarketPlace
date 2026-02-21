@@ -1,33 +1,23 @@
 /**
- * Add Product Page - SUPABASE DIRECT VERSION
- * Works with GitHub Pages static hosting
- * Supports up to 5 images per product
+ * Add Product Page - BULLETPROOF VERSION
+ * Protected from extension conflicts
  */
+
 (function() {
     'use strict';
     
-    // Supabase Configuration
-    const SUPABASE_URL = 'https://hgzshxoshmsvwrrdgriv.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnenNoeG9zaG1zdndycmRncml2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1NDc3ODksImV4cCI6MjA4NTEyMzc4OX0.qO7YFmfmmZSAV4KOZ8qp17HHjSwjlvv2j-vJ1m5iH_w';
+    // API Configuration
+    const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:3000/api'
+        : 'https://marketplace-production-57b7.up.railway.app/api';
 
+    // State
     let uploadedImages = [];
     const MAX_IMAGES = 5;
     const MAX_FILE_SIZE = 5 * 1024 * 1024;
     let productTags = [];
-    let supabase;
 
-    // Initialize Supabase client
-    function initSupabase() {
-        if (typeof window.supabase === 'undefined') {
-            console.error('[Marketplace] Supabase library not loaded!');
-            showNotification('System error: Database connection unavailable', 'error');
-            return false;
-        }
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('[Marketplace] Supabase client initialized');
-        return true;
-    }
-
+    // Authentication
     function checkAuth() {
         const token = localStorage.getItem('token');
         const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -46,44 +36,57 @@
         return { token, user };
     }
 
+    // Image Upload
     function initImageUpload() {
-        const imageInput = document.getElementById('image-input');
         const uploadArea = document.getElementById('upload-area');
+        const imageInput = document.getElementById('image-input');
         
-        if (!imageInput) {
-            console.error('[Marketplace] Image input not found');
+        if (!uploadArea || !imageInput) {
+            console.error('[Marketplace] Upload elements not found');
             return;
         }
         
         console.log('[Marketplace] Initializing image upload...');
         
-        imageInput.addEventListener('change', function(e) {
-            console.log('[Marketplace] Files selected:', e.target.files ? e.target.files.length : 0);
+        // Single click handler
+        uploadArea.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('[Marketplace] Upload area clicked');
+            imageInput.click();
+        };
+        
+        // File selection handler
+        imageInput.onchange = function(e) {
+            console.log('[Marketplace] Files selected:', e.target.files.length);
             if (e.target.files && e.target.files.length > 0) {
                 handleFiles(e.target.files);
                 e.target.value = '';
             }
-        });
+        };
         
         // Drag and drop
-        if (uploadArea) {
-            uploadArea.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                uploadArea.classList.add('drag-over');
-            });
+        uploadArea.ondragover = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadArea.classList.add('drag-over');
+        };
+        
+        uploadArea.ondragleave = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadArea.classList.remove('drag-over');
+        };
+        
+        uploadArea.ondrop = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadArea.classList.remove('drag-over');
             
-            uploadArea.addEventListener('dragleave', function() {
-                uploadArea.classList.remove('drag-over');
-            });
-            
-            uploadArea.addEventListener('drop', function(e) {
-                e.preventDefault();
-                uploadArea.classList.remove('drag-over');
-                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-                    handleFiles(e.dataTransfer.files);
-                }
-            });
-        }
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                handleFiles(e.dataTransfer.files);
+            }
+        };
         
         console.log('[Marketplace] Image upload initialized');
     }
@@ -94,17 +97,17 @@
         
         for (const file of filesArray) {
             if (uploadedImages.length >= MAX_IMAGES) {
-                showNotification('Maximum ' + MAX_IMAGES + ' images allowed', 'error');
+                showNotification(`Maximum ${MAX_IMAGES} images allowed`, 'error');
                 break;
             }
             
             if (file.size > MAX_FILE_SIZE) {
-                showNotification(file.name + ' exceeds 5MB limit', 'error');
+                showNotification(`${file.name} exceeds 5MB limit`, 'error');
                 continue;
             }
             
             if (!file.type.startsWith('image/')) {
-                showNotification(file.name + ' is not an image', 'error');
+                showNotification(`${file.name} is not an image`, 'error');
                 continue;
             }
             
@@ -112,11 +115,12 @@
             reader.onload = function(e) {
                 const imageData = {
                     file: file,
-                    preview: e.target.result,
-                    name: file.name
+                    dataUrl: e.target.result,
+                    isMain: uploadedImages.length === 0
                 };
                 uploadedImages.push(imageData);
                 renderImagePreviews();
+                console.log('[Marketplace] Image added, total:', uploadedImages.length);
             };
             reader.readAsDataURL(file);
         }
@@ -126,114 +130,88 @@
         const previewsContainer = document.getElementById('image-previews');
         if (!previewsContainer) return;
         
-        previewsContainer.innerHTML = '';
-        
-        uploadedImages.forEach((img, index) => {
-            const preview = document.createElement('div');
-            preview.className = 'image-preview';
-            preview.innerHTML = 
-                '<img src="' + img.preview + '" alt="Preview">' +
-                (index === 0 ? '<span class="main-badge">Main</span>' : '') +
-                '<button type="button" class="remove-btn" data-index="' + index + '"><i data-lucide="x"></i></button>';
-            previewsContainer.appendChild(preview);
-        });
+        previewsContainer.innerHTML = uploadedImages.map((img, index) => `
+            <div class="image-preview" data-index="${index}">
+                <img src="${img.dataUrl}" alt="Preview ${index + 1}">
+                <button type="button" class="remove-btn" onclick="window.marketplaceRemoveImage(${index})">
+                    <i data-lucide="x"></i>
+                </button>
+                ${img.isMain ? '<span class="main-badge">Main</span>' : ''}
+            </div>
+        `).join('');
         
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
-        
-        // Add remove handlers
-        document.querySelectorAll('.remove-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const index = parseInt(this.getAttribute('data-index'));
-                uploadedImages.splice(index, 1);
-                renderImagePreviews();
-            });
-        });
     }
 
-    function loadCategories() {
-        const categorySelect = document.getElementById('category');
-        if (!categorySelect) return;
-        
-        const categories = [
-            'Jewelry & Accessories',
-            'Home Decor',
-            'Pottery & Ceramics',
-            'Textiles & Fiber Arts',
-            'Paintings & Wall Art',
-            'Woodworking',
-            'Glass Art',
-            'Soaps & Candles',
-            'Sculptures',
-            'Leather Goods',
-            'Paper Crafts',
-            'Toys & Games',
-            'Bath & Body',
-            'Bags & Purses',
-            'Other'
-        ];
-        
-        categories.forEach(cat => {
-            const option = document.createElement('option');
-            option.value = cat.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-            option.textContent = cat;
-            categorySelect.appendChild(option);
-        });
-    }
+    window.marketplaceRemoveImage = function(index) {
+        uploadedImages.splice(index, 1);
+        if (uploadedImages.length > 0 && !uploadedImages.some(img => img.isMain)) {
+            uploadedImages[0].isMain = true;
+        }
+        renderImagePreviews();
+    };
 
+    // Pricing
     function initPricing() {
         const priceInput = document.getElementById('price');
         if (!priceInput) return;
         
-        priceInput.addEventListener('input', updatePricing);
+        priceInput.addEventListener('input', function() {
+            const price = parseFloat(priceInput.value) || 0;
+            const fee = price * 0.10;
+            const customerPrice = price + fee;
+            const contribution = price * 0.05;
+            
+            const finalPriceEl = document.getElementById('final-price');
+            const artistEarningsEl = document.getElementById('artist-earnings');
+            const marketplaceFeeEl = document.getElementById('marketplace-fee');
+            const homelessContributionEl = document.getElementById('homeless-contribution');
+            
+            if (finalPriceEl) finalPriceEl.textContent = `$${customerPrice.toFixed(2)}`;
+            if (artistEarningsEl) artistEarningsEl.textContent = `$${price.toFixed(2)}`;
+            if (marketplaceFeeEl) marketplaceFeeEl.textContent = `$${fee.toFixed(2)}`;
+            if (homelessContributionEl) homelessContributionEl.textContent = `$${contribution.toFixed(2)}`;
+        });
+        
+        priceInput.dispatchEvent(new Event('input'));
     }
 
-    function updatePricing() {
-        const price = parseFloat(document.getElementById('price').value) || 0;
-        
-        const marketplaceFee = price * 0.10;
-        const homelessContribution = price * 0.05;
-        const artistEarnings = price - marketplaceFee - homelessContribution;
-        const finalPrice = price;
-        
-        document.getElementById('final-price').textContent = '$' + finalPrice.toFixed(2);
-        document.getElementById('artist-earnings').textContent = '$' + artistEarnings.toFixed(2);
-        document.getElementById('marketplace-fee').textContent = '$' + marketplaceFee.toFixed(2);
-        document.getElementById('homeless-contribution').textContent = '$' + homelessContribution.toFixed(2);
-    }
-
+    // Character counters
     function initCharCounters() {
         const nameInput = document.getElementById('name');
         const descInput = document.getElementById('description');
         
         if (nameInput) {
-            nameInput.addEventListener('input', function() {
-                const counter = document.getElementById('name-count');
-                if (counter) counter.textContent = this.value.length + '/100';
+            nameInput.addEventListener('input', () => {
+                const countEl = document.getElementById('name-count');
+                if (countEl) countEl.textContent = nameInput.value.length + '/100';
             });
         }
         
         if (descInput) {
-            descInput.addEventListener('input', function() {
-                const counter = document.getElementById('desc-count');
-                if (counter) counter.textContent = this.value.length + '/500';
+            descInput.addEventListener('input', () => {
+                const countEl = document.getElementById('desc-count');
+                if (countEl) countEl.textContent = descInput.value.length + '/500';
             });
         }
     }
 
+    // Tags
     function initTags() {
         const tagsInput = document.getElementById('tags-input');
         if (!tagsInput) return;
         
-        tagsInput.addEventListener('keydown', function(e) {
+        tagsInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                const tag = this.value.trim();
-                if (tag && !productTags.includes(tag)) {
+                const tag = tagsInput.value.trim().toLowerCase();
+                
+                if (tag && !productTags.includes(tag) && productTags.length < 10) {
                     productTags.push(tag);
                     renderTags();
-                    this.value = '';
+                    tagsInput.value = '';
                 }
             }
         });
@@ -245,13 +223,14 @@
         
         if (!container) return;
         
-        container.innerHTML = '';
-        productTags.forEach((tag, index) => {
-            const tagEl = document.createElement('span');
-            tagEl.className = 'tag';
-            tagEl.innerHTML = tag + '<span class="tag-remove" data-index="' + index + '"><i data-lucide="x"></i></span>';
-            container.appendChild(tagEl);
-        });
+        container.innerHTML = productTags.map((tag, index) => `
+            <span class="tag">
+                ${tag}
+                <span class="tag-remove" onclick="window.marketplaceRemoveTag(${index})">
+                    <i data-lucide="x"></i>
+                </span>
+            </span>
+        `).join('');
         
         if (hiddenInput) {
             hiddenInput.value = productTags.join(',');
@@ -260,127 +239,155 @@
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
-        
-        document.querySelectorAll('.tag-remove').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const index = parseInt(this.getAttribute('data-index'));
-                productTags.splice(index, 1);
-                renderTags();
-            });
-        });
     }
 
+    window.marketplaceRemoveTag = function(index) {
+        productTags.splice(index, 1);
+        renderTags();
+    };
+
+    // Shipping toggle
     function initShipping() {
         const freeShippingCheckbox = document.getElementById('free-shipping');
         const shippingCostGroup = document.getElementById('shipping-cost-group');
         
-        if (freeShippingCheckbox && shippingCostGroup) {
-            freeShippingCheckbox.addEventListener('change', function() {
-                shippingCostGroup.style.display = this.checked ? 'none' : 'block';
-            });
+        if (!freeShippingCheckbox || !shippingCostGroup) return;
+        
+        freeShippingCheckbox.addEventListener('change', () => {
+            shippingCostGroup.style.display = freeShippingCheckbox.checked ? 'none' : 'block';
+        });
+    }
+
+    // Load categories
+    async function loadCategories() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/categories`);
+            if (!response.ok) throw new Error('Failed to load categories');
+            
+            const categories = await response.json();
+            const categorySelect = document.getElementById('category');
+            
+            if (categorySelect && categories.length > 0) {
+                categorySelect.innerHTML = '<option value="">Select a category...</option>';
+                categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat.id;
+                    option.textContent = cat.name;
+                    categorySelect.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('[Marketplace] Error loading categories:', error);
         }
     }
 
+    // Upload to Supabase via Railway backend
+    async function uploadImagesToSupabase(auth) {
+        console.log('[Marketplace] Uploading', uploadedImages.length, 'images to Supabase');
+        
+        try {
+            const formData = new FormData();
+            uploadedImages.forEach((img) => {
+                formData.append('images', img.file);
+            });
+            
+            const response = await fetch(`${API_BASE_URL}/upload/product-images`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${auth.token}`
+                },
+                body: formData
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to upload images');
+            }
+            
+            const result = await response.json();
+            console.log('[Marketplace] Upload successful:', result);
+            return result.images;
+        } catch (error) {
+            console.error('[Marketplace] Upload error:', error);
+            throw error;
+        }
+    }
+
+    // Form submission
     async function handleFormSubmit(e) {
         e.preventDefault();
-        
-        if (!supabase) {
-            showNotification('Database not initialized', 'error');
-            return;
-        }
+        console.log('[Marketplace] Form submitted');
         
         const auth = checkAuth();
         if (!auth) return;
         
         const submitBtn = document.getElementById('submit-btn');
-        const btnText = submitBtn ? submitBtn.querySelector('.btn-text') : null;
+        const btnText = submitBtn?.querySelector('.btn-text');
         
         if (submitBtn) submitBtn.disabled = true;
         if (btnText) btnText.textContent = 'Publishing...';
         
         try {
-            // Validate required fields
-            const name = document.getElementById('name').value.trim();
-            const description = document.getElementById('description').value.trim();
-            const category = document.getElementById('category').value;
-            const price = parseFloat(document.getElementById('price').value);
-            const quantity = parseInt(document.getElementById('quantity').value);
-            
-            if (!name || !description || !category || !price || !quantity) {
-                throw new Error('Please fill in all required fields');
-            }
-            
             if (uploadedImages.length === 0) {
-                throw new Error('Please upload at least one product image');
+                showNotification('Please upload at least one product image', 'error');
+                if (submitBtn) submitBtn.disabled = false;
+                if (btnText) btnText.textContent = 'Publish Product';
+                return;
             }
             
-            console.log('[Marketplace] Uploading images to Supabase Storage...');
-            const imageUrls = [];
+            if (btnText) btnText.textContent = 'Uploading images...';
+            const uploadedImageUrls = await uploadImagesToSupabase(auth);
             
-            // Upload images to Supabase Storage
-            for (let i = 0; i < uploadedImages.length; i++) {
-                const image = uploadedImages[i];
-                const timestamp = Date.now();
-                const fileName = `products/${auth.user.id}/${timestamp}_${i}_${image.name}`;
-                
-                const { data: uploadData, error: uploadError } = await supabase.storage
-                    .from('product-images')
-                    .upload(fileName, image.file);
-                
-                if (uploadError) {
-                    console.error('[Marketplace] Image upload error:', uploadError);
-                    throw new Error('Failed to upload image: ' + image.name);
-                }
-                
-                // Get public URL
-                const { data: urlData } = supabase.storage
-                    .from('product-images')
-                    .getPublicUrl(fileName);
-                
-                imageUrls.push(urlData.publicUrl);
-                console.log('[Marketplace] Image uploaded:', fileName);
+            if (!uploadedImageUrls || uploadedImageUrls.length === 0) {
+                throw new Error('Failed to upload images');
             }
             
-            // Prepare product data
+            if (btnText) btnText.textContent = 'Creating product...';
+            
+            const form = document.getElementById('add-product-form');
+            const formData = new FormData(form);
+            
             const productData = {
-                name: name,
-                description: description,
-                category: category,
-                price: price,
-                quantity: quantity,
-                artist_id: auth.user.id,
-                images: imageUrls,
-                main_image: imageUrls[0],
-                materials: document.getElementById('materials').value || null,
-                dimensions: document.getElementById('dimensions').value || null,
-                weight: parseFloat(document.getElementById('weight').value) || null,
-                care_instructions: document.getElementById('care-instructions').value || null,
-                shipping_cost: document.getElementById('free-shipping').checked ? 0 : parseFloat(document.getElementById('shipping-cost').value),
-                processing_time: document.getElementById('processing-time').value,
-                tags: productTags.length > 0 ? productTags : null,
-                sku: document.getElementById('sku').value || null,
-                status: 'active',
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
+                name: formData.get('name'),
+                description: formData.get('description'),
+                category_id: formData.get('category'),
+                price: parseFloat(formData.get('price')),
+                stock_quantity: parseInt(formData.get('quantity')) || 1,
+                materials: formData.get('materials') || null,
+                dimensions: formData.get('dimensions') || null,
+                weight: formData.get('weight') || null,
+                care_instructions: formData.get('care_instructions') || null,
+                shipping_cost: formData.get('free-shipping') === 'on' ? 0 : parseFloat(formData.get('shipping_cost')) || 0,
+                processing_time: formData.get('processing_time') || '3-5',
+                tags: productTags.length > 0 ? productTags.join(',') : null,
+                sku: formData.get('sku') || null,
+                image_url: uploadedImageUrls[0].imageUrl,
+                thumbnail_url: uploadedImageUrls[0].thumbnailUrl,
+                images: uploadedImageUrls.map(img => img.imageUrl)
             };
             
-            console.log('[Marketplace] Creating product in database...');
+            console.log('[Marketplace] Creating product:', productData);
             
-            // Insert product into Supabase
-            const { data, error } = await supabase
-                .from('products')
-                .insert([productData])
-                .select();
+            const response = await fetch(`${API_BASE_URL}/products`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth.token}`
+                },
+                body: JSON.stringify(productData)
+            });
             
-            if (error) {
-                console.error('[Marketplace] Database error:', error);
-                throw new Error('Failed to save product: ' + error.message);
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Failed to create product');
             }
             
-            console.log('[Marketplace] Product created successfully:', data);
-            showNotification('Product published successfully with ' + imageUrls.length + ' images!', 'success');
+            const newProduct = await response.json();
+            console.log('[Marketplace] Product created:', newProduct);
             
-            setTimeout(function() {
+            showNotification('Product published successfully!', 'success');
+            
+            setTimeout(() => {
                 window.location.href = 'my-products.html';
             }, 1500);
             
@@ -393,32 +400,35 @@
         }
     }
 
-    function showNotification(message, type) {
-        type = type || 'info';
+    // Notifications
+    function showNotification(message, type = 'info') {
         const existing = document.querySelector('.marketplace-notification');
         if (existing) existing.remove();
         
         const notification = document.createElement('div');
-        notification.className = 'marketplace-notification notification-' + type;
+        notification.className = `marketplace-notification notification-${type}`;
+        notification.innerHTML = `
+            <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info'}"></i>
+            <span>${message}</span>
+        `;
         
-        var iconName = 'info';
-        if (type === 'success') iconName = 'check-circle';
-        if (type === 'error') iconName = 'alert-circle';
-        
-        notification.innerHTML = '<i data-lucide="' + iconName + '"></i><span>' + message + '</span>';
-        
-        var bgColor = '#EFF6FF';
-        var textColor = '#1E40AF';
-        if (type === 'success') {
-            bgColor = '#ECFDF5';
-            textColor = '#065F46';
-        }
-        if (type === 'error') {
-            bgColor = '#FEF2F2';
-            textColor = '#B91C1C';
-        }
-        
-        notification.style.cssText = 'position: fixed; top: 20px; right: 20px; padding: 16px 24px; border-radius: 12px; display: flex; align-items: center; gap: 12px; z-index: 99999; animation: slideIn 0.3s ease; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.15); background: ' + bgColor + '; color: ' + textColor + ';';
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 99999;
+            animation: slideIn 0.3s ease;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            ${type === 'success' ? 'background: #ECFDF5; color: #065F46;' : ''}
+            ${type === 'error' ? 'background: #FEF2F2; color: #B91C1C;' : ''}
+            ${type === 'info' ? 'background: #EFF6FF; color: #1E40AF;' : ''}
+        `;
         
         document.body.appendChild(notification);
         
@@ -426,20 +436,31 @@
             lucide.createIcons();
         }
         
-        setTimeout(function() {
+        setTimeout(() => {
             notification.style.animation = 'slideOut 0.3s ease';
-            setTimeout(function() { notification.remove(); }, 300);
+            setTimeout(() => notification.remove(), 300);
         }, 4000);
     }
 
-    var style = document.createElement('style');
-    style.textContent = '@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } } @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }';
+    // Animation styles
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    `;
     document.head.appendChild(style);
 
+    // Logout
     function initLogout() {
         const logoutBtn = document.getElementById('logout-btn');
         if (logoutBtn) {
-            logoutBtn.addEventListener('click', function() {
+            logoutBtn.addEventListener('click', () => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 localStorage.removeItem('userType');
@@ -448,13 +469,9 @@
         }
     }
 
+    // Initialize
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('[Marketplace] Initializing add-product page (Supabase version)...');
-        
-        if (!initSupabase()) {
-            showNotification('Failed to initialize database connection', 'error');
-            return;
-        }
+        console.log('[Marketplace] Initializing add-product page...');
         
         checkAuth();
         initImageUpload();
@@ -465,7 +482,7 @@
         initLogout();
         loadCategories();
         
-        var form = document.getElementById('add-product-form');
+        const form = document.getElementById('add-product-form');
         if (form) {
             form.addEventListener('submit', handleFormSubmit);
         }
