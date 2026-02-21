@@ -99,6 +99,42 @@
     object-fit: cover;
     display: block;
 }
+}
+
+/* Thumbnail Gallery */
+.thumbnail-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: var(--space-3);
+}
+
+.thumbnail {
+    position: relative;
+    background: var(--gray-100);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all var(--transition-base);
+}
+
+.thumbnail:hover {
+    border-color: var(--primary-300);
+    transform: translateY(-2px);
+}
+
+.thumbnail.active {
+    border-color: var(--primary-600);
+    box-shadow: 0 0 0 2px var(--primary-100);
+}
+
+.thumbnail img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block
+}
 
 .main-image .badge-featured {
     position: absolute;

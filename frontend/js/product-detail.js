@@ -71,6 +71,42 @@
         mainImage.src = product.image_url || product.thumbnail_url || 'https://via.placeholder.com/600x600?text=No+Image';
         mainImage.alt = product.name;
         
+        // Image gallery (show all uploaded images)
+        var images = product.images || [];
+        if (!Array.isArray(images) && product.image_url) {
+            images = [product.image_url];
+        } else if (Array.isArray(images) && images.length === 0 && product.image_url) {
+            images = [product.image_url];
+        }
+        
+        var thumbnailGallery = document.getElementById('thumbnail-gallery');
+        if (thumbnailGallery && images.length > 1) {
+            thumbnailGallery.innerHTML = images.map(function(imgUrl, index) {
+                return '<div class="thumbnail" onclick="switchMainImage(\'' + imgUrl + '\')">' +
+                    '<img src="' + imgUrl + '" alt="' + product.name + ' - Image ' + (index + 1) + '">' +
+                    '</div>';
+            }).join('');
+        } else if (thumbnailGallery) {
+            thumbnailGallery.style.display = 'none';
+        }
+        
+        // Create global function to switch images
+        window.switchMainImage = function(imageUrl) {
+            var mainImg = document.getElementById('main-product-image');
+            if (mainImg) {
+                mainImg.src = imageUrl;
+                
+                // Update active thumbnail
+                var thumbnails = document.querySelectorAll('.thumbnail');
+                thumbnails.forEach(function(thumb) {
+                    thumb.classList.remove('active');
+                    if (thumb.querySelector('img').src === imageUrl) {
+                        thumb.classList.add('active');
+                    }
+                });
+            }
+        };
+        
         // Featured badge
         if (product.is_featured) {
             document.getElementById('featured-badge').style.display = 'block';
