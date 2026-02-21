@@ -191,7 +191,11 @@
 
 .dashboard-header,
 .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: var(--space-6);
+  gap: var(--space-4);
 }
 
 .dashboard-header h1,
@@ -258,6 +262,12 @@
   font-size: var(--text-sm);
   margin: 0;
   padding: 0;
+}
+
+.dashboard-actions {
+  display: flex;
+  align-items: flex-start;
+  flex-shrink: 0;
 }
 
 /* ===================================
@@ -1831,6 +1841,20 @@
   
   .cms-user .user-name {
     display: none;
+  }
+  
+  .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .dashboard-actions {
+    width: 100%;
+  }
+  
+  .dashboard-actions .btn {
+    width: 100%;
+    justify-content: center;
   }
   
   .form-actions {

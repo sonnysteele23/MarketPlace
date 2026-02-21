@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-86QXTNGM13"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-86QXTNGM13');
+    </script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sell Your Handmade Items | Artist Dashboard | Amy's Haven</title>
@@ -83,10 +92,12 @@
                     <h1>Dashboard</h1>
                     <p class="welcome-text">Manage your artisan products and track your sales</p>
                 </div>
-                <a href="add-product.html" class="btn btn-primary">
-                    <i data-lucide="plus"></i>
-                    <span>Add Product</span>
-                </a>
+                <div class="dashboard-actions">
+                    <a href="add-product.html" class="btn btn-primary">
+                        <i data-lucide="plus"></i>
+                        <span>Add Product</span>
+                    </a>
+                </div>
             </div>
 
             <!-- Stats Overview -->

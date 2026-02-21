@@ -1,18 +1,32 @@
 /**
- * Add Product Page - MULTI-IMAGE VERSION
+ * Add Product Page - SUPABASE DIRECT VERSION
+ * Works with GitHub Pages static hosting
  * Supports up to 5 images per product
  */
 (function() {
     'use strict';
     
-    const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3000/api'
-        : 'https://marketplace-production-57b7.up.railway.app/api';
+    // Supabase Configuration
+    const SUPABASE_URL = 'https://hgzshxoshmsvwrrdgriv.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnenNoeG9zaG1zdndycmRncml2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1NDc3ODksImV4cCI6MjA4NTEyMzc4OX0.qO7YFmfmmZSAV4KOZ8qp17HHjSwjlvv2j-vJ1m5iH_w';
 
     let uploadedImages = [];
     const MAX_IMAGES = 5;
     const MAX_FILE_SIZE = 5 * 1024 * 1024;
     let productTags = [];
+    let supabase;
+
+    // Initialize Supabase client
+    function initSupabase() {
+        if (typeof window.supabase === 'undefined') {
+            console.error('[Marketplace] Supabase library not loaded!');
+            showNotification('System error: Database connection unavailable', 'error');
+            return false;
+        }
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('[Marketplace] Supabase client initialized');
+        return true;
+    }
 
     function checkAuth() {
         const token = localStorage.getItem('token');
@@ -43,7 +57,6 @@
         
         console.log('[Marketplace] Initializing image upload...');
         
-        // Only handle file selection - let the label handle the click
         imageInput.addEventListener('change', function(e) {
             console.log('[Marketplace] Files selected:', e.target.files ? e.target.files.length : 0);
             if (e.target.files && e.target.files.length > 0) {
@@ -99,12 +112,11 @@
             reader.onload = function(e) {
                 const imageData = {
                     file: file,
-                    dataUrl: e.target.result,
-                    isMain: uploadedImages.length === 0
+                    preview: e.target.result,
+                    name: file.name
                 };
                 uploadedImages.push(imageData);
                 renderImagePreviews();
-                console.log('[Marketplace] Image added, total:', uploadedImages.length);
             };
             reader.readAsDataURL(file);
         }
@@ -114,68 +126,98 @@
         const previewsContainer = document.getElementById('image-previews');
         if (!previewsContainer) return;
         
-        previewsContainer.innerHTML = uploadedImages.map(function(img, index) {
-            return '<div class="image-preview" data-index="' + index + '">' +
-                '<img src="' + img.dataUrl + '" alt="Preview ' + (index + 1) + '">' +
-                '<button type="button" class="remove-btn" onclick="window.marketplaceRemoveImage(' + index + ')">' +
-                '<i data-lucide="x"></i>' +
-                '</button>' +
-                (img.isMain ? '<span class="main-badge">Main</span>' : '') +
-                '</div>';
-        }).join('');
+        previewsContainer.innerHTML = '';
+        
+        uploadedImages.forEach((img, index) => {
+            const preview = document.createElement('div');
+            preview.className = 'image-preview';
+            preview.innerHTML = 
+                '<img src="' + img.preview + '" alt="Preview">' +
+                (index === 0 ? '<span class="main-badge">Main</span>' : '') +
+                '<button type="button" class="remove-btn" data-index="' + index + '"><i data-lucide="x"></i></button>';
+            previewsContainer.appendChild(preview);
+        });
         
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
+        
+        // Add remove handlers
+        document.querySelectorAll('.remove-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const index = parseInt(this.getAttribute('data-index'));
+                uploadedImages.splice(index, 1);
+                renderImagePreviews();
+            });
+        });
     }
 
-    window.marketplaceRemoveImage = function(index) {
-        uploadedImages.splice(index, 1);
-        if (uploadedImages.length > 0 && !uploadedImages.some(function(img) { return img.isMain; })) {
-            uploadedImages[0].isMain = true;
-        }
-        renderImagePreviews();
-    };
+    function loadCategories() {
+        const categorySelect = document.getElementById('category');
+        if (!categorySelect) return;
+        
+        const categories = [
+            'Jewelry & Accessories',
+            'Home Decor',
+            'Pottery & Ceramics',
+            'Textiles & Fiber Arts',
+            'Paintings & Wall Art',
+            'Woodworking',
+            'Glass Art',
+            'Soaps & Candles',
+            'Sculptures',
+            'Leather Goods',
+            'Paper Crafts',
+            'Toys & Games',
+            'Bath & Body',
+            'Bags & Purses',
+            'Other'
+        ];
+        
+        categories.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            option.textContent = cat;
+            categorySelect.appendChild(option);
+        });
+    }
 
     function initPricing() {
         const priceInput = document.getElementById('price');
         if (!priceInput) return;
         
-        priceInput.addEventListener('input', function() {
-            const price = parseFloat(priceInput.value) || 0;
-            const fee = price * 0.10;
-            const customerPrice = price + fee;
-            const contribution = price * 0.05;
-            
-            const finalPriceEl = document.getElementById('final-price');
-            const artistEarningsEl = document.getElementById('artist-earnings');
-            const marketplaceFeeEl = document.getElementById('marketplace-fee');
-            const homelessContributionEl = document.getElementById('homeless-contribution');
-            
-            if (finalPriceEl) finalPriceEl.textContent = '$' + customerPrice.toFixed(2);
-            if (artistEarningsEl) artistEarningsEl.textContent = '$' + price.toFixed(2);
-            if (marketplaceFeeEl) marketplaceFeeEl.textContent = '$' + fee.toFixed(2);
-            if (homelessContributionEl) homelessContributionEl.textContent = '$' + contribution.toFixed(2);
-        });
+        priceInput.addEventListener('input', updatePricing);
+    }
+
+    function updatePricing() {
+        const price = parseFloat(document.getElementById('price').value) || 0;
         
-        priceInput.dispatchEvent(new Event('input'));
+        const marketplaceFee = price * 0.10;
+        const homelessContribution = price * 0.05;
+        const artistEarnings = price - marketplaceFee - homelessContribution;
+        const finalPrice = price;
+        
+        document.getElementById('final-price').textContent = '$' + finalPrice.toFixed(2);
+        document.getElementById('artist-earnings').textContent = '$' + artistEarnings.toFixed(2);
+        document.getElementById('marketplace-fee').textContent = '$' + marketplaceFee.toFixed(2);
+        document.getElementById('homeless-contribution').textContent = '$' + homelessContribution.toFixed(2);
     }
 
     function initCharCounters() {
-        const nameInput = document.getElementById('product-name');
+        const nameInput = document.getElementById('name');
         const descInput = document.getElementById('description');
         
         if (nameInput) {
             nameInput.addEventListener('input', function() {
-                const countEl = document.getElementById('name-count');
-                if (countEl) countEl.textContent = nameInput.value.length;
+                const counter = document.getElementById('name-count');
+                if (counter) counter.textContent = this.value.length + '/100';
             });
         }
         
         if (descInput) {
             descInput.addEventListener('input', function() {
-                const countEl = document.getElementById('desc-count');
-                if (countEl) countEl.textContent = descInput.value.length;
+                const counter = document.getElementById('desc-count');
+                if (counter) counter.textContent = this.value.length + '/500';
             });
         }
     }
@@ -187,12 +229,11 @@
         tagsInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                const tag = tagsInput.value.trim().toLowerCase();
-                
-                if (tag && !productTags.includes(tag) && productTags.length < 10) {
+                const tag = this.value.trim();
+                if (tag && !productTags.includes(tag)) {
                     productTags.push(tag);
                     renderTags();
-                    tagsInput.value = '';
+                    this.value = '';
                 }
             }
         });
@@ -204,14 +245,13 @@
         
         if (!container) return;
         
-        container.innerHTML = productTags.map(function(tag, index) {
-            return '<span class="tag">' +
-                tag +
-                '<span class="tag-remove" onclick="window.marketplaceRemoveTag(' + index + ')">' +
-                '<i data-lucide="x"></i>' +
-                '</span>' +
-                '</span>';
-        }).join('');
+        container.innerHTML = '';
+        productTags.forEach((tag, index) => {
+            const tagEl = document.createElement('span');
+            tagEl.className = 'tag';
+            tagEl.innerHTML = tag + '<span class="tag-remove" data-index="' + index + '"><i data-lucide="x"></i></span>';
+            container.appendChild(tagEl);
+        });
         
         if (hiddenInput) {
             hiddenInput.value = productTags.join(',');
@@ -220,80 +260,34 @@
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
+        
+        document.querySelectorAll('.tag-remove').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const index = parseInt(this.getAttribute('data-index'));
+                productTags.splice(index, 1);
+                renderTags();
+            });
+        });
     }
-
-    window.marketplaceRemoveTag = function(index) {
-        productTags.splice(index, 1);
-        renderTags();
-    };
 
     function initShipping() {
         const freeShippingCheckbox = document.getElementById('free-shipping');
         const shippingCostGroup = document.getElementById('shipping-cost-group');
         
-        if (!freeShippingCheckbox || !shippingCostGroup) return;
-        
-        freeShippingCheckbox.addEventListener('change', function() {
-            shippingCostGroup.style.display = freeShippingCheckbox.checked ? 'none' : 'block';
-        });
-    }
-
-    async function loadCategories() {
-        try {
-            const response = await fetch(API_BASE_URL + '/categories');
-            if (!response.ok) throw new Error('Failed to load categories');
-            
-            const categories = await response.json();
-            const categorySelect = document.getElementById('category');
-            
-            if (categorySelect && categories.length > 0) {
-                categorySelect.innerHTML = '<option value="">Select a category...</option>';
-                categories.forEach(function(cat) {
-                    const option = document.createElement('option');
-                    option.value = cat.id;
-                    option.textContent = cat.name;
-                    categorySelect.appendChild(option);
-                });
-            }
-        } catch (error) {
-            console.error('[Marketplace] Error loading categories:', error);
-        }
-    }
-
-    async function uploadImagesToSupabase(auth) {
-        console.log('[Marketplace] Uploading', uploadedImages.length, 'images to Supabase');
-        
-        try {
-            const formData = new FormData();
-            uploadedImages.forEach(function(img) {
-                formData.append('images', img.file);
+        if (freeShippingCheckbox && shippingCostGroup) {
+            freeShippingCheckbox.addEventListener('change', function() {
+                shippingCostGroup.style.display = this.checked ? 'none' : 'block';
             });
-            
-            const response = await fetch(API_BASE_URL + '/upload/product-images', {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + auth.token
-                },
-                body: formData
-            });
-            
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || 'Failed to upload images');
-            }
-            
-            const result = await response.json();
-            console.log('[Marketplace] Upload successful:', result);
-            return result.images;
-        } catch (error) {
-            console.error('[Marketplace] Upload error:', error);
-            throw error;
         }
     }
 
     async function handleFormSubmit(e) {
         e.preventDefault();
-        console.log('[Marketplace] Form submitted');
+        
+        if (!supabase) {
+            showNotification('Database not initialized', 'error');
+            return;
+        }
         
         const auth = checkAuth();
         if (!auth) return;
@@ -305,70 +299,86 @@
         if (btnText) btnText.textContent = 'Publishing...';
         
         try {
+            // Validate required fields
+            const name = document.getElementById('name').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const category = document.getElementById('category').value;
+            const price = parseFloat(document.getElementById('price').value);
+            const quantity = parseInt(document.getElementById('quantity').value);
+            
+            if (!name || !description || !category || !price || !quantity) {
+                throw new Error('Please fill in all required fields');
+            }
+            
             if (uploadedImages.length === 0) {
-                showNotification('Please upload at least one product image', 'error');
-                if (submitBtn) submitBtn.disabled = false;
-                if (btnText) btnText.textContent = 'Publish Product';
-                return;
+                throw new Error('Please upload at least one product image');
             }
             
-            if (btnText) btnText.textContent = 'Uploading images...';
-            const uploadedImageUrls = await uploadImagesToSupabase(auth);
+            console.log('[Marketplace] Uploading images to Supabase Storage...');
+            const imageUrls = [];
             
-            if (!uploadedImageUrls || uploadedImageUrls.length === 0) {
-                throw new Error('Failed to upload images');
+            // Upload images to Supabase Storage
+            for (let i = 0; i < uploadedImages.length; i++) {
+                const image = uploadedImages[i];
+                const timestamp = Date.now();
+                const fileName = `products/${auth.user.id}/${timestamp}_${i}_${image.name}`;
+                
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('product-images')
+                    .upload(fileName, image.file);
+                
+                if (uploadError) {
+                    console.error('[Marketplace] Image upload error:', uploadError);
+                    throw new Error('Failed to upload image: ' + image.name);
+                }
+                
+                // Get public URL
+                const { data: urlData } = supabase.storage
+                    .from('product-images')
+                    .getPublicUrl(fileName);
+                
+                imageUrls.push(urlData.publicUrl);
+                console.log('[Marketplace] Image uploaded:', fileName);
             }
             
-            if (btnText) btnText.textContent = 'Creating product...';
-            
-            const form = document.getElementById('add-product-form');
-            const formData = new FormData(form);
-            
-            // Build product data with ALL images
+            // Prepare product data
             const productData = {
-                name: formData.get('name'),
-                description: formData.get('description'),
-                category_id: formData.get('category'),
-                price: parseFloat(formData.get('price')),
-                stock_quantity: parseInt(formData.get('quantity')) || 1,
-                materials: formData.get('materials') || null,
-                dimensions: formData.get('dimensions') || null,
-                weight: formData.get('weight') || null,
-                // Main image (first one)
-                image_url: uploadedImageUrls[0].imageUrl,
-                thumbnail_url: uploadedImageUrls[0].thumbnailUrl,
-                // Additional images (images 2-5)
-                additional_images: uploadedImageUrls.length > 1 
-                    ? uploadedImageUrls.slice(1).map(function(img) {
-                        return {
-                            imageUrl: img.imageUrl,
-                            thumbnailUrl: img.thumbnailUrl,
-                            filename: img.filename
-                        };
-                    })
-                    : []
+                name: name,
+                description: description,
+                category: category,
+                price: price,
+                quantity: quantity,
+                artist_id: auth.user.id,
+                images: imageUrls,
+                main_image: imageUrls[0],
+                materials: document.getElementById('materials').value || null,
+                dimensions: document.getElementById('dimensions').value || null,
+                weight: parseFloat(document.getElementById('weight').value) || null,
+                care_instructions: document.getElementById('care-instructions').value || null,
+                shipping_cost: document.getElementById('free-shipping').checked ? 0 : parseFloat(document.getElementById('shipping-cost').value),
+                processing_time: document.getElementById('processing-time').value,
+                tags: productTags.length > 0 ? productTags : null,
+                sku: document.getElementById('sku').value || null,
+                status: 'active',
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
             };
             
-            console.log('[Marketplace] Creating product with', uploadedImageUrls.length, 'images:', productData);
+            console.log('[Marketplace] Creating product in database...');
             
-            const response = await fetch(API_BASE_URL + '/products', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + auth.token
-                },
-                body: JSON.stringify(productData)
-            });
+            // Insert product into Supabase
+            const { data, error } = await supabase
+                .from('products')
+                .insert([productData])
+                .select();
             
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || 'Failed to create product');
+            if (error) {
+                console.error('[Marketplace] Database error:', error);
+                throw new Error('Failed to save product: ' + error.message);
             }
             
-            const newProduct = await response.json();
-            console.log('[Marketplace] Product created:', newProduct);
-            
-            showNotification('Product published successfully with ' + uploadedImageUrls.length + ' images!', 'success');
+            console.log('[Marketplace] Product created successfully:', data);
+            showNotification('Product published successfully with ' + imageUrls.length + ' images!', 'success');
             
             setTimeout(function() {
                 window.location.href = 'my-products.html';
@@ -439,7 +449,12 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('[Marketplace] Initializing add-product page...');
+        console.log('[Marketplace] Initializing add-product page (Supabase version)...');
+        
+        if (!initSupabase()) {
+            showNotification('Failed to initialize database connection', 'error');
+            return;
+        }
         
         checkAuth();
         initImageUpload();
