@@ -154,7 +154,7 @@
 
                     <div class="form-group">
                         <label for="category" class="required">Category</label>
-                        <select id="category" name="category" required>
+                        <select id="category" name="category" class="form-select" required>
                             <option value="">Select a category...</option>
                             <option value="jewelry">Jewelry & Accessories</option>
                             <option value="home-decor">Home Decor</option>
@@ -275,33 +275,21 @@
                             type="text" 
                             id="materials" 
                             name="materials" 
-                            placeholder="e.g., Stoneware clay, lead-free glaze"
+                            placeholder="e.g., Stoneware clay, lead-free glaze, Sycamore wood"
                         >
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="dimensions">Dimensions</label>
+                    <div class="form-group">
+                        <label for="weight">Weight</label>
+                        <div class="input-with-suffix">
                             <input 
-                                type="text" 
-                                id="dimensions" 
-                                name="dimensions" 
-                                placeholder="e.g., 4in x 3in x 3.5in"
+                                type="number" 
+                                id="weight" 
+                                name="weight" 
+                                step="0.1"
+                                placeholder="0.0"
                             >
-                        </div>
-
-                        <div class="form-group">
-                            <label for="weight">Weight</label>
-                            <div class="input-with-suffix">
-                                <input 
-                                    type="number" 
-                                    id="weight" 
-                                    name="weight" 
-                                    step="0.1"
-                                    placeholder="0.0"
-                                >
-                                <span class="suffix">lbs</span>
-                            </div>
+                            <span class="suffix">lbs</span>
                         </div>
                     </div>
 
@@ -313,6 +301,28 @@
                             rows="3"
                             placeholder="How should customers care for this item?"
                         ></textarea>
+                    </div>
+                </div>
+
+                <!-- Product Variants (Optional) -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i data-lucide="sliders"></i>
+                        Product Variants (Optional)
+                    </h2>
+                    <p class="section-description">Add options like size, color, or material choices. Leave blank if your product has no variations.</p>
+                    
+                    <div class="variant-options" id="variant-options">
+                        <!-- Variants will be added here -->
+                    </div>
+                    
+                    <button type="button" class="btn-ghost btn-sm" id="add-variant-btn">
+                        <i data-lucide="plus"></i>
+                        Add Variant Option
+                    </button>
+                    
+                    <div class="variant-example" style="margin-top: 1rem; padding: 1rem; background: #F9FAFB; border-radius: 8px; font-size: 0.875rem; color: #6B7280;">
+                        <strong style="color: #374151;">Example:</strong> For a custom table, you might add "Length" (72", 84", 96"), "Width" (36", 42", 48"), "Wood Species" (Sycamore, Elm, Ash, Maple)
                     </div>
                 </div>
 
@@ -347,7 +357,7 @@
 
                     <div class="form-group">
                         <label for="processing-time">Processing Time</label>
-                        <select id="processing-time" name="processing_time">
+                        <select id="processing-time" name="processing_time" class="form-select">
                             <option value="1-2">1-2 business days</option>
                             <option value="3-5" selected>3-5 business days</option>
                             <option value="1-2-weeks">1-2 weeks</option>
