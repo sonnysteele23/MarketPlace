@@ -40,6 +40,7 @@
     function initImageUpload() {
         const uploadArea = document.getElementById('upload-area');
         const imageInput = document.getElementById('image-input');
+        const uploadLabel = uploadArea?.querySelector('.upload-label');
         
         if (!uploadArea || !imageInput) {
             console.error('[Marketplace] Upload elements not found');
@@ -48,45 +49,66 @@
         
         console.log('[Marketplace] Initializing image upload...');
         
-        // Single click handler
-        uploadArea.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('[Marketplace] Upload area clicked');
-            imageInput.click();
-        };
+        // Clear any existing handlers by cloning
+        const newUploadArea = uploadArea.cloneNode(true);
+        uploadArea.parentNode.replaceChild(newUploadArea, uploadArea);
+        
+        // Get fresh references after clone
+        const freshArea = document.getElementById('upload-area');
+        const freshInput = document.getElementById('image-input');
+        const freshLabel = freshArea.querySelector('.upload-label');
+        
+        // Click handler on label (most reliable)
+        if (freshLabel) {
+            freshLabel.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('[Marketplace] Label clicked');
+                freshInput.click();
+            });
+        }
+        
+        // Fallback: click on area itself
+        freshArea.addEventListener('click', function(e) {
+            if (e.target === freshArea || e.target.closest('.upload-label')) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('[Marketplace] Area clicked');
+                freshInput.click();
+            }
+        });
         
         // File selection handler
-        imageInput.onchange = function(e) {
+        freshInput.addEventListener('change', function(e) {
             console.log('[Marketplace] Files selected:', e.target.files.length);
             if (e.target.files && e.target.files.length > 0) {
                 handleFiles(e.target.files);
                 e.target.value = '';
             }
-        };
+        });
         
         // Drag and drop
-        uploadArea.ondragover = function(e) {
+        freshArea.addEventListener('dragover', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            uploadArea.classList.add('drag-over');
-        };
+            freshArea.classList.add('drag-over');
+        });
         
-        uploadArea.ondragleave = function(e) {
+        freshArea.addEventListener('dragleave', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            uploadArea.classList.remove('drag-over');
-        };
+            freshArea.classList.remove('drag-over');
+        });
         
-        uploadArea.ondrop = function(e) {
+        freshArea.addEventListener('drop', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            uploadArea.classList.remove('drag-over');
+            freshArea.classList.remove('drag-over');
             
             if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
                 handleFiles(e.dataTransfer.files);
             }
-        };
+        });
         
         console.log('[Marketplace] Image upload initialized');
     }
