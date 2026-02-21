@@ -72,14 +72,14 @@
 .auth-logo-large {
     display: block;
     text-decoration: none;
-    margin-top: 40px;
+    margin-top: 20px; /* Reduced from 40px to move up 20px */
     margin-bottom: var(--space-6);
 }
 
 .auth-logo-vertical {
     height: auto;
     width: 100%;
-    max-width: 205px; /* Reduced from 220px by 15px */
+    max-width: 226px; /* Increased from 205px by 10% (205 * 1.1 = 225.5 ≈ 226px) */
     /* Invert dark colors to white for purple background */
     filter: brightness(0) invert(1);
 }
