@@ -1,6 +1,6 @@
 /**
- * Add Product Page - FIXED VERSION
- * Removed variants, added dimensions (length, width, height)
+ * Add Product Page - BULLETPROOF VERSION
+ * Protected from extension conflicts
  */
 
 (function() {
@@ -340,7 +340,7 @@
         }
     }
 
-    // Form submission - FIXED VERSION
+    // Form submission
     async function handleFormSubmit(e) {
         e.preventDefault();
         console.log('[Marketplace] Form submitted');
@@ -374,7 +374,6 @@
             const form = document.getElementById('add-product-form');
             const formData = new FormData(form);
             
-            // FIXED: Removed variants, added dimensions
             const productData = {
                 name: formData.get('name'),
                 description: formData.get('description'),
@@ -382,18 +381,19 @@
                 price: parseFloat(formData.get('price')),
                 stock_quantity: parseInt(formData.get('quantity')) || 1,
                 materials: formData.get('materials') || null,
-                length: formData.get('length') ? parseFloat(formData.get('length')) : null,
-                width: formData.get('width') ? parseFloat(formData.get('width')) : null,
-                height: formData.get('height') ? parseFloat(formData.get('height')) : null,
-                weight: formData.get('weight') ? parseFloat(formData.get('weight')) : null,
+                weight: formData.get('weight') || null,
                 care_instructions: formData.get('care_instructions') || null,
-                shipping_cost: formData.get('free_shipping') === 'on' ? 0 : parseFloat(formData.get('shipping_cost')) || 0,
+                shipping_cost: formData.get('free-shipping') === 'on' ? 0 : parseFloat(formData.get('shipping_cost')) || 0,
                 processing_time: formData.get('processing_time') || '3-5',
                 tags: productTags.length > 0 ? productTags.join(',') : null,
                 sku: formData.get('sku') || null,
                 image_url: uploadedImageUrls[0].imageUrl,
                 thumbnail_url: uploadedImageUrls[0].thumbnailUrl,
-                images: uploadedImageUrls.map(img => img.imageUrl)
+                images: uploadedImageUrls.map(img => img.imageUrl),
+                variants: productVariants.filter(v => v.name && v.values.length > 0).map(v => ({
+                    name: v.name,
+                    values: v.values
+                }))
             };
             
             console.log('[Marketplace] Creating product:', productData);
@@ -486,6 +486,137 @@
     `;
     document.head.appendChild(style);
 
+    // Product Variants
+    let productVariants = [];
+
+    function initVariants() {
+        const addVariantBtn = document.getElementById('add-variant-btn');
+        if (!addVariantBtn) return;
+
+        addVariantBtn.addEventListener('click', addVariantGroup);
+    }
+
+    function addVariantGroup() {
+        const variantId = Date.now();
+        const variantGroup = document.createElement('div');
+        variantGroup.className = 'variant-group';
+        variantGroup.dataset.variantId = variantId;
+
+        variantGroup.innerHTML = `
+            <div class="variant-header">
+                <span class="variant-label">Variant Option</span>
+                <button type="button" class="variant-remove" onclick="window.removeVariantGroup(${variantId})">
+                    <i data-lucide="trash-2"></i>
+                    Remove
+                </button>
+            </div>
+            <input 
+                type="text" 
+                class="variant-name-input" 
+                placeholder="Option name (e.g., Size, Color, Material)"
+                data-variant-id="${variantId}"
+            >
+            <div class="variant-values" data-variant-id="${variantId}"></div>
+            <div class="variant-value-input">
+                <input 
+                    type="text" 
+                    placeholder="Add value (e.g., Small, Red, Cotton)"
+                    data-variant-id="${variantId}"
+                    class="variant-value-field"
+                >
+                <button type="button" onclick="window.addVariantValue(${variantId})">
+                    Add
+                </button>
+            </div>
+        `;
+
+        document.getElementById('variant-options').appendChild(variantGroup);
+        
+        productVariants.push({
+            id: variantId,
+            name: '',
+            values: []
+        });
+
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+        // Add enter key handler for value input
+        const valueInput = variantGroup.querySelector('.variant-value-field');
+        valueInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                window.addVariantValue(variantId);
+            }
+        });
+
+        // Add change handler for variant name
+        const nameInput = variantGroup.querySelector('.variant-name-input');
+        nameInput.addEventListener('input', () => {
+            const variant = productVariants.find(v => v.id === variantId);
+            if (variant) {
+                variant.name = nameInput.value;
+            }
+        });
+    }
+
+    window.removeVariantGroup = function(variantId) {
+        const variantGroup = document.querySelector(`[data-variant-id="${variantId}"].variant-group`);
+        if (variantGroup) {
+            variantGroup.remove();
+        }
+        productVariants = productVariants.filter(v => v.id !== variantId);
+    };
+
+    window.addVariantValue = function(variantId) {
+        const valueInput = document.querySelector(`.variant-value-field[data-variant-id="${variantId}"]`);
+        const value = valueInput.value.trim();
+
+        if (!value) return;
+
+        const variant = productVariants.find(v => v.id === variantId);
+        if (!variant) return;
+
+        if (variant.values.includes(value)) {
+            showNotification('This value already exists', 'error');
+            return;
+        }
+
+        variant.values.push(value);
+        renderVariantValues(variantId);
+        valueInput.value = '';
+    };
+
+    window.removeVariantValue = function(variantId, value) {
+        const variant = productVariants.find(v => v.id === variantId);
+        if (variant) {
+            variant.values = variant.values.filter(v => v !== value);
+            renderVariantValues(variantId);
+        }
+    };
+
+    function renderVariantValues(variantId) {
+        const variant = productVariants.find(v => v.id === variantId);
+        if (!variant) return;
+
+        const valuesContainer = document.querySelector(`.variant-values[data-variant-id="${variantId}"]`);
+        if (!valuesContainer) return;
+
+        valuesContainer.innerHTML = variant.values.map(value => `
+            <span class="variant-value-tag">
+                ${value}
+                <button type="button" class="variant-value-remove" onclick="window.removeVariantValue(${variantId}, '${value.replace(/'/g, "\\'")}')")>
+                    <i data-lucide="x"></i>
+                </button>
+            </span>
+        `).join('');
+
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    }
+
     // Logout
     function initLogout() {
         const logoutBtn = document.getElementById('logout-btn');
@@ -499,7 +630,7 @@
         }
     }
 
-    // Initialize - REMOVED initVariants()
+    // Initialize
     document.addEventListener('DOMContentLoaded', function() {
         console.log('[Marketplace] Initializing add-product page...');
         
@@ -509,6 +640,7 @@
         initCharCounters();
         initTags();
         initShipping();
+        initVariants();
         initLogout();
         loadCategories();
         
