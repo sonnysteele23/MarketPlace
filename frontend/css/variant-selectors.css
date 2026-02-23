@@ -1,0 +1,140 @@
+/* ===================================
+   Product Variant Selector Styles
+   Box-style selectors for dimensions
+   =================================== */
+
+/* Variant Option Group Container */
+.variant-group {
+    margin-bottom: var(--space-6);
+    padding: var(--space-4);
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+}
+
+.variant-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-3);
+}
+
+.variant-label {
+    font-weight: var(--font-semibold);
+    font-size: var(--text-base);
+    color: var(--gray-900);
+}
+
+.variant-remove-btn {
+    padding: var(--space-2);
+    background: transparent;
+    border: none;
+    color: var(--error);
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    transition: background var(--transition-fast);
+}
+
+.variant-remove-btn:hover {
+    background: var(--error-50);
+}
+
+/* Box-Style Selector Grid */
+.variant-options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+}
+
+/* Individual Box Option */
+.variant-option-box {
+    position: relative;
+}
+
+.variant-option-box input[type="radio"],
+.variant-option-box input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.variant-option-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4) var(--space-3);
+    min-height: 80px;
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: center;
+    font-weight: var(--font-medium);
+    font-size: var(--text-base);
+    color: var(--gray-700);
+    user-select: none;
+}
+
+.variant-option-label:hover {
+    border-color: var(--primary-400);
+    background: var(--primary-50);
+}
+
+/* Selected State */
+.variant-option-box input:checked + .variant-option-label {
+    border-color: var(--primary-600);
+    border-width: 2px;
+    background: var(--white);
+    color: var(--gray-900);
+    box-shadow: 0 0 0 3px var(--primary-100);
+    font-weight: var(--font-semibold);
+}
+
+/* Size-specific styles */
+.variant-option-label.size-small {
+    min-width: 80px;
+}
+
+.variant-option-label.size-medium {
+    min-width: 100px;
+}
+
+.variant-option-label.size-large {
+    min-width: 120px;
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 768px) {
+    .variant-options-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: var(--space-2);
+    }
+    
+    .variant-option-label {
+        padding: var(--space-3) var(--space-2);
+        min-height: 70px;
+        font-size: var(--text-sm);
+    }
+}
+
+/* ===================================
+   Example Usage in Product Detail
+   =================================== */
+
+.product-variants-section {
+    margin-top: var(--space-6);
+}
+
+.variant-section-title {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    color: var(--gray-900);
+    margin-bottom: var(--space-3);
+    display: block;
+}
+
+/* Multiple variant groups */
+.variant-groups-container .variant-group:not(:last-child) {
+    margin-bottom: var(--space-4);
+}
