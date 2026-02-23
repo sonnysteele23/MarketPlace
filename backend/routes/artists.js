@@ -9,6 +9,7 @@ const { supabaseAdmin } = require('../config/supabase');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { authenticateToken } = require('../middleware/auth');
+const { sendWelcomeEmail, sendFirstProductEmail } = require('../services/emailService');
 
 // ===================================
 // Authentication Routes (MUST be before /:id)
@@ -65,6 +66,10 @@ router.post('/register', async (req, res) => {
             .single();
         
         if (error) throw error;
+        
+        // Send welcome email (async, don't wait)
+        sendWelcomeEmail(artist.id, artist.business_name, artist.email)
+            .catch(err => console.error('Error sending welcome email:', err));
         
         // Generate JWT token
         const token = jwt.sign(

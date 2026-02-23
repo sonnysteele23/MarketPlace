@@ -1,359 +1,426 @@
 /**
- * Email Service
- * Handles sending emails for the Washington Artisan Marketplace
+ * Email Service - Artist Onboarding & Notifications
+ * Automated email sequences for Amy's Haven
  */
 
 const nodemailer = require('nodemailer');
+const { supabaseAdmin } = require('../config/supabase');
 
-// Create transporter based on environment
+// Email templates
+const EMAIL_TEMPLATES = {
+    WELCOME: {
+        subject: "Welcome to Amy's Haven! 🎨",
+        html: (artistName) => `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #6B46C1 0%, #8B5CF6 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+        .button { display: inline-block; background: #6B46C1; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
+        .impact-box { background: #E9D5FF; padding: 20px; border-radius: 8px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to Amy's Haven!</h1>
+            <p>Where your art creates change</p>
+        </div>
+        <div class="content">
+            <h2>Hi ${artistName}! 👋</h2>
+            <p>We're thrilled to have you join our community of talented artisans making a difference.</p>
+            
+            <div class="impact-box">
+                <strong>🤝 Your Impact Matters</strong>
+                <p>Every sale you make contributes 5% to homelessness solutions in communities across America. Together, we're crafting change, one purchase at a time.</p>
+            </div>
+            
+            <h3>Getting Started in 3 Easy Steps:</h3>
+            <ol>
+                <li><strong>Complete Your Profile</strong> - Add your photo, bio, and tell your story</li>
+                <li><strong>List Your First Product</strong> - Upload beautiful photos and descriptions</li>
+                <li><strong>Share Your Shop</strong> - Spread the word and start selling!</li>
+            </ol>
+            
+            <a href="https://amyshaven.com/artist-cms/dashboard.html" class="button">Go to Your Dashboard</a>
+            
+            <p>Need help? We're here for you:</p>
+            <ul>
+                <li>📧 Email: support@amyshaven.com</li>
+                <li>📚 <a href="https://amyshaven.com/artist-help">Artist Guide</a></li>
+                <li>💬 <a href="https://amyshaven.com/artist-community">Join Artist Community</a></li>
+            </ul>
+            
+            <p>Looking forward to seeing your amazing creations!</p>
+            <p>— The Amy's Haven Team</p>
+        </div>
+        <div class="footer">
+            <p>Amy's Haven | Crafting Change, One Purchase at a Time</p>
+            <p><a href="https://amyshaven.com">amyshaven.com</a></p>
+        </div>
+    </div>
+</body>
+</html>
+        `
+    },
+    
+    FIRST_PRODUCT: {
+        subject: "🎉 Congratulations on Your First Product!",
+        html: (artistName, productName) => `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #6B46C1 0%, #8B5CF6 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+        .button { display: inline-block; background: #6B46C1; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+        .tip-box { background: #DBEAFE; padding: 15px; border-left: 4px solid #3B82F6; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎉 Product Published!</h1>
+        </div>
+        <div class="content">
+            <h2>Awesome, ${artistName}!</h2>
+            <p>Your product "<strong>${productName}</strong>" is now live on Amy's Haven!</p>
+            
+            <div class="tip-box">
+                <strong>💡 Pro Tip: Boost Your Sales</strong>
+                <ul>
+                    <li>Share your product on social media</li>
+                    <li>Add 3-5 more products (variety attracts more customers)</li>
+                    <li>Use high-quality photos with good lighting</li>
+                    <li>Tell the story behind your craft in descriptions</li>
+                </ul>
+            </div>
+            
+            <a href="https://amyshaven.com/artist-cms/dashboard.html" class="button">Add More Products</a>
+            
+            <h3>What's Next?</h3>
+            <p>Keep building your shop! Artists with 5+ products see 3x more sales.</p>
+            
+            <p>You're doing great! 🌟</p>
+            <p>— The Amy's Haven Team</p>
+        </div>
+    </div>
+</body>
+</html>
+        `
+    },
+    
+    FIRST_SALE: {
+        subject: "🎊 You Made Your First Sale!",
+        html: (artistName, orderTotal) => `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #6B46C1 0%, #8B5CF6 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+        .celebration { font-size: 48px; text-align: center; margin: 20px 0; }
+        .stats-box { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center; }
+        .button { display: inline-block; background: #6B46C1; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="celebration">🎊 🎉 🎊</div>
+            <h1>Congratulations!</h1>
+            <h2>You Made Your First Sale!</h2>
+        </div>
+        <div class="content">
+            <h2>Amazing work, ${artistName}!</h2>
+            <p>Someone just purchased your beautiful creation!</p>
+            
+            <div class="stats-box">
+                <h3 style="margin: 0; color: #6B46C1;">$${orderTotal}</h3>
+                <p style="margin: 5px 0 0 0; color: #666;">Order Total</p>
+                <p style="font-size: 14px; color: #666; margin-top: 15px;">
+                    💚 <strong>$${(orderTotal * 0.05).toFixed(2)}</strong> will go toward homelessness solutions
+                </p>
+            </div>
+            
+            <h3>Next Steps:</h3>
+            <ol>
+                <li>Check your dashboard for order details</li>
+                <li>Package your item with care</li>
+                <li>Ship within 3-5 business days</li>
+                <li>Add tracking info in your dashboard</li>
+            </ol>
+            
+            <a href="https://amyshaven.com/artist-cms/orders.html" class="button">View Order Details</a>
+            
+            <p>This is just the beginning! Keep creating amazing work. 🌟</p>
+            <p>— The Amy's Haven Team</p>
+        </div>
+    </div>
+</body>
+</html>
+        `
+    },
+    
+    TIPS_DAY3: {
+        subject: "3 Quick Tips to Boost Your Amy's Haven Shop 📈",
+        html: (artistName) => `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #6B46C1 0%, #8B5CF6 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+        .tip { background: white; padding: 20px; margin: 15px 0; border-left: 4px solid #6B46C1; border-radius: 4px; }
+        .button { display: inline-block; background: #6B46C1; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Tips from Successful Artists</h1>
+        </div>
+        <div class="content">
+            <h2>Hi ${artistName}! 👋</h2>
+            <p>Here are 3 proven strategies from our top-performing artists:</p>
+            
+            <div class="tip">
+                <h3>📸 1. Photography Makes the Difference</h3>
+                <p>Products with 3+ high-quality photos sell 2x faster. Use natural lighting and show different angles.</p>
+            </div>
+            
+            <div class="tip">
+                <h3>📝 2. Tell Your Story</h3>
+                <p>Customers connect with the story behind your work. Share your inspiration and creative process in product descriptions.</p>
+            </div>
+            
+            <div class="tip">
+                <h3>🔄 3. Keep Adding Products</h3>
+                <p>Artists with 8+ products see 5x more traffic. Aim to add 1-2 new products per week.</p>
+            </div>
+            
+            <a href="https://amyshaven.com/artist-cms/dashboard.html" class="button">Update Your Shop</a>
+            
+            <p>You've got this! 💪</p>
+            <p>— The Amy's Haven Team</p>
+        </div>
+    </div>
+</body>
+</html>
+        `
+    }
+};
+
+// Create transporter
 const createTransporter = () => {
-    // For production, use real SMTP credentials from environment variables
-    if (process.env.SMTP_HOST) {
+    if (process.env.SENDGRID_API_KEY) {
+        // Use SendGrid
+        return nodemailer.createTransport({
+            host: 'smtp.sendgrid.net',
+            port: 587,
+            auth: {
+                user: 'apikey',
+                pass: process.env.SENDGRID_API_KEY
+            }
+        });
+    } else if (process.env.SMTP_HOST) {
+        // Use SMTP (Gmail, etc.)
         return nodemailer.createTransport({
             host: process.env.SMTP_HOST,
             port: process.env.SMTP_PORT || 587,
-            secure: process.env.SMTP_SECURE === 'true',
+            secure: process.env.SMTP_PORT === '465',
             auth: {
                 user: process.env.SMTP_USER,
                 pass: process.env.SMTP_PASS
             }
         });
+    } else {
+        console.warn('⚠️ No email service configured - emails will be logged only');
+        return null;
     }
+};
+
+/**
+ * Log email to database
+ */
+const logEmail = async (artistId, emailType, recipientEmail, subject, status, errorMessage = null) => {
+    try {
+        const { data, error } = await supabaseAdmin
+            .from('email_logs')
+            .insert([{
+                artist_id: artistId,
+                email_type: emailType,
+                recipient_email: recipientEmail,
+                subject: subject,
+                status: status,
+                error_message: errorMessage,
+                sent_at: status === 'sent' ? new Date() : null
+            }])
+            .select()
+            .single();
+        
+        if (error) throw error;
+        return data;
+    } catch (error) {
+        console.error('Error logging email:', error);
+        return null;
+    }
+};
+
+/**
+ * Send email
+ */
+const sendEmail = async (to, subject, html, artistId = null, emailType = 'general') => {
+    const transporter = createTransporter();
     
-    // For development/testing, just log emails to console
-    return {
-        sendMail: async (options) => {
-            console.log('\n📧 ========== EMAIL SENT ==========');
-            console.log(`To: ${options.to}`);
-            console.log(`Subject: ${options.subject}`);
-            console.log(`Body Preview: ${options.text?.substring(0, 100) || 'HTML email'}...`);
-            console.log('===================================\n');
-            return { messageId: 'dev-' + Date.now() };
+    // If no transporter (dev mode), just log
+    if (!transporter) {
+        console.log(`
+        ════════════════════════════════════════
+        📧 EMAIL (Development Mode - Not Sent)
+        ════════════════════════════════════════
+        To: ${to}
+        Subject: ${subject}
+        Type: ${emailType}
+        ════════════════════════════════════════
+        `);
+        
+        if (artistId) {
+            await logEmail(artistId, emailType, to, subject, 'sent');
         }
-    };
-};
-
-const transporter = createTransporter();
-
-// Company info
-const COMPANY_NAME = 'Washington Artisan Marketplace';
-const COMPANY_EMAIL = process.env.COMPANY_EMAIL || 'hello@waartisan.com';
-const COMPANY_URL = process.env.COMPANY_URL || 'https://waartisan.com';
-
-/**
- * Send Welcome Email to new customers
- */
-const sendWelcomeEmail = async (email, name) => {
-    const firstName = name ? name.split(' ')[0] : 'there';
+        
+        return { success: true, mode: 'development' };
+    }
     
-    const mailOptions = {
-        from: `"${COMPANY_NAME}" <${COMPANY_EMAIL}>`,
-        to: email,
-        subject: `Welcome to ${COMPANY_NAME}! 🎨`,
-        text: `
-Hi ${firstName}!
-
-Welcome to ${COMPANY_NAME}!
-
-We're thrilled to have you join our community of art lovers and supporters. Here's what you can do now:
-
-🛍️ SHOP - Browse unique handmade items from talented Washington artists
-❤️ SAVE - Add items to your wishlist for later
-🌟 SUPPORT - Every purchase contributes 5% to fighting homelessness
-
-Start exploring: ${COMPANY_URL}
-
-Thank you for being part of our mission to support local artists and make a difference in our community.
-
-With gratitude,
-The ${COMPANY_NAME} Team
-
----
-Questions? Reply to this email or visit our help center.
-        `.trim(),
-        html: `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to ${COMPANY_NAME}</title>
-</head>
-<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9fafb;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; padding: 40px 20px;">
-        <tr>
-            <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
-                    <!-- Header -->
-                    <tr>
-                        <td style="background: linear-gradient(135deg, #7C3AED 0%, #8B5CF6 100%); padding: 40px 30px; text-align: center;">
-                            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700;">🎨 ${COMPANY_NAME}</h1>
-                        </td>
-                    </tr>
-                    
-                    <!-- Content -->
-                    <tr>
-                        <td style="padding: 40px 30px;">
-                            <h2 style="color: #111827; margin: 0 0 20px 0; font-size: 24px;">Hi ${firstName}! 👋</h2>
-                            
-                            <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                                Welcome to <strong>${COMPANY_NAME}</strong>! We're thrilled to have you join our community of art lovers and supporters.
-                            </p>
-                            
-                            <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
-                                Here's what you can do now:
-                            </p>
-                            
-                            <!-- Features -->
-                            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 30px;">
-                                <tr>
-                                    <td style="padding: 15px; background-color: #f5f3ff; border-radius: 12px; margin-bottom: 10px;">
-                                        <table cellpadding="0" cellspacing="0">
-                                            <tr>
-                                                <td style="font-size: 24px; padding-right: 15px;">🛍️</td>
-                                                <td>
-                                                    <strong style="color: #7c3aed;">SHOP</strong>
-                                                    <p style="color: #6b7280; margin: 5px 0 0 0; font-size: 14px;">Browse unique handmade items from talented Washington artists</p>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                                <tr><td style="height: 10px;"></td></tr>
-                                <tr>
-                                    <td style="padding: 15px; background-color: #fef3c7; border-radius: 12px;">
-                                        <table cellpadding="0" cellspacing="0">
-                                            <tr>
-                                                <td style="font-size: 24px; padding-right: 15px;">❤️</td>
-                                                <td>
-                                                    <strong style="color: #d97706;">SAVE</strong>
-                                                    <p style="color: #6b7280; margin: 5px 0 0 0; font-size: 14px;">Add items to your wishlist for later</p>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                                <tr><td style="height: 10px;"></td></tr>
-                                <tr>
-                                    <td style="padding: 15px; background-color: #d1fae5; border-radius: 12px;">
-                                        <table cellpadding="0" cellspacing="0">
-                                            <tr>
-                                                <td style="font-size: 24px; padding-right: 15px;">🌟</td>
-                                                <td>
-                                                    <strong style="color: #059669;">SUPPORT</strong>
-                                                    <p style="color: #6b7280; margin: 5px 0 0 0; font-size: 14px;">Every purchase contributes 5% to fighting homelessness</p>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                            
-                            <!-- CTA Button -->
-                            <table width="100%" cellpadding="0" cellspacing="0">
-                                <tr>
-                                    <td align="center">
-                                        <a href="${COMPANY_URL}" style="display: inline-block; background: linear-gradient(135deg, #7C3AED 0%, #8B5CF6 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 50px; font-weight: 600; font-size: 16px;">
-                                            Start Exploring →
-                                        </a>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    
-                    <!-- Footer -->
-                    <tr>
-                        <td style="background-color: #f9fafb; padding: 30px; text-align: center; border-top: 1px solid #e5e7eb;">
-                            <p style="color: #6b7280; font-size: 14px; margin: 0 0 10px 0;">
-                                Thank you for being part of our mission to support local artists.
-                            </p>
-                            <p style="color: #9ca3af; font-size: 12px; margin: 0;">
-                                With gratitude,<br>
-                                The ${COMPANY_NAME} Team
-                            </p>
-                        </td>
-                    </tr>
-                </table>
-                
-                <!-- Unsubscribe -->
-                <table width="600" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="padding: 20px; text-align: center;">
-                            <p style="color: #9ca3af; font-size: 12px; margin: 0;">
-                                Questions? Reply to this email or visit our help center.<br>
-                                © ${new Date().getFullYear()} ${COMPANY_NAME}. All rights reserved.
-                            </p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body>
-</html>
-        `.trim()
-    };
-
     try {
+        const mailOptions = {
+            from: process.env.FROM_EMAIL || 'noreply@amyshaven.com',
+            to: to,
+            subject: subject,
+            html: html
+        };
+        
         const info = await transporter.sendMail(mailOptions);
-        console.log(`✅ Welcome email sent to ${email} (${info.messageId})`);
+        
+        console.log(`✅ Email sent: ${subject} to ${to}`);
+        
+        if (artistId) {
+            await logEmail(artistId, emailType, to, subject, 'sent');
+        }
+        
         return { success: true, messageId: info.messageId };
     } catch (error) {
-        console.error(`❌ Failed to send welcome email to ${email}:`, error.message);
+        console.error('Error sending email:', error);
+        
+        if (artistId) {
+            await logEmail(artistId, emailType, to, subject, 'failed', error.message);
+        }
+        
         return { success: false, error: error.message };
     }
 };
 
 /**
- * Send Welcome Email to new artists
+ * Artist Onboarding Sequence
  */
-const sendArtistWelcomeEmail = async (email, businessName) => {
-    const mailOptions = {
-        from: `"${COMPANY_NAME}" <${COMPANY_EMAIL}>`,
-        to: email,
-        subject: `Welcome to ${COMPANY_NAME}, Artist! 🎨`,
-        text: `
-Hi ${businessName}!
+const sendWelcomeEmail = async (artistId, artistName, artistEmail) => {
+    const template = EMAIL_TEMPLATES.WELCOME;
+    return await sendEmail(
+        artistEmail,
+        template.subject,
+        template.html(artistName),
+        artistId,
+        'welcome'
+    );
+};
 
-Welcome to ${COMPANY_NAME}!
+const sendFirstProductEmail = async (artistId, artistName, artistEmail, productName) => {
+    const template = EMAIL_TEMPLATES.FIRST_PRODUCT;
+    return await sendEmail(
+        artistEmail,
+        template.subject,
+        template.html(artistName, productName),
+        artistId,
+        'first_product'
+    );
+};
 
-We're excited to have you as a seller on our platform. Here's how to get started:
+const sendFirstSaleEmail = async (artistId, artistName, artistEmail, orderTotal) => {
+    const template = EMAIL_TEMPLATES.FIRST_SALE;
+    return await sendEmail(
+        artistEmail,
+        template.subject,
+        template.html(artistName, orderTotal),
+        artistId,
+        'first_sale'
+    );
+};
 
-1. Complete your shop profile
-2. Add your first products
-3. Set up your payment information
-4. Start selling!
-
-Remember, 5% of every sale goes to fighting homelessness in Washington.
-
-Visit your dashboard: ${COMPANY_URL}/artist-cms/dashboard.html
-
-Questions? Reply to this email.
-
-The ${COMPANY_NAME} Team
-        `.trim(),
-        html: `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Welcome Artist!</title>
-</head>
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f9fafb;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="padding: 40px 20px;">
-        <tr>
-            <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 16px; overflow: hidden;">
-                    <tr>
-                        <td style="background: linear-gradient(135deg, #7C3AED 0%, #8B5CF6 100%); padding: 40px; text-align: center;">
-                            <h1 style="color: #ffffff; margin: 0;">🎨 Welcome, Artist!</h1>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 40px;">
-                            <h2 style="color: #111827;">Hi ${businessName}!</h2>
-                            <p style="color: #4b5563; line-height: 1.6;">
-                                We're thrilled to have you join our community of talented Washington artists!
-                            </p>
-                            <p style="color: #4b5563; line-height: 1.6;">
-                                <strong>Get started:</strong>
-                            </p>
-                            <ol style="color: #4b5563; line-height: 2;">
-                                <li>Complete your shop profile</li>
-                                <li>Add your first products</li>
-                                <li>Set up your payment information</li>
-                                <li>Start selling!</li>
-                            </ol>
-                            <p style="text-align: center; margin-top: 30px;">
-                                <a href="${COMPANY_URL}/artist-cms/dashboard.html" style="background: linear-gradient(135deg, #7C3AED 0%, #8B5CF6 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 50px; font-weight: bold;">
-                                    Go to Dashboard →
-                                </a>
-                            </p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body>
-</html>
-        `.trim()
-    };
-
-    try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log(`✅ Artist welcome email sent to ${email}`);
-        return { success: true, messageId: info.messageId };
-    } catch (error) {
-        console.error(`❌ Failed to send artist welcome email:`, error.message);
-        return { success: false, error: error.message };
-    }
+const sendDay3TipsEmail = async (artistId, artistName, artistEmail) => {
+    const template = EMAIL_TEMPLATES.TIPS_DAY3;
+    return await sendEmail(
+        artistEmail,
+        template.subject,
+        template.html(artistName),
+        artistId,
+        'tips_day3'
+    );
 };
 
 /**
- * Send Password Reset Email
+ * Schedule day 3 tips email (call this from a cron job or scheduled task)
  */
-const sendPasswordResetEmail = async (email, resetToken, userType = 'customer') => {
-    const resetUrl = `${COMPANY_URL}/frontend/reset-password.html?token=${resetToken}`;
-    
-    const mailOptions = {
-        from: `"${COMPANY_NAME}" <${COMPANY_EMAIL}>`,
-        to: email,
-        subject: `Reset Your Password - ${COMPANY_NAME}`,
-        text: `
-You requested a password reset.
-
-Click this link to reset your password:
-${resetUrl}
-
-This link expires in 1 hour.
-
-If you didn't request this, please ignore this email.
-
-The ${COMPANY_NAME} Team
-        `.trim(),
-        html: `
-<!DOCTYPE html>
-<html>
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f9fafb;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="padding: 40px 20px;">
-        <tr>
-            <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 16px;">
-                    <tr>
-                        <td style="padding: 40px; text-align: center;">
-                            <h2 style="color: #111827;">Reset Your Password</h2>
-                            <p style="color: #4b5563;">Click the button below to reset your password. This link expires in 1 hour.</p>
-                            <p style="margin: 30px 0;">
-                                <a href="${resetUrl}" style="background: #7C3AED; color: white; padding: 15px 30px; text-decoration: none; border-radius: 50px; font-weight: bold;">
-                                    Reset Password
-                                </a>
-                            </p>
-                            <p style="color: #9ca3af; font-size: 12px;">If you didn't request this, please ignore this email.</p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body>
-</html>
-        `.trim()
-    };
-
+const scheduleDay3Tips = async () => {
     try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log(`✅ Password reset email sent to ${email}`);
-        return { success: true, messageId: info.messageId };
+        // Find artists who registered 3 days ago and haven't received day 3 tips
+        const threeDaysAgo = new Date();
+        threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+        
+        const { data: artists, error } = await supabaseAdmin
+            .from('artists')
+            .select('id, business_name, email')
+            .gte('created_at', threeDaysAgo.toISOString())
+            .lte('created_at', new Date(threeDaysAgo.getTime() + 86400000).toISOString()) // +24 hours
+            .eq('email_notifications', true);
+        
+        if (error) throw error;
+        
+        for (const artist of artists) {
+            // Check if already sent
+            const { data: existing } = await supabaseAdmin
+                .from('email_logs')
+                .select('id')
+                .eq('artist_id', artist.id)
+                .eq('email_type', 'tips_day3')
+                .eq('status', 'sent')
+                .single();
+            
+            if (!existing) {
+                await sendDay3TipsEmail(artist.id, artist.business_name, artist.email);
+            }
+        }
+        
+        console.log(`✅ Sent day 3 tips to ${artists.length} artists`);
     } catch (error) {
-        console.error(`❌ Failed to send password reset email:`, error.message);
-        return { success: false, error: error.message };
+        console.error('Error scheduling day 3 tips:', error);
     }
 };
 
 module.exports = {
+    sendEmail,
     sendWelcomeEmail,
-    sendArtistWelcomeEmail,
-    sendPasswordResetEmail
+    sendFirstProductEmail,
+    sendFirstSaleEmail,
+    sendDay3TipsEmail,
+    scheduleDay3Tips
 };

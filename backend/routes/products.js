@@ -7,6 +7,7 @@ const express = require('express');
 const router = express.Router();
 const { supabaseAdmin } = require('../config/supabase');
 const { authenticateToken } = require('../middleware/auth');
+const { sendFirstProductEmail } = require('../services/emailService');
 
 // ===================================
 // Public Routes
@@ -243,12 +244,28 @@ router.post('/', authenticateToken, async (req, res) => {
             .insert([productData])
             .select(`
                 *,
-                artist:artists(id, business_name),
+                artist:artists(id, business_name, email),
                 category:categories(id, name)
             `)
             .single();
         
         if (error) throw error;
+        
+        // Check if this is artist's first product
+        const { count } = await supabaseAdmin
+            .from('products')
+            .select('id', { count: 'exact', head: true })
+            .eq('artist_id', req.artist.id);
+        
+        // Send first product email if this is their first
+        if (count === 1) {
+            sendFirstProductEmail(
+                req.artist.id,
+                product.artist.business_name,
+                product.artist.email,
+                product.name
+            ).catch(err => console.error('Error sending first product email:', err));
+        }
         
         res.status(201).json(product);
     } catch (error) {
