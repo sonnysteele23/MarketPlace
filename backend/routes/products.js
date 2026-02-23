@@ -36,7 +36,7 @@ router.get('/', async (req, res) => {
             .from('products')
             .select(`
                 *,
-                artist:artists(id, business_name, profile_image_url, location),
+                artist:artist_id(id, business_name, profile_image_url, location),
                 category:categories(id, name)
             `, { count: 'exact' })
             .eq('is_active', true);
@@ -100,7 +100,7 @@ router.get('/featured', async (req, res) => {
             .from('products')
             .select(`
                 *,
-                artist:artists(id, business_name, profile_image_url)
+                artist:artist_id(id, business_name, profile_image_url)
             `)
             .eq('is_featured', true)
             .eq('is_active', true)
@@ -123,7 +123,7 @@ router.get('/new-arrivals', async (req, res) => {
             .from('products')
             .select(`
                 *,
-                artist:artists(id, business_name, profile_image_url)
+                artist:artist_id(id, business_name, profile_image_url)
             `)
             .eq('is_active', true)
             .order('created_at', { ascending: false })
@@ -154,7 +154,7 @@ router.get('/search', async (req, res) => {
                 name,
                 price,
                 image_url,
-                artist:artists(id, business_name)
+                artist:artist_id(id, business_name)
             `)
             .eq('is_active', true)
             .or(`name.ilike.%${q}%,description.ilike.%${q}%,materials.ilike.%${q}%`)
@@ -176,7 +176,7 @@ router.get('/:id', async (req, res) => {
             .from('products')
             .select(`
                 *,
-                artist:artists(
+                artist:artist_id(
                     id,
                     business_name,
                     bio,
@@ -244,7 +244,7 @@ router.post('/', authenticateToken, async (req, res) => {
             .insert([productData])
             .select(`
                 *,
-                artist:artists(id, business_name, email),
+                artist:artist_id(id, business_name, email),
                 category:categories(id, name)
             `)
             .single();
@@ -320,7 +320,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
             .eq('id', req.params.id)
             .select(`
                 *,
-                artist:artists(id, business_name),
+                artist:artist_id(id, business_name),
                 category:categories(id, name)
             `)
             .single();
