@@ -34,7 +34,7 @@ app.use(helmet({
     crossOriginEmbedderPolicy: false
 }));
 
-// CORS configuration - Allow GitHub Pages and localhost
+// CORS configuration - Allow ALL Amy's Haven domains
 const allowedOrigins = [
     'http://localhost:3000',
     'http://localhost:5000',
@@ -43,26 +43,41 @@ const allowedOrigins = [
     'https://sonnysteele23.github.io',
     'https://amyshaven.com',
     'http://amyshaven.com',
+    'https://www.amyshaven.com',
+    'http://www.amyshaven.com',
     process.env.FRONTEND_URL
 ].filter(Boolean);
 
 app.use(cors({
     origin: function(origin, callback) {
-        // Allow requests with no origin (mobile apps, curl, etc.)
-        if (!origin) return callback(null, true);
+        console.log('🌐 CORS Check - Origin:', origin);
         
-        if (allowedOrigins.some(allowed => origin.startsWith(allowed))) {
+        // Allow requests with no origin (mobile apps, curl, etc.)
+        if (!origin) {
+            console.log('✅ No origin - allowing');
+            return callback(null, true);
+        }
+        
+        // Check if origin matches any allowed origin
+        const isAllowed = allowedOrigins.some(allowed => origin.startsWith(allowed));
+        
+        if (isAllowed) {
+            console.log('✅ Origin allowed:', origin);
             return callback(null, true);
         }
         
         // In development, allow all
         if (process.env.NODE_ENV !== 'production') {
+            console.log('✅ Development mode - allowing all origins');
             return callback(null, true);
         }
         
+        console.log('❌ Origin blocked:', origin);
         callback(new Error('Not allowed by CORS'));
     },
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Body parsing middleware
