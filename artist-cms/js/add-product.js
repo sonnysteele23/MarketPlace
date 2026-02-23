@@ -486,7 +486,7 @@
     `;
     document.head.appendChild(style);
 
-    // Logout
+    // Logout - FIXED: Correct redirect path
     function initLogout() {
         const logoutBtn = document.getElementById('logout-btn');
         if (logoutBtn) {
@@ -494,7 +494,7 @@
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 localStorage.removeItem('userType');
-                window.location.href = '../frontend/index.html';
+                window.location.href = '../index.html';
             });
         }
     }
