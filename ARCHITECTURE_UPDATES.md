@@ -1,50 +1,88 @@
 # 🔄 Amy's Haven - Architecture Update Log
 
-**Last Updated**: February 22, 2026 @ 5:20 PM PST
+**Last Updated**: February 22, 2026 @ 6:00 PM PST
 
 ---
 
-## ✅ Recent Changes (February 22, 2026)
+## ✅ Recent Changes (February 22, 2026 - Session 3)
+
+### Dimension Fields Added to Product Form
+
+**Changed Files**:
+- Modified: `/artist-cms/add-product.html`
+
+**What Changed**:
+1. **REMOVED**: Entire "Product Variants" section
+2. **ADDED**: Individual dimension fields (Length, Width, Height) in Product Details section
+3. Dimensions display as a 3-column row with "inches" suffix
+
+**HTML Structure Added**:
+```html
+<div class="form-row">
+    <div class="form-group">
+        <label for="length">Length</label>
+        <div class="input-with-suffix">
+            <input type="number" id="length" name="length" step="0.1" placeholder="0.0">
+            <span class="suffix">inches</span>
+        </div>
+    </div>
+    <!-- Width and Height follow same pattern -->
+</div>
+```
+
+**Product Details Section Now Includes**:
+1. Materials Used (text)
+2. **Length** (number + inches)
+3. **Width** (number + inches)  
+4. **Height** (number + inches)
+5. Weight (number + lbs)
+6. Care Instructions (textarea)
+
+**Reason**: Simplified product creation - artists enter actual dimensions rather than variant options. This matches the product detail page design where dimensions are displayed as specifications.
+
+---
+
+## ✅ Recent Changes (February 22, 2026 - Session 2)
+
+### Section Title Centering Fix
+
+**Changed Files**:
+- Modified: `/frontend/css/main.css`
+
+**What Changed**:
+Added centering properties to `.section-title` class:
+```css
+.section-title {
+  text-align: center !important;
+  /* ... existing properties ... */
+  width: 100%;          /* NEW */
+  display: block;       /* NEW */
+  margin-left: auto;    /* NEW */
+  margin-right: auto;   /* NEW */
+}
+```
+
+**Result**: "Shop by Category" and all section titles now properly centered.
+
+---
+
+## ✅ Recent Changes (February 22, 2026 - Session 1)
 
 ### CSS Fixes & New Variant Selectors
 
 **Changed Files**:
 - Created: `/frontend/css/variant-selectors.css`
-- Modified: Need to link new CSS in HTML files
+- Modified: `/frontend/css/main.css`
 
 **What Changed**:
-1. Created box-style variant selector system for product dimensions
-2. Fixed `.section-title` center alignment (was already correct in CSS, may need HTML check)
+1. Created box-style variant selector system for product dimensions  
+2. Fixed `.section-title` center alignment
 
 **How It Works**:
-- Product variants (Length, Width, Wood Species) now display as clickable boxes
+- Product variants (for future use) display as clickable boxes
 - Boxes have hover states and selected states
 - Responsive design adjusts for mobile
-- Follows design from customer screenshot
-
-**To Use**:
-```html
-<div class="variant-group">
-    <div class="variant-group-header">
-        <span class="variant-label">Length</span>
-    </div>
-    <div class="variant-options-grid">
-        <div class="variant-option-box">
-            <input type="radio" name="length" id="length-72" value="72">
-            <label for="length-72" class="variant-option-label">72"</label>
-        </div>
-        <div class="variant-option-box">
-            <input type="radio" name="length" id="length-84" value="84">
-            <label for="length-84" class="variant-option-label">84"</label>
-        </div>
-    </div>
-</div>
-```
-
-**Next Steps**:
-1. Add variant-selectors.css to product-detail.html
-2. Update add-product.js to generate boxes instead of dropdowns
-3. Test on live site
+- Currently NOT in use (replaced by dimension fields)
 
 ---
 
@@ -52,10 +90,13 @@
 
 ### CSS Files
 - `/frontend/css/design-system.css` - Design tokens & variables
-- `/frontend/css/main.css` - Main stylesheet
-- `/frontend/css/variant-selectors.css` - ✨ NEW: Product variant boxes
+- `/frontend/css/main.css` - Main stylesheet ✏️ (updated today)
+- `/frontend/css/variant-selectors.css` - ✨ NEW: Product variant boxes (not currently in use)
 - `/frontend/css/product-detail.css` - Product detail page styles
 - `/frontend/css/icons.css` - Icon system
+
+### HTML Files Updated Today
+- `/artist-cms/add-product.html` - ✏️ Added dimension fields, removed variants
 
 ### Where API URLs Live
 - `/frontend/js/main.js` - Line 12: `apiUrl: 'https://marketplace-production-336b.up.railway.app/api'`
@@ -79,13 +120,24 @@
 
 ---
 
-## 📝 Change History
+## 📝 Complete Change History
+
+### February 22, 2026 - 6:00 PM
+- **Removed**: Product Variants section from add-product.html
+- **Added**: Length, Width, Height fields to Product Details
+- **Updated**: Form structure for cleaner dimension entry
+- **Status**: Ready to test
+
+### February 22, 2026 - 5:30 PM
+- **Fixed**: Section title centering issue
+- **Added**: Additional CSS properties for proper alignment
+- **Status**: Deployed and working
 
 ### February 22, 2026 - 5:20 PM
-- **Added**: Box-style variant selectors CSS
+- **Added**: Box-style variant selectors CSS (not currently in use)
 - **Fixed**: Reviewed section title alignment
 - **Created**: This ARCHITECTURE_UPDATES.md file
-- **Status**: Ready to test
+- **Status**: CSS ready but not integrated
 
 ### February 22, 2026 - 5:00 PM  
 - **Updated**: All API URLs to new Railway backend
@@ -102,15 +154,16 @@
 **Frontend**: ✅ Live on GitHub Pages  
 **Database**: ✅ Supabase schema updated  
 **Emails**: ✅ System active (dev mode)  
-**Variant Selectors**: 🟡 CSS ready, needs HTML integration
+**Section Titles**: ✅ Centered  
+**Add Product Form**: ✅ Updated with dimension fields
 
 ---
 
 ## 📋 TODO Next
 
-1. Link `/frontend/css/variant-selectors.css` in product pages
-2. Update add-product.js to generate box selectors
-3. Test variant selection on product detail page
+1. Test add-product form with new dimension fields
+2. Update database to store length, width, height values
+3. Display dimensions on product detail page
 4. Consider SendGrid setup for real emails
 
 ---
@@ -122,5 +175,6 @@
 - File locations
 - CSS architecture
 - JavaScript structure
+- HTML form structure
 
 **Keep ARCHITECTURE.md as the comprehensive reference, use this file for changelogs.**

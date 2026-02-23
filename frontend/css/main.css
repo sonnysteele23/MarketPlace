@@ -357,6 +357,10 @@
   font-weight: var(--font-bold);
   color: var(--gray-900);
   margin-bottom: var(--space-3);
+  width: 100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .section-subtitle {
