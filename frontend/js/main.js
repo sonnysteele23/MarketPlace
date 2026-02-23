@@ -10,7 +10,7 @@
 const AppState = {
     cart: JSON.parse(localStorage.getItem('cart')) || [],
     user: JSON.parse(localStorage.getItem('user')) || null,
-    apiUrl: '/api' // Update with actual API URL
+    apiUrl: 'https://marketplace-production-336b.up.railway.app/api'
 };
 
 // ===================================

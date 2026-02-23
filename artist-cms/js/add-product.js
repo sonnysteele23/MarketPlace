@@ -9,7 +9,7 @@
     // API Configuration
     const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? 'http://localhost:3000/api'
-        : 'https://marketplace-production-57b7.up.railway.app/api';
+        : 'https://marketplace-production-336b.up.railway.app/api';
 
     // State
     let uploadedImages = [];
