@@ -29,7 +29,9 @@
     async function fetchCategories() {
         try {
             // Fetch categories with product counts
-            const response = await fetch(PRODUCTS_API_URL + '/categories/stats/counts');
+            const response = await fetch(PRODUCTS_API_URL + '/categories/stats/counts', {
+                signal: AbortSignal.timeout(10000) // 10 second timeout
+            });
             
             if (!response.ok) {
                 throw new Error('Failed to fetch categories');
@@ -41,9 +43,22 @@
             
         } catch (error) {
             console.error('Error fetching categories:', error);
+            // Show user-friendly message in the category filter
+            const filterGroups = document.querySelectorAll('.filter-group');
+            filterGroups.forEach(group => {
+                const title = group.querySelector('.filter-title');
+                if (title && title.textContent.trim() === 'Category') {
+                    const optionsContainer = group.querySelector('.filter-options');
+                    if (optionsContainer) {
+                        optionsContainer.innerHTML = '<div class="filter-loading" style="color:#EF4444;font-size:0.8rem;">Backend offline — check Railway</div>';
+                    }
+                }
+            });
             // Fallback: try basic categories endpoint
             try {
-                const fallbackResponse = await fetch(PRODUCTS_API_URL + '/categories');
+                const fallbackResponse = await fetch(PRODUCTS_API_URL + '/categories', {
+                    signal: AbortSignal.timeout(10000)
+                });
                 if (fallbackResponse.ok) {
                     const categories = await fallbackResponse.json();
                     allCategories = categories;
