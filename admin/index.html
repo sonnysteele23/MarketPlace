@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #4C1D95 0%, #6B46C1 50%, #8B5CF6 100%);
@@ -19,6 +20,7 @@
             justify-content: center;
             padding: 20px;
         }
+
         .login-card {
             background: #fff;
             border-radius: 20px;
@@ -27,10 +29,12 @@
             max-width: 420px;
             box-shadow: 0 30px 80px rgba(0,0,0,0.3);
         }
+
         .logo-area {
             text-align: center;
             margin-bottom: 32px;
         }
+
         .logo-icon {
             width: 64px;
             height: 64px;
@@ -42,15 +46,55 @@
             margin: 0 auto 16px;
             color: #fff;
         }
+
         .logo-icon svg { width: 32px; height: 32px; }
+
         .logo-area h1 {
             font-family: 'Playfair Display', serif;
             font-size: 22px;
             color: #111827;
             margin-bottom: 4px;
         }
+
         .logo-area p { font-size: 14px; color: #6B7280; }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #FEF3C7;
+            color: #92400E;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-top: 8px;
+        }
+
+        .badge svg { width: 12px; height: 12px; }
+
+        /* Error message - hidden by default, no conflicting display values */
+        .error-msg {
+            background: #FEF2F2;
+            color: #B91C1C;
+            border: 1px solid #FECACA;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-msg.show {
+            display: flex;
+        }
+
+        .error-msg svg { width: 18px; height: 18px; flex-shrink: 0; }
+
         .form-group { margin-bottom: 20px; }
+
         label {
             display: block;
             font-size: 14px;
@@ -58,19 +102,26 @@
             color: #374151;
             margin-bottom: 6px;
         }
+
         .input-wrap {
             position: relative;
             display: flex;
             align-items: center;
         }
+
         .input-wrap .icon {
             position: absolute;
             left: 14px;
             color: #9CA3AF;
             display: flex;
+            pointer-events: none;
         }
+
         .input-wrap .icon svg { width: 18px; height: 18px; }
-        input[type="email"], input[type="password"] {
+
+        input[type="email"],
+        input[type="password"],
+        input[type="text"] {
             width: 100%;
             padding: 12px 14px 12px 42px;
             border: 2px solid #E5E7EB;
@@ -79,10 +130,16 @@
             font-family: 'Inter', sans-serif;
             color: #111827;
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
             background: #FAFAFA;
         }
-        input:focus { border-color: #6B46C1; background: #fff; box-shadow: 0 0 0 3px rgba(107,70,193,0.1); }
+
+        input:focus {
+            border-color: #6B46C1;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(107,70,193,0.1);
+        }
+
         .toggle-pw {
             position: absolute;
             right: 14px;
@@ -93,8 +150,10 @@
             display: flex;
             padding: 4px;
         }
+
         .toggle-pw:hover { color: #6B46C1; }
         .toggle-pw svg { width: 18px; height: 18px; }
+
         .btn-login {
             width: 100%;
             padding: 14px;
@@ -113,37 +172,31 @@
             transition: all 0.2s;
             margin-top: 8px;
         }
-        .btn-login:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(107,70,193,0.4); }
-        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .btn-login:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(107,70,193,0.4);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
         .btn-login svg { width: 18px; height: 18px; }
-        .error-msg {
-            display: none;
-            background: #FEF2F2;
-            color: #B91C1C;
-            border: 1px solid #FECACA;
-            border-radius: 8px;
-            padding: 12px 16px;
-            font-size: 14px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
         }
-        .error-msg svg { width: 18px; height: 18px; flex-shrink: 0; }
-        .error-msg.hidden { display: none; }
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #FEF3C7;
-            color: #92400E;
-            font-size: 12px;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 20px;
-            margin-top: 8px;
-        }
-        .badge svg { width: 12px; height: 12px; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -155,7 +208,7 @@
             <div class="badge"><i data-lucide="lock"></i> Restricted Access</div>
         </div>
 
-        <div class="error-msg hidden" id="error-msg">
+        <div class="error-msg" id="error-msg">
             <i data-lucide="alert-circle"></i>
             <span id="error-text">Invalid email or password.</span>
         </div>
@@ -192,7 +245,42 @@
             ? 'http://localhost:3000/api'
             : 'https://marketplace-production-57b7.up.railway.app/api';
 
-        // Toggle password
+        // Check if already logged in - verify token is valid before redirecting
+        (async function checkExistingSession() {
+            const token = localStorage.getItem('adminToken');
+            if (!token) return;
+
+            // Check client-side expiry first
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                if (payload.exp && payload.exp * 1000 < Date.now()) {
+                    localStorage.removeItem('adminToken');
+                    localStorage.removeItem('adminUser');
+                    return;
+                }
+            } catch(e) {
+                localStorage.removeItem('adminToken');
+                localStorage.removeItem('adminUser');
+                return;
+            }
+
+            // Verify with server
+            try {
+                const res = await fetch(`${API}/admin/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    window.location.href = 'product-approvals.html';
+                } else {
+                    localStorage.removeItem('adminToken');
+                    localStorage.removeItem('adminUser');
+                }
+            } catch(e) {
+                // Network error - don't redirect, just let them log in
+            }
+        })();
+
+        // Password toggle
         document.getElementById('toggle-pw').addEventListener('click', function() {
             const pw = document.getElementById('password');
             const icon = document.getElementById('eye-icon');
@@ -207,30 +295,36 @@
         });
 
         // Enter key submits
-        document.getElementById('password').addEventListener('keydown', e => {
-            if (e.key === 'Enter') login();
+        ['email', 'password'].forEach(id => {
+            document.getElementById(id).addEventListener('keydown', e => {
+                if (e.key === 'Enter') login();
+            });
         });
-        document.getElementById('email').addEventListener('keydown', e => {
-            if (e.key === 'Enter') login();
-        });
+
+        function showError(msg) {
+            const el = document.getElementById('error-msg');
+            document.getElementById('error-text').textContent = msg;
+            el.classList.add('show');
+        }
+
+        function hideError() {
+            document.getElementById('error-msg').classList.remove('show');
+        }
 
         async function login() {
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const btn = document.getElementById('login-btn');
             const btnText = document.getElementById('btn-text');
-            const errorEl = document.getElementById('error-msg');
-            const errorText = document.getElementById('error-text');
 
             if (!email || !password) {
-                errorEl.classList.remove('hidden');
-                errorText.textContent = 'Please enter your email and password.';
+                showError('Please enter your email and password.');
                 return;
             }
 
             btn.disabled = true;
-            btnText.textContent = 'Signing in…';
-            errorEl.classList.add('hidden');
+            btn.innerHTML = '<div class="spinner"></div><span>Signing in…</span>';
+            hideError();
 
             try {
                 const res = await fetch(`${API}/admin/login`, {
@@ -240,28 +334,21 @@
                 });
 
                 const data = await res.json();
-
                 if (!res.ok) throw new Error(data.error || 'Login failed');
 
                 localStorage.setItem('adminToken', data.token);
                 localStorage.setItem('adminUser', JSON.stringify(data.admin));
-
                 window.location.href = 'product-approvals.html';
+
             } catch (err) {
-                errorEl.classList.remove('hidden');
-                errorText.textContent = err.message || 'Login failed. Please try again.';
+                showError(err.message || 'Login failed. Please try again.');
                 btn.disabled = false;
-                btnText.textContent = 'Sign In';
+                btn.innerHTML = '<i data-lucide="log-in"></i><span>Sign In</span>';
+                lucide.createIcons();
             }
         }
 
         document.getElementById('login-btn').addEventListener('click', login);
-
-        // If already logged in, redirect
-        const existingToken = localStorage.getItem('adminToken');
-        if (existingToken) {
-            window.location.href = 'product-approvals.html';
-        }
     </script>
 </body>
 </html>
