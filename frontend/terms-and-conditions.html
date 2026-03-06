@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-86QXTNGM13"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-86QXTNGM13');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms &amp; Conditions | Amy's Haven</title>
+    <meta name="description" content="Amy's Haven Terms and Conditions — the rules and guidelines for using our handmade marketplace.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://amyshaven.com/frontend/terms-and-conditions.html">
+
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/icons.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        .legal-hero {
+            background: var(--gradient-primary);
+            color: var(--white);
+            padding: var(--space-16) 0 var(--space-12);
+            text-align: center;
+        }
+        .legal-hero h1 {
+            font-family: var(--font-display);
+            font-size: var(--text-4xl);
+            font-weight: var(--font-bold);
+            margin-bottom: var(--space-3);
+        }
+        .legal-hero p { opacity: 0.9; font-size: var(--text-base); }
+        .legal-body {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: var(--space-12) var(--space-4) var(--space-16);
+        }
+        .legal-toc {
+            background: var(--primary-50);
+            border: 1px solid var(--primary-100);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            margin-bottom: var(--space-10);
+        }
+        .legal-toc h2 {
+            font-size: var(--text-base);
+            font-weight: var(--font-semibold);
+            color: var(--primary-700);
+            margin-bottom: var(--space-3);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        .legal-toc ol {
+            list-style: decimal;
+            padding-left: var(--space-5);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-1) var(--space-8);
+        }
+        .legal-toc ol li { padding: var(--space-1) 0; }
+        .legal-toc ol li a {
+            color: var(--primary-600);
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            transition: color var(--transition-fast);
+        }
+        .legal-toc ol li a:hover { color: var(--primary-800); text-decoration: underline; }
+        .legal-section {
+            margin-bottom: var(--space-10);
+            scroll-margin-top: 80px;
+        }
+        .legal-section h2 {
+            font-family: var(--font-display);
+            font-size: var(--text-2xl);
+            font-weight: var(--font-semibold);
+            color: var(--gray-900);
+            margin-bottom: var(--space-4);
+            padding-bottom: var(--space-3);
+            border-bottom: 2px solid var(--primary-100);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        .legal-section h2 .section-num {
+            background: var(--gradient-primary);
+            color: var(--white);
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-sm);
+            font-family: var(--font-sans);
+            flex-shrink: 0;
+        }
+        .legal-section h3 {
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            color: var(--gray-800);
+            margin: var(--space-5) 0 var(--space-2);
+        }
+        .legal-section p {
+            color: var(--gray-700);
+            line-height: var(--leading-relaxed);
+            margin-bottom: var(--space-4);
+        }
+        .legal-section ul, .legal-section ol {
+            padding-left: var(--space-5);
+            margin-bottom: var(--space-4);
+        }
+        .legal-section ul { list-style: disc; }
+        .legal-section ol { list-style: decimal; }
+        .legal-section li {
+            color: var(--gray-700);
+            line-height: var(--leading-relaxed);
+            margin-bottom: var(--space-2);
+        }
+        .legal-section a { color: var(--primary-600); text-decoration: underline; }
+        .legal-section a:hover { color: var(--primary-800); }
+        .info-box {
+            background: var(--primary-50);
+            border-left: 4px solid var(--primary-500);
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+            padding: var(--space-4) var(--space-5);
+            margin: var(--space-4) 0;
+        }
+        .info-box p { margin: 0; color: var(--primary-800); font-size: var(--text-sm); }
+        .warning-box {
+            background: var(--accent-orange-light);
+            border-left: 4px solid var(--accent-orange);
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+            padding: var(--space-4) var(--space-5);
+            margin: var(--space-4) 0;
+        }
+        .warning-box p { margin: 0; color: #7C2D12; font-size: var(--text-sm); }
+        .fee-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--space-4) 0;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        .fee-table th {
+            background: var(--gradient-primary);
+            color: var(--white);
+            padding: var(--space-3) var(--space-4);
+            text-align: left;
+            font-size: var(--text-sm);
+            font-weight: var(--font-semibold);
+        }
+        .fee-table td {
+            padding: var(--space-3) var(--space-4);
+            border-bottom: 1px solid var(--gray-100);
+            font-size: var(--text-sm);
+            color: var(--gray-700);
+        }
+        .fee-table tr:last-child td { border-bottom: none; }
+        .fee-table tr:nth-child(even) td { background: var(--gray-50); }
+        .contact-box {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            margin-top: var(--space-6);
+            text-align: center;
+        }
+        .contact-box h3 { margin-top: 0 !important; margin-bottom: var(--space-2) !important; }
+        .contact-box p { margin-bottom: var(--space-2); }
+        .contact-box a.btn { display: inline-flex; margin-top: var(--space-3); }
+        .effective-date {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            background: var(--white);
+            color: var(--gray-600);
+            font-size: var(--text-sm);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-full);
+            border: 1px solid var(--gray-200);
+            margin-bottom: var(--space-8);
+        }
+        @media (max-width: 640px) {
+            .legal-toc ol { grid-template-columns: 1fr; }
+            .legal-hero h1 { font-size: var(--text-3xl); }
+            .fee-table { font-size: var(--text-xs); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="nav-wrapper">
+                <a href="../index.html" class="logo">
+                    <img src="images/branding/logo-horizontal.svg" alt="Amy's Haven" class="logo-img logo-horizontal">
+                </a>
+                <div class="search-bar-container">
+                    <form class="search-form" action="products.html" method="GET">
+                        <input type="search" name="q" placeholder="Search handmade items..." class="search-input" aria-label="Search products">
+                        <button type="submit" class="search-btn" aria-label="Search">
+                            <i data-lucide="search"></i>
+                        </button>
+                    </form>
+                </div>
+                <div class="nav-links">
+                    <a href="products.html">Shop</a>
+                    <a href="about.html">Our Mission</a>
+                    <a href="../artist-cms/dashboard.html">Sell</a>
+                    <a href="#" class="cart-link">
+                        <i data-lucide="shopping-bag"></i>
+                        <span class="cart-count">0</span>
+                    </a>
+                    <div class="nav-auth"></div>
+                </div>
+                <button class="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <div class="container">
+            <ol>
+                <li><a href="../index.html">Home</a></li>
+                <li><span aria-current="page">Terms &amp; Conditions</span></li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="legal-hero">
+        <div class="container">
+            <h1>Terms &amp; Conditions</h1>
+            <p>The rules and guidelines for using Amy's Haven marketplace</p>
+        </div>
+    </section>
+
+    <!-- Body -->
+    <main>
+        <div class="legal-body">
+
+            <div class="effective-date">
+                <i data-lucide="calendar" style="width:16px;height:16px;"></i>
+                Effective Date: March 1, 2025 &nbsp;|&nbsp; Last Updated: March 1, 2025
+            </div>
+
+            <!-- Table of Contents -->
+            <div class="legal-toc">
+                <h2><i data-lucide="list" style="width:18px;height:18px;"></i> Table of Contents</h2>
+                <ol>
+                    <li><a href="#acceptance">Acceptance of Terms</a></li>
+                    <li><a href="#eligibility">Eligibility</a></li>
+                    <li><a href="#accounts">User Accounts</a></li>
+                    <li><a href="#buyer-terms">Buyer Terms</a></li>
+                    <li><a href="#artist-terms">Artist / Seller Terms</a></li>
+                    <li><a href="#fees">Fees &amp; Payments</a></li>
+                    <li><a href="#prohibited">Prohibited Content &amp; Conduct</a></li>
+                    <li><a href="#ip">Intellectual Property</a></li>
+                    <li><a href="#social-impact">Social Impact Contribution</a></li>
+                    <li><a href="#disclaimers">Disclaimers &amp; Limitation of Liability</a></li>
+                    <li><a href="#disputes">Disputes</a></li>
+                    <li><a href="#termination">Termination</a></li>
+                    <li><a href="#changes">Changes to These Terms</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                </ol>
+            </div>
+
+            <div class="info-box">
+                <p><strong>Please read these Terms &amp; Conditions carefully.</strong> By accessing or using Amy's Haven ("Platform," "we," "our," or "us") at <strong>amyshaven.com</strong>, you agree to be bound by these Terms. If you do not agree, please do not use our Platform.</p>
+            </div>
+
+            <!-- 1 -->
+            <section class="legal-section" id="acceptance">
+                <h2><span class="section-num">1</span> Acceptance of Terms</h2>
+                <p>These Terms &amp; Conditions ("Terms") constitute a legally binding agreement between you and Amy's Haven. By creating an account, browsing the Platform, or completing a purchase, you confirm that you have read, understood, and agree to these Terms, along with our <a href="privacy-policy.html">Privacy Policy</a>, which is incorporated herein by reference.</p>
+                <p>We reserve the right to modify these Terms at any time. Continued use of the Platform after changes constitutes acceptance of the updated Terms.</p>
+            </section>
+
+            <!-- 2 -->
+            <section class="legal-section" id="eligibility">
+                <h2><span class="section-num">2</span> Eligibility</h2>
+                <p>You must be at least <strong>18 years old</strong> to use Amy's Haven. By using the Platform, you represent and warrant that:</p>
+                <ul>
+                    <li>You are at least 18 years of age, or 13–17 with verifiable parental or guardian consent</li>
+                    <li>You have the legal capacity to enter into a binding contract</li>
+                    <li>You are not barred from using the Platform under any applicable law</li>
+                    <li>You will comply with these Terms and all applicable local, state, and federal laws</li>
+                </ul>
+            </section>
+
+            <!-- 3 -->
+            <section class="legal-section" id="accounts">
+                <h2><span class="section-num">3</span> User Accounts</h2>
+                <h3>Registration</h3>
+                <p>To access certain features you must register for an account. You agree to provide accurate, current, and complete information and to keep your account information updated.</p>
+
+                <h3>Account Security</h3>
+                <p>You are responsible for maintaining the confidentiality of your login credentials and for all activity that occurs under your account. Notify us immediately at <a href="mailto:admin@amyshaven.com">admin@amyshaven.com</a> if you suspect unauthorized access.</p>
+
+                <h3>One Account Per Person</h3>
+                <p>Each individual may maintain one customer account and one artist account. Creating multiple accounts to circumvent restrictions or earn unfair advantages is prohibited.</p>
+
+                <h3>Account Types</h3>
+                <ul>
+                    <li><strong>Customer Account:</strong> For browsing, purchasing products, and managing orders.</li>
+                    <li><strong>Artist Account:</strong> For listing, managing, and selling handmade products on the Platform.</li>
+                </ul>
+            </section>
+
+            <!-- 4 -->
+            <section class="legal-section" id="buyer-terms">
+                <h2><span class="section-num">4</span> Buyer Terms</h2>
+                <h3>Purchases</h3>
+                <p>When you place an order on Amy's Haven, you are entering into a purchase agreement directly with the selling artist. Amy's Haven facilitates the transaction but is not the seller of record unless explicitly stated.</p>
+
+                <h3>Pricing</h3>
+                <p>All prices are displayed in US dollars (USD). The price you pay includes the artist's listed price plus a 10% marketplace fee. Applicable taxes and shipping costs are displayed at checkout before you confirm your order.</p>
+
+                <h3>Payment</h3>
+                <p>Payments are processed securely through Stripe. By providing payment information, you authorize us to charge the total amount due. We accept major credit and debit cards.</p>
+
+                <h3>Order Confirmation</h3>
+                <p>An email confirmation will be sent after your order is placed. This confirmation does not guarantee fulfillment; orders are subject to artist acceptance and stock availability.</p>
+
+                <h3>Shipping &amp; Delivery</h3>
+                <p>Shipping timelines and costs are set by individual artists and displayed on each product listing. Amy's Haven is not responsible for carrier delays. Risk of loss passes to you upon handoff to the shipping carrier.</p>
+
+                <h3>Returns &amp; Refunds</h3>
+                <ul>
+                    <li>Items that arrive damaged, defective, or significantly not as described are eligible for a refund or replacement. Contact <a href="mailto:admin@amyshaven.com">admin@amyshaven.com</a> within <strong>7 days</strong> of delivery with photos.</li>
+                    <li>Because most items are handmade to order, general change-of-mind returns are at the artist's discretion. Check each listing's return policy.</li>
+                    <li>Approved refunds will be processed within 5–10 business days to the original payment method.</li>
+                    <li>Shipping costs are non-refundable unless the return is due to our error.</li>
+                </ul>
+            </section>
+
+            <!-- 5 -->
+            <section class="legal-section" id="artist-terms">
+                <h2><span class="section-num">5</span> Artist / Seller Terms</h2>
+                <h3>Eligibility to Sell</h3>
+                <p>To sell on Amy's Haven, you must be 18 or older, create an artist account, and agree to these Terms. We reserve the right to approve or reject artist applications at our discretion.</p>
+
+                <h3>Product Listings</h3>
+                <p>By listing a product, you represent and warrant that:</p>
+                <ul>
+                    <li>The item is handmade, hand-assembled, or a handmade design by you or your studio</li>
+                    <li>You have the right to sell the item and it does not infringe any third-party intellectual property rights</li>
+                    <li>All product descriptions, images, and details are accurate and not misleading</li>
+                    <li>The item complies with all applicable laws, including safety and consumer protection regulations</li>
+                    <li>You will fulfill orders in a timely manner consistent with your stated processing time</li>
+                </ul>
+
+                <h3>Prohibited Items</h3>
+                <p>You may not list items that are mass-produced, counterfeit, illegal, stolen, hazardous, or that violate intellectual property rights. Amy's Haven reserves the right to remove any listing at any time.</p>
+
+                <h3>Order Fulfillment</h3>
+                <p>You are responsible for fulfilling all accepted orders, communicating shipping information, and resolving disputes directly with buyers. Failure to fulfill orders may result in account suspension.</p>
+
+                <h3>Artist Earnings</h3>
+                <p>You will receive your listed price for each sale, less applicable payment processing fees charged by Stripe (approximately 2.9% + $0.30 per transaction). Payouts are processed on a rolling basis per Stripe's standard schedule.</p>
+            </section>
+
+            <!-- 6 -->
+            <section class="legal-section" id="fees">
+                <h2><span class="section-num">6</span> Fees &amp; Payments</h2>
+                <p>Amy's Haven operates on a transparent fee structure:</p>
+
+                <table class="fee-table">
+                    <thead>
+                        <tr>
+                            <th>Fee Type</th>
+                            <th>Amount</th>
+                            <th>Paid By</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Marketplace Fee</td>
+                            <td>10% of sale price</td>
+                            <td>Buyer (added at checkout)</td>
+                            <td>Platform operations</td>
+                        </tr>
+                        <tr>
+                            <td>Social Impact Contribution</td>
+                            <td>5% of sale price</td>
+                            <td>Platform (from marketplace fee)</td>
+                            <td>Homelessness solutions</td>
+                        </tr>
+                        <tr>
+                            <td>Payment Processing</td>
+                            <td>~2.9% + $0.30</td>
+                            <td>Deducted from artist payout</td>
+                            <td>Stripe payment processing</td>
+                        </tr>
+                        <tr>
+                            <td>Listing Fee</td>
+                            <td>Free</td>
+                            <td>N/A</td>
+                            <td>No charge to list products</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>All fees are subject to change with reasonable advance notice. We will notify artists of fee changes at least 30 days before they take effect.</p>
+            </section>
+
+            <!-- 7 -->
+            <section class="legal-section" id="prohibited">
+                <h2><span class="section-num">7</span> Prohibited Content &amp; Conduct</h2>
+                <p>You agree not to use Amy's Haven to:</p>
+                <ul>
+                    <li>Post, sell, or promote illegal, counterfeit, or stolen goods</li>
+                    <li>Harass, threaten, or harm other users or artists</li>
+                    <li>Submit false, fraudulent, or misleading information</li>
+                    <li>Violate any third party's intellectual property, privacy, or other rights</li>
+                    <li>Use automated bots, scrapers, or tools to access the Platform without authorization</li>
+                    <li>Manipulate pricing, reviews, or search rankings</li>
+                    <li>Conduct transactions outside the Platform to circumvent our fees</li>
+                    <li>Upload malicious code, viruses, or any software intended to damage or disrupt the Platform</li>
+                    <li>Impersonate any person, artist, or Amy's Haven staff</li>
+                    <li>Violate any local, state, national, or international law or regulation</li>
+                </ul>
+                <div class="warning-box">
+                    <p><strong>Violations may result in immediate account suspension, removal of listings, and/or legal action.</strong></p>
+                </div>
+            </section>
+
+            <!-- 8 -->
+            <section class="legal-section" id="ip">
+                <h2><span class="section-num">8</span> Intellectual Property</h2>
+                <h3>Amy's Haven Content</h3>
+                <p>The Amy's Haven name, logo, platform design, and all associated content are the exclusive property of Amy's Haven. You may not copy, reproduce, distribute, or create derivative works without our express written permission.</p>
+
+                <h3>Artist Content</h3>
+                <p>By uploading product images, descriptions, and other content to the Platform, you grant Amy's Haven a non-exclusive, worldwide, royalty-free license to display, reproduce, and promote your content solely for the purpose of operating and marketing the Platform.</p>
+                <p>You retain full ownership of your original artwork, designs, and creative works. Amy's Haven will never claim ownership of your creations.</p>
+
+                <h3>Copyright Infringement</h3>
+                <p>If you believe that content on our Platform infringes your copyright, please notify us at <a href="mailto:admin@amyshaven.com">admin@amyshaven.com</a> with sufficient detail for us to investigate and respond appropriately.</p>
+            </section>
+
+            <!-- 9 -->
+            <section class="legal-section" id="social-impact">
+                <h2><span class="section-num">9</span> Social Impact Contribution</h2>
+                <p>Amy's Haven is committed to fighting homelessness. We allocate <strong>5% of every sale</strong> to vetted organizations working on homelessness solutions across the United States.</p>
+                <ul>
+                    <li>This contribution is funded from Amy's Haven's marketplace fee — it does not reduce artist earnings or increase buyer prices beyond the disclosed 10% fee.</li>
+                    <li>We publish periodic impact reports detailing how contributions are allocated.</li>
+                    <li>Partner organizations are selected based on transparency, impact, and alignment with our mission.</li>
+                    <li>Amy's Haven reserves the right to change partner organizations while maintaining our commitment to the social impact mission.</li>
+                </ul>
+            </section>
+
+            <!-- 10 -->
+            <section class="legal-section" id="disclaimers">
+                <h2><span class="section-num">10</span> Disclaimers &amp; Limitation of Liability</h2>
+                <h3>Platform Provided "As Is"</h3>
+                <p>Amy's Haven provides the Platform on an "as is" and "as available" basis without warranties of any kind, either express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement.</p>
+
+                <h3>Marketplace Disclaimer</h3>
+                <p>Amy's Haven is a marketplace platform. We do not manufacture, inspect, or warranty any products sold by artists. We are not responsible for the quality, safety, legality, or accuracy of any products or listings.</p>
+
+                <h3>Limitation of Liability</h3>
+                <p>To the fullest extent permitted by law, Amy's Haven and its officers, directors, employees, and agents shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, data, or goodwill, arising out of or related to your use of the Platform, even if advised of the possibility of such damages.</p>
+                <p>Our total aggregate liability to you for any claim arising from or related to these Terms or your use of the Platform shall not exceed the greater of (a) the total fees paid by you in the 12 months preceding the claim, or (b) $100.</p>
+            </section>
+
+            <!-- 11 -->
+            <section class="legal-section" id="disputes">
+                <h2><span class="section-num">11</span> Disputes</h2>
+                <h3>Between Buyers and Artists</h3>
+                <p>Amy's Haven encourages buyers and artists to resolve disputes directly. We will provide reasonable assistance in facilitating resolution. Contact <a href="mailto:admin@amyshaven.com">admin@amyshaven.com</a> if you need help mediating a dispute.</p>
+
+                <h3>Governing Law</h3>
+                <p>These Terms shall be governed by and construed in accordance with the laws of the State of Washington, USA, without regard to its conflict of law provisions.</p>
+
+                <h3>Dispute Resolution</h3>
+                <p>Any dispute arising out of or relating to these Terms or your use of the Platform shall first be attempted to be resolved through good-faith negotiation. If unresolved, disputes shall be submitted to binding arbitration in accordance with the American Arbitration Association rules, seated in Washington State.</p>
+                <p>You waive any right to participate in a class-action lawsuit or class-wide arbitration against Amy's Haven.</p>
+            </section>
+
+            <!-- 12 -->
+            <section class="legal-section" id="termination">
+                <h2><span class="section-num">12</span> Termination</h2>
+                <p>We reserve the right to suspend or terminate your account and access to the Platform at any time, with or without notice, for conduct that we believe:</p>
+                <ul>
+                    <li>Violates these Terms or our policies</li>
+                    <li>Is harmful to other users, artists, or third parties</li>
+                    <li>Is fraudulent, deceptive, or illegal</li>
+                    <li>Poses a risk to the security or integrity of the Platform</li>
+                </ul>
+                <p>You may terminate your account at any time by contacting <a href="mailto:admin@amyshaven.com">admin@amyshaven.com</a>. Upon termination, your right to use the Platform ceases immediately. Outstanding obligations (e.g., unfulfilled orders, pending payouts) shall survive termination.</p>
+            </section>
+
+            <!-- 13 -->
+            <section class="legal-section" id="changes">
+                <h2><span class="section-num">13</span> Changes to These Terms</h2>
+                <p>We may update these Terms from time to time to reflect changes in our practices, legal requirements, or Platform features. We will notify you of material changes by updating the "Last Updated" date above and, where appropriate, by email. Your continued use of the Platform after changes become effective constitutes your acceptance of the new Terms.</p>
+            </section>
+
+            <!-- 14 -->
+            <section class="legal-section" id="contact">
+                <h2><span class="section-num">14</span> Contact Us</h2>
+                <p>Questions, concerns, or feedback about these Terms? We're here to help.</p>
+                <div class="contact-box">
+                    <h3>Amy's Haven Legal Team</h3>
+                    <p><strong>Email:</strong> <a href="mailto:admin@amyshaven.com">admin@amyshaven.com</a></p>
+                    <p><strong>Website:</strong> <a href="https://amyshaven.com">amyshaven.com</a></p>
+                    <a href="mailto:admin@amyshaven.com" class="btn btn-primary">
+                        <i data-lucide="mail"></i>
+                        Contact Us
+                    </a>
+                </div>
+                <p style="margin-top: var(--space-6);">Also see our <a href="privacy-policy.html">Privacy Policy</a> for information on how we handle your personal data.</p>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="products.html">All Products</a></li>
+                        <li><a href="products.html?category=jewelry">Jewelry</a></li>
+                        <li><a href="products.html?category=home-decor">Home Decor</a></li>
+                        <li><a href="products.html?category=pottery">Pottery</a></li>
+                        <li><a href="products.html?category=miscellaneous">Miscellaneous</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Artists</h4>
+                    <ul>
+                        <li><a href="../artist-cms/dashboard.html">Sell Your Work</a></li>
+                        <li><a href="artists.html">Meet Our Artists</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>About</h4>
+                    <ul>
+                        <li><a href="about.html">Our Mission</a></li>
+                        <li><a href="mailto:admin@amyshaven.com">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="terms-and-conditions.html" style="color:var(--white);">Terms &amp; Conditions</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Amy's Haven. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i data-lucide="facebook"></i></a>
+                    <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/navigation.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
