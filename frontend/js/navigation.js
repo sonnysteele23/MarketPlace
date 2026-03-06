@@ -387,12 +387,87 @@ function addUserMenuStyles() {
 }
 
 /**
+ * Initialize mobile hamburger menu
+ */
+function initMobileMenu() {
+    const menuBtn = document.querySelector('.mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (!menuBtn || !navLinks) return;
+
+    menuBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('mobile-open');
+        menuBtn.classList.toggle('active');
+    });
+
+    // Close mobile menu when a nav link is clicked
+    navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('mobile-open');
+            menuBtn.classList.remove('active');
+        });
+    });
+
+    // Add mobile nav styles if not already present
+    if (!document.getElementById('mobile-nav-styles')) {
+        const style = document.createElement('style');
+        style.id = 'mobile-nav-styles';
+        style.textContent = `
+            @media (max-width: 768px) {
+                .nav-links {
+                    display: none;
+                    flex-direction: column;
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    right: 0;
+                    background: white;
+                    padding: 16px;
+                    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+                    z-index: 999;
+                    gap: 4px;
+                    border-top: 1px solid #F3F4F6;
+                }
+                .nav-links.mobile-open {
+                    display: flex;
+                }
+                .nav-links a {
+                    padding: 12px 16px;
+                    border-radius: 8px;
+                    font-size: 15px;
+                    color: #374151;
+                    text-decoration: none;
+                    transition: background 0.15s;
+                }
+                .nav-links a:hover {
+                    background: #F3F4F6;
+                }
+                .nav-wrapper {
+                    position: relative;
+                }
+                .mobile-menu-btn.active span:nth-child(1) {
+                    transform: rotate(45deg) translate(5px, 5px);
+                }
+                .mobile-menu-btn.active span:nth-child(2) {
+                    opacity: 0;
+                }
+                .mobile-menu-btn.active span:nth-child(3) {
+                    transform: rotate(-45deg) translate(5px, -5px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+/**
  * Initialize navigation
  */
 function initNavigation() {
     addUserMenuStyles();
     updateAuthNavigation();
     personalizePageContent();
+    initMobileMenu();
 }
 
 // Initialize when DOM is ready

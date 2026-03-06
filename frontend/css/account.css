@@ -46,6 +46,15 @@
     border-radius: var(--radius-full);
     color: var(--primary-600);
     margin: 0 auto var(--space-4);
+    flex-shrink: 0;
+}
+
+/* Ensure profile card always centers its content regardless of parent */
+.user-profile-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
 }
 
 .user-avatar-lg i[data-lucide] {
