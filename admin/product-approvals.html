@@ -142,14 +142,14 @@
         .product-card.status-approved { border-color: var(--green); }
         .product-card.status-rejected { border-color: var(--red); }
         .product-card-inner { display: grid; grid-template-columns: 140px 1fr auto; gap: 0; }
-        .product-img-wrap { position: relative; width: 140px; height: 140px; flex-shrink: 0; background: var(--gray-100); }
-        .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
-        .product-img-wrap .img-placeholder {
-            width: 100%; height: 100%;
+        .product-img-wrap { position: relative; width: 140px; min-height: 140px; flex-shrink: 0; background: var(--gray-100); overflow: hidden; }
+        .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .img-placeholder {
+            width: 100%; height: 140px;
             display: flex; align-items: center; justify-content: center;
             color: var(--gray-400);
         }
-        .product-img-wrap .img-placeholder svg { width: 40px; height: 40px; }
+        .img-placeholder svg { width: 40px; height: 40px; }
         .status-pill {
             position: absolute; top: 8px; left: 8px;
             padding: 3px 10px; border-radius: 20px;
@@ -198,9 +198,7 @@
         .btn-approve:hover { background: #059669; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16,185,129,0.4); }
         .btn-reject { background: var(--red-light); color: #991B1B; }
         .btn-reject:hover { background: #FECACA; }
-        .btn-view { background: var(--primary-light); color: var(--primary); }
-        .btn-view:hover { background: #DDD6FE; }
-        .btn-approve svg, .btn-reject svg, .btn-view svg { width: 16px; height: 16px; }
+        .btn-approve svg, .btn-reject svg { width: 16px; height: 16px; }
         .reviewed-info { font-size: 12px; color: var(--gray-400); text-align: center; padding-top: 4px; }
 
         /* ── Empty State ── */
@@ -350,9 +348,15 @@
                 <button class="filter-tab active" data-filter="pending">
                     Pending <span class="count" id="tab-count-pending">0</span>
                 </button>
-                <button class="filter-tab" data-filter="approved">Approved</button>
-                <button class="filter-tab" data-filter="rejected">Rejected</button>
-                <button class="filter-tab" data-filter="all">All</button>
+                <button class="filter-tab" data-filter="approved">
+                    Approved <span class="count" id="tab-count-approved">0</span>
+                </button>
+                <button class="filter-tab" data-filter="rejected">
+                    Rejected <span class="count" id="tab-count-rejected">0</span>
+                </button>
+                <button class="filter-tab" data-filter="all">
+                    All <span class="count" id="tab-count-all">0</span>
+                </button>
             </div>
         </div>
 
@@ -394,9 +398,7 @@
         // ── Auth guard ──
         const token = localStorage.getItem('adminToken');
         const adminUser = JSON.parse(localStorage.getItem('adminUser') || '{}');
-        if (!token) {
-            window.location.href = 'index.html';
-        }
+        if (!token) { window.location.href = 'index.html'; }
         document.getElementById('admin-name-display').textContent = adminUser.name || 'Admin';
 
         document.getElementById('logout-btn').addEventListener('click', () => {
@@ -407,168 +409,245 @@
 
         // ── Auth headers ──
         function authHeaders() {
-            return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
+            return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
+        }
+
+        // ── Safe JSON parse (handles plain-text 429 etc) ──
+        async function safeJson(res) {
+            const text = await res.text();
+            try { return JSON.parse(text); }
+            catch (e) {
+                if (res.status === 429) throw new Error('Rate limit hit — please wait a moment and refresh.');
+                throw new Error('Server error (' + res.status + '): ' + text.slice(0, 80));
+            }
+        }
+
+        // ── Escape HTML ──
+        function esc(str) {
+            return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
         }
 
         // ── Load stats ──
         async function loadStats() {
             try {
-                const res = await fetch(`${API}/admin/stats`, { headers: authHeaders() });
+                const res = await fetch(API + '/admin/stats', { headers: authHeaders() });
                 if (res.status === 401) { window.location.href = 'index.html'; return; }
-                const data = await res.json();
-                document.getElementById('stat-pending').textContent = data.pendingProducts;
-                document.getElementById('stat-approved').textContent = data.approvedProducts;
-                document.getElementById('stat-rejected').textContent = data.rejectedProducts;
-                document.getElementById('stat-orders').textContent = data.totalOrders;
-                document.getElementById('tab-count-pending').textContent = data.pendingProducts;
+                if (res.status === 429) { console.warn('Stats rate limited, skipping'); return; }
+                const data = await safeJson(res);
+                document.getElementById('stat-pending').textContent = data.pendingProducts ?? '—';
+                document.getElementById('stat-approved').textContent = data.approvedProducts ?? '—';
+                document.getElementById('stat-rejected').textContent = data.rejectedProducts ?? '—';
+                document.getElementById('stat-orders').textContent = data.totalOrders ?? '—';
+                // Update all tab counts
+                var p = data.pendingProducts || 0;
+                var a = data.approvedProducts || 0;
+                var r = data.rejectedProducts || 0;
+                document.getElementById('tab-count-pending').textContent = p;
+                document.getElementById('tab-count-approved').textContent = a;
+                document.getElementById('tab-count-rejected').textContent = r;
+                document.getElementById('tab-count-all').textContent = p + a + r;
             } catch (e) { console.error('Stats error:', e); }
         }
 
+        // ── Empty state messages per filter ──
+        var emptyMessages = {
+            pending: { icon: 'package-check', title: 'All caught up!', msg: 'No products are waiting for review.' },
+            approved: { icon: 'check-circle', title: 'No approved products yet', msg: 'Approved products will appear here.' },
+            rejected: { icon: 'x-circle', title: 'No rejected products', msg: 'Rejected listings will appear here.' },
+            all: { icon: 'package', title: 'No products found', msg: 'Products will appear here once artists start uploading.' }
+        };
+
         // ── Load products ──
-        async function loadProducts(filter = 'pending') {
-            const container = document.getElementById('products-container');
+        async function loadProducts(filter) {
+            filter = filter || 'pending';
+            var container = document.getElementById('products-container');
             container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading…</p></div>';
 
             try {
-                const url = filter === 'pending'
-                    ? `${API}/admin/products/pending`
-                    : `${API}/admin/products?status=${filter}`;
-                const res = await fetch(url, { headers: authHeaders() });
+                var url = filter === 'pending'
+                    ? API + '/admin/products/pending'
+                    : API + '/admin/products?status=' + filter;
+
+                var res = await fetch(url, { headers: authHeaders() });
                 if (res.status === 401) { window.location.href = 'index.html'; return; }
-                allProducts = await res.json();
-                renderProducts(allProducts);
+                if (res.status === 429) {
+                    container.innerHTML = '<div class="empty-state"><p style="color:#F59E0B;font-size:15px;">⚠️ Too many requests — please wait a moment and refresh.</p></div>';
+                    return;
+                }
+
+                var products = await safeJson(res);
+                allProducts = products;
+                renderProducts(products, filter);
             } catch (e) {
-                container.innerHTML = `<div class="empty-state"><p style="color:#EF4444;">Error loading products: ${e.message}</p></div>`;
+                container.innerHTML = '<div class="empty-state"><p style="color:#EF4444;font-size:15px;">Error: ' + esc(e.message) + '</p></div>';
             }
         }
 
-        function renderProducts(products) {
-            const container = document.getElementById('products-container');
+        // ── Render product list ──
+        function renderProducts(products, filter) {
+            var container = document.getElementById('products-container');
             if (!products || products.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon"><i data-lucide="package-check"></i></div>
-                        <h3>All caught up!</h3>
-                        <p>No products to review in this category right now.</p>
-                    </div>`;
+                var em = emptyMessages[filter] || emptyMessages.all;
+                container.innerHTML =
+                    '<div class="empty-state">' +
+                    '  <div class="empty-icon"><i data-lucide="' + em.icon + '"></i></div>' +
+                    '  <h3>' + em.title + '</h3>' +
+                    '  <p>' + em.msg + '</p>' +
+                    '</div>';
                 lucide.createIcons();
                 return;
             }
 
-            container.innerHTML = `<div class="products-grid">${products.map(p => renderCard(p)).join('')}</div>`;
+            var html = '<div class="products-grid">';
+            for (var i = 0; i < products.length; i++) {
+                html += renderCard(products[i]);
+            }
+            html += '</div>';
+            container.innerHTML = html;
             lucide.createIcons();
         }
 
+        // ── Render single product card ──
         function renderCard(p) {
-            const status = p.approval_status || 'pending';
-            const artistName = p.artist?.business_name || 'Unknown Artist';
-            const categoryName = p.category?.name || 'Uncategorized';
-            const imgSrc = p.thumbnail_url || p.image_url;
-            const reviewedDate = p.reviewed_at ? new Date(p.reviewed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : null;
+            var status = p.approval_status || 'pending';
+            var artistName = (p.artist && p.artist.business_name) ? p.artist.business_name : 'Unknown Artist';
+            var artistEmail = (p.artist && p.artist.email) ? p.artist.email : '';
+            var categoryName = (p.category && p.category.name) ? p.category.name : 'Uncategorized';
+            var imgSrc = p.thumbnail_url || p.image_url || '';
+            var reviewedDate = p.reviewed_at
+                ? new Date(p.reviewed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                : null;
+            var createdDate = p.created_at
+                ? new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                : '';
+            var price = parseFloat(p.price || 0).toFixed(2);
+            var qty = p.stock_quantity || 0;
 
-            const actions = status === 'pending' ? `
-                <button class="btn-approve" onclick="approve('${p.id}')">
-                    <i data-lucide="check-circle"></i> Approve
-                </button>
-                <button class="btn-reject" onclick="openRejectModal('${p.id}')">
-                    <i data-lucide="x-circle"></i> Reject
-                </button>` :
-                status === 'approved' ? `
-                <button class="btn-reject" onclick="openRejectModal('${p.id}')">
-                    <i data-lucide="x-circle"></i> Revoke
-                </button>
-                ${reviewedDate ? `<div class="reviewed-info">Approved ${reviewedDate}</div>` : ''}` :
-                `<button class="btn-approve" onclick="approve('${p.id}')">
-                    <i data-lucide="check-circle"></i> Approve
-                </button>
-                ${reviewedDate ? `<div class="reviewed-info">Rejected ${reviewedDate}</div>` : ''}`;
+            // Image section — no inline onerror with complex HTML; use a data attribute instead
+            var imgHtml = imgSrc
+                ? '<img src="' + esc(imgSrc) + '" alt="' + esc(p.name) + '" class="product-thumb" data-id="' + esc(p.id) + '">'
+                : '<div class="img-placeholder"><i data-lucide="image"></i></div>';
 
-            return `
-                <div class="product-card status-${status}" id="card-${p.id}">
-                    <div class="product-card-inner">
-                        <div class="product-img-wrap">
-                            ${imgSrc
-                                ? `<img src="${imgSrc}" alt="${p.name}" onerror="this.parentElement.innerHTML='<div class=\\"img-placeholder\\"><i data-lucide=\\"image\\"></i></div>'; lucide.createIcons();">`
-                                : `<div class="img-placeholder"><i data-lucide="image"></i></div>`
-                            }
-                            <span class="status-pill ${status}">${status}</span>
-                        </div>
-                        <div class="product-details">
-                            <div class="product-title-row">
-                                <span class="product-name">${escHtml(p.name)}</span>
-                                <span class="category-tag">${escHtml(categoryName)}</span>
-                            </div>
-                            <div class="artist-name">by <span>${escHtml(artistName)}</span> &nbsp;·&nbsp; ${escHtml(p.artist?.email || '')}</div>
-                            <div class="product-meta">
-                                <div class="meta-item">
-                                    <i data-lucide="dollar-sign"></i>
-                                    <strong>$${parseFloat(p.price || 0).toFixed(2)}</strong>
-                                </div>
-                                <div class="meta-item">
-                                    <i data-lucide="layers"></i>
-                                    <span>Qty: <strong>${p.stock_quantity || 0}</strong></span>
-                                </div>
-                                <div class="meta-item">
-                                    <i data-lucide="calendar"></i>
-                                    <span>${new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                                </div>
-                            </div>
-                            <div class="product-desc">${escHtml(p.description || 'No description provided.')}</div>
-                            ${p.rejection_reason ? `<div class="rejection-note"><strong>Rejection reason:</strong> ${escHtml(p.rejection_reason)}</div>` : ''}
-                        </div>
-                        <div class="product-actions">${actions}</div>
-                    </div>
-                </div>`;
+            // Action buttons per status
+            var actionsHtml = '';
+            if (status === 'pending') {
+                actionsHtml =
+                    '<button class="btn-approve" onclick="doApprove(\'' + esc(p.id) + '\')">' +
+                    '  <i data-lucide="check-circle"></i> Approve' +
+                    '</button>' +
+                    '<button class="btn-reject" onclick="openRejectModal(\'' + esc(p.id) + '\')">' +
+                    '  <i data-lucide="x-circle"></i> Reject' +
+                    '</button>';
+            } else if (status === 'approved') {
+                actionsHtml =
+                    '<button class="btn-reject" onclick="openRejectModal(\'' + esc(p.id) + '\')">' +
+                    '  <i data-lucide="x-circle"></i> Revoke' +
+                    '</button>' +
+                    (reviewedDate ? '<div class="reviewed-info">Approved ' + reviewedDate + '</div>' : '');
+            } else {
+                // rejected
+                actionsHtml =
+                    '<button class="btn-approve" onclick="doApprove(\'' + esc(p.id) + '\')">' +
+                    '  <i data-lucide="check-circle"></i> Re-approve' +
+                    '</button>' +
+                    (reviewedDate ? '<div class="reviewed-info">Rejected ' + reviewedDate + '</div>' : '');
+            }
+
+            var rejectionHtml = p.rejection_reason
+                ? '<div class="rejection-note"><strong>Rejection reason:</strong> ' + esc(p.rejection_reason) + '</div>'
+                : '';
+
+            return (
+                '<div class="product-card status-' + status + '" id="card-' + esc(p.id) + '">' +
+                '  <div class="product-card-inner">' +
+                '    <div class="product-img-wrap">' +
+                       imgHtml +
+                '      <span class="status-pill ' + status + '">' + status + '</span>' +
+                '    </div>' +
+                '    <div class="product-details">' +
+                '      <div class="product-title-row">' +
+                '        <span class="product-name">' + esc(p.name) + '</span>' +
+                '        <span class="category-tag">' + esc(categoryName) + '</span>' +
+                '      </div>' +
+                '      <div class="artist-name">by <span>' + esc(artistName) + '</span> &nbsp;·&nbsp; ' + esc(artistEmail) + '</div>' +
+                '      <div class="product-meta">' +
+                '        <div class="meta-item"><i data-lucide="dollar-sign"></i><strong>$' + price + '</strong></div>' +
+                '        <div class="meta-item"><i data-lucide="layers"></i><span>Qty: <strong>' + qty + '</strong></span></div>' +
+                '        <div class="meta-item"><i data-lucide="calendar"></i><span>' + createdDate + '</span></div>' +
+                '      </div>' +
+                '      <div class="product-desc">' + esc(p.description || 'No description provided.') + '</div>' +
+                       rejectionHtml +
+                '    </div>' +
+                '    <div class="product-actions">' + actionsHtml + '</div>' +
+                '  </div>' +
+                '</div>'
+            );
         }
 
-        function escHtml(str) {
-            return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-        }
+        // Fix broken image thumbnails after render (onerror via delegation)
+        document.getElementById('products-container').addEventListener('error', function(e) {
+            if (e.target && e.target.tagName === 'IMG' && e.target.classList.contains('product-thumb')) {
+                var wrap = e.target.parentElement;
+                if (wrap) {
+                    var pill = wrap.querySelector('.status-pill');
+                    var pillHtml = pill ? pill.outerHTML : '';
+                    wrap.innerHTML = '<div class="img-placeholder"><i data-lucide="image"></i></div>' + pillHtml;
+                    lucide.createIcons();
+                }
+            }
+        }, true);
 
         // ── Approve ──
-        async function approve(productId) {
+        async function doApprove(productId) {
             try {
-                const res = await fetch(`${API}/admin/products/${productId}/approve`, {
+                var res = await fetch(API + '/admin/products/' + productId + '/approve', {
                     method: 'POST',
                     headers: authHeaders()
                 });
-                if (!res.ok) throw new Error((await res.json()).error);
+                if (!res.ok) {
+                    var err = await safeJson(res);
+                    throw new Error(err.error || 'Failed to approve');
+                }
                 showToast('Product approved and artist notified! ✅', 'success');
                 await refresh();
             } catch (e) {
                 showToast('Error: ' + e.message, 'error');
             }
         }
-        window.approve = approve;
+        window.doApprove = doApprove;
 
         // ── Reject Modal ──
         function openRejectModal(productId) {
             pendingRejectId = productId;
             document.getElementById('reject-reason').value = '';
+            document.getElementById('reject-reason').style.borderColor = '';
             document.getElementById('reject-modal').classList.remove('hidden');
         }
         window.openRejectModal = openRejectModal;
 
-        document.getElementById('cancel-reject').addEventListener('click', () => {
+        document.getElementById('cancel-reject').addEventListener('click', function() {
             document.getElementById('reject-modal').classList.add('hidden');
             pendingRejectId = null;
         });
 
-        document.getElementById('confirm-reject').addEventListener('click', async () => {
-            const reason = document.getElementById('reject-reason').value.trim();
+        document.getElementById('confirm-reject').addEventListener('click', async function() {
+            var reason = document.getElementById('reject-reason').value.trim();
             if (!reason) {
                 document.getElementById('reject-reason').style.borderColor = '#EF4444';
-                setTimeout(() => document.getElementById('reject-reason').style.borderColor = '', 1500);
+                setTimeout(function() { document.getElementById('reject-reason').style.borderColor = ''; }, 1500);
                 return;
             }
             document.getElementById('reject-modal').classList.add('hidden');
             try {
-                const res = await fetch(`${API}/admin/products/${pendingRejectId}/reject`, {
+                var res = await fetch(API + '/admin/products/' + pendingRejectId + '/reject', {
                     method: 'POST',
                     headers: authHeaders(),
-                    body: JSON.stringify({ reason })
+                    body: JSON.stringify({ reason: reason })
                 });
-                if (!res.ok) throw new Error((await res.json()).error);
+                if (!res.ok) {
+                    var err = await safeJson(res);
+                    throw new Error(err.error || 'Failed to reject');
+                }
                 showToast('Product rejected and artist notified.', 'success');
                 await refresh();
             } catch (e) {
@@ -578,11 +657,11 @@
         });
 
         // ── Filter tabs ──
-        document.querySelectorAll('.filter-tab').forEach(tab => {
+        document.querySelectorAll('.filter-tab').forEach(function(tab) {
             tab.addEventListener('click', function() {
-                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                currentFilter = this.dataset.filter;
+                document.querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
+                tab.classList.add('active');
+                currentFilter = tab.dataset.filter;
                 loadProducts(currentFilter);
             });
         });
@@ -593,15 +672,20 @@
         }
 
         // ── Toast ──
-        function showToast(message, type = 'success') {
-            const existing = document.querySelector('.toast');
+        function showToast(message, type) {
+            type = type || 'success';
+            var existing = document.querySelector('.toast');
             if (existing) existing.remove();
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}"></i><span>${message}</span>`;
+            var toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.innerHTML = '<i data-lucide="' + (type === 'success' ? 'check-circle' : 'alert-circle') + '"></i><span>' + message + '</span>';
             document.body.appendChild(toast);
             lucide.createIcons();
-            setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 3500);
+            setTimeout(function() {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s';
+                setTimeout(function() { toast.remove(); }, 300);
+            }, 3500);
         }
 
         // ── Init ──
