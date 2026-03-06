@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Amy's Haven</title>
+    <meta name="robots" content="noindex, nofollow">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #4C1D95 0%, #6B46C1 50%, #8B5CF6 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+        }
+        .logo-area {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #6B46C1, #8B5CF6);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            color: #fff;
+        }
+        .logo-icon svg { width: 32px; height: 32px; }
+        .logo-area h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+        .logo-area p { font-size: 14px; color: #6B7280; }
+        .form-group { margin-bottom: 20px; }
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+        .input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .input-wrap .icon {
+            position: absolute;
+            left: 14px;
+            color: #9CA3AF;
+            display: flex;
+        }
+        .input-wrap .icon svg { width: 18px; height: 18px; }
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 12px 14px 12px 42px;
+            border: 2px solid #E5E7EB;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            color: #111827;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #FAFAFA;
+        }
+        input:focus { border-color: #6B46C1; background: #fff; box-shadow: 0 0 0 3px rgba(107,70,193,0.1); }
+        .toggle-pw {
+            position: absolute;
+            right: 14px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #9CA3AF;
+            display: flex;
+            padding: 4px;
+        }
+        .toggle-pw:hover { color: #6B46C1; }
+        .toggle-pw svg { width: 18px; height: 18px; }
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #6B46C1, #8B5CF6);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+        .btn-login:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(107,70,193,0.4); }
+        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-login svg { width: 18px; height: 18px; }
+        .error-msg {
+            display: none;
+            background: #FEF2F2;
+            color: #B91C1C;
+            border: 1px solid #FECACA;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .error-msg svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .error-msg.hidden { display: none; }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #FEF3C7;
+            color: #92400E;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-top: 8px;
+        }
+        .badge svg { width: 12px; height: 12px; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="logo-area">
+            <div class="logo-icon"><i data-lucide="shield-check"></i></div>
+            <h1>Amy's Haven Admin</h1>
+            <p>Sign in to access the admin dashboard</p>
+            <div class="badge"><i data-lucide="lock"></i> Restricted Access</div>
+        </div>
+
+        <div class="error-msg hidden" id="error-msg">
+            <i data-lucide="alert-circle"></i>
+            <span id="error-text">Invalid email or password.</span>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <div class="input-wrap">
+                <span class="icon"><i data-lucide="mail"></i></span>
+                <input type="email" id="email" placeholder="admin@amyshaven.com" autocomplete="email">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-wrap">
+                <span class="icon"><i data-lucide="lock"></i></span>
+                <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
+                <button type="button" class="toggle-pw" id="toggle-pw">
+                    <i data-lucide="eye" id="eye-icon"></i>
+                </button>
+            </div>
+        </div>
+
+        <button class="btn-login" id="login-btn">
+            <i data-lucide="log-in"></i>
+            <span id="btn-text">Sign In</span>
+        </button>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000/api'
+            : 'https://marketplace-production-57b7.up.railway.app/api';
+
+        // Toggle password
+        document.getElementById('toggle-pw').addEventListener('click', function() {
+            const pw = document.getElementById('password');
+            const icon = document.getElementById('eye-icon');
+            if (pw.type === 'password') {
+                pw.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                pw.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        });
+
+        // Enter key submits
+        document.getElementById('password').addEventListener('keydown', e => {
+            if (e.key === 'Enter') login();
+        });
+        document.getElementById('email').addEventListener('keydown', e => {
+            if (e.key === 'Enter') login();
+        });
+
+        async function login() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('login-btn');
+            const btnText = document.getElementById('btn-text');
+            const errorEl = document.getElementById('error-msg');
+            const errorText = document.getElementById('error-text');
+
+            if (!email || !password) {
+                errorEl.classList.remove('hidden');
+                errorText.textContent = 'Please enter your email and password.';
+                return;
+            }
+
+            btn.disabled = true;
+            btnText.textContent = 'Signing in…';
+            errorEl.classList.add('hidden');
+
+            try {
+                const res = await fetch(`${API}/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) throw new Error(data.error || 'Login failed');
+
+                localStorage.setItem('adminToken', data.token);
+                localStorage.setItem('adminUser', JSON.stringify(data.admin));
+
+                window.location.href = 'product-approvals.html';
+            } catch (err) {
+                errorEl.classList.remove('hidden');
+                errorText.textContent = err.message || 'Login failed. Please try again.';
+                btn.disabled = false;
+                btnText.textContent = 'Sign In';
+            }
+        }
+
+        document.getElementById('login-btn').addEventListener('click', login);
+
+        // If already logged in, redirect
+        const existingToken = localStorage.getItem('adminToken');
+        if (existingToken) {
+            window.location.href = 'product-approvals.html';
+        }
+    </script>
+</body>
+</html>

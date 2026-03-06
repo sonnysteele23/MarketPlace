@@ -19,6 +19,7 @@ const categoryRoutes = require('./routes/categories');
 const orderRoutes = require('./routes/orders');
 const uploadRoutes = require('./routes/upload');
 const customerRoutes = require('./routes/customers');
+const adminRoutes = require('./routes/admin');
 
 // Initialize Express
 const app = express();
@@ -99,6 +100,7 @@ app.use('/api/', limiter);
 app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 app.use('/frontend', express.static(path.join(__dirname, '../frontend')));
 app.use('/artist-cms', express.static(path.join(__dirname, '../artist-cms')));
+app.use('/admin', express.static(path.join(__dirname, '../admin')));
 app.use('/public', express.static(path.join(__dirname, '../public')));
 // Serve root directory files (index.html, etc.)
 app.use(express.static(path.join(__dirname, '..')));
@@ -120,6 +122,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/customers', customerRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

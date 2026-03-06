@@ -415,11 +415,7 @@
             const newProduct = await response.json();
             console.log('[Marketplace] Product created:', newProduct);
             
-            showNotification('Product published successfully!', 'success');
-            
-            setTimeout(() => {
-                window.location.href = 'my-products.html';
-            }, 1500);
+            showSubmissionSuccessModal(newProduct.name);
             
         } catch (error) {
             console.error('[Marketplace] Error:', error);
@@ -519,4 +515,95 @@
         
         console.log('[Marketplace] Initialization complete');
     });
+
+    // ─────────────────────────────────────────────
+    // Product Submission Success Modal
+    // ─────────────────────────────────────────────
+    function showSubmissionSuccessModal(productName) {
+        // Remove any existing modal
+        const existing = document.getElementById('submission-success-modal');
+        if (existing) existing.remove();
+
+        const modal = document.createElement('div');
+        modal.id = 'submission-success-modal';
+        modal.innerHTML = `
+            <div class="modal-backdrop"></div>
+            <div class="modal-box">
+                <div class="modal-icon">
+                    <i data-lucide="package-check"></i>
+                </div>
+                <h2>Product Received!</h2>
+                <p class="modal-product-name">“${productName}”</p>
+                <p class="modal-body">We review all products before they go live to ensure quality for our customers. You’ll receive an email notification within <strong>24 hours</strong> once your product has been reviewed.</p>
+                <div class="modal-steps">
+                    <div class="modal-step">
+                        <span class="step-dot done"><i data-lucide="check"></i></span>
+                        <span>Product submitted</span>
+                    </div>
+                    <div class="modal-step">
+                        <span class="step-dot pending"><i data-lucide="clock"></i></span>
+                        <span>Under review by our team</span>
+                    </div>
+                    <div class="modal-step">
+                        <span class="step-dot future"><i data-lucide="store"></i></span>
+                        <span>Goes live after approval</span>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-modal-secondary" onclick="document.getElementById('submission-success-modal').remove(); window.location.href='my-products.html';">
+                        <i data-lucide="package"></i> View My Products
+                    </button>
+                    <button class="btn-modal-primary" onclick="document.getElementById('submission-success-modal').remove(); document.getElementById('add-product-form').reset(); window.scrollTo(0,0);">
+                        <i data-lucide="plus"></i> Add Another Product
+                    </button>
+                </div>
+            </div>
+        `;
+
+        // Styles
+        const style = document.createElement('style');
+        style.id = 'submission-modal-styles';
+        style.textContent = `
+            #submission-success-modal { position:fixed; inset:0; z-index:10000; display:flex; align-items:center; justify-content:center; padding:16px; }
+            #submission-success-modal .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.55); backdrop-filter:blur(4px); }
+            #submission-success-modal .modal-box { position:relative; background:#fff; border-radius:20px; padding:40px 36px; max-width:480px; width:100%; box-shadow:0 25px 60px rgba(0,0,0,0.2); animation:modalPop 0.35s cubic-bezier(0.34,1.56,0.64,1); text-align:center; }
+            #submission-success-modal .modal-icon { width:72px; height:72px; background:linear-gradient(135deg,#6B46C1,#8B5CF6); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; color:#fff; }
+            #submission-success-modal .modal-icon svg { width:36px; height:36px; }
+            #submission-success-modal h2 { font-family:'Playfair Display',Georgia,serif; font-size:26px; font-weight:700; color:#111827; margin:0 0 8px; }
+            #submission-success-modal .modal-product-name { font-size:16px; font-weight:600; color:#6B46C1; background:#EDE9FE; display:inline-block; padding:6px 16px; border-radius:20px; margin:0 0 16px; }
+            #submission-success-modal .modal-body { font-size:15px; color:#4B5563; line-height:1.6; margin:0 0 24px; }
+            #submission-success-modal .modal-steps { display:flex; flex-direction:column; gap:12px; background:#F9FAFB; border-radius:12px; padding:20px; margin-bottom:28px; text-align:left; }
+            #submission-success-modal .modal-step { display:flex; align-items:center; gap:12px; font-size:14px; color:#374151; font-weight:500; }
+            #submission-success-modal .step-dot { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+            #submission-success-modal .step-dot svg { width:16px; height:16px; }
+            #submission-success-modal .step-dot.done { background:#D1FAE5; color:#065F46; }
+            #submission-success-modal .step-dot.pending { background:#FEF3C7; color:#92400E; }
+            #submission-success-modal .step-dot.future { background:#E5E7EB; color:#6B7280; }
+            #submission-success-modal .modal-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+            #submission-success-modal .btn-modal-primary { display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg,#6B46C1,#8B5CF6); color:#fff; border:none; padding:12px 24px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s; }
+            #submission-success-modal .btn-modal-primary:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(107,70,193,0.4); }
+            #submission-success-modal .btn-modal-secondary { display:inline-flex; align-items:center; gap:8px; background:#fff; color:#6B46C1; border:2px solid #6B46C1; padding:12px 24px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s; }
+            #submission-success-modal .btn-modal-secondary:hover { background:#F5F3FF; }
+            @keyframes modalPop { from { transform:scale(0.8); opacity:0; } to { transform:scale(1); opacity:1; } }
+        `;
+        if (!document.getElementById('submission-modal-styles')) {
+            document.head.appendChild(style);
+        }
+
+        document.body.appendChild(modal);
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
+        // Reset the form state
+        uploadedImages = [];
+        productTags = [];
+        renderImagePreviews();
+        renderTags();
+        const form = document.getElementById('add-product-form');
+        if (form) form.reset();
+        document.getElementById('final-price').textContent = '$0.00';
+        document.getElementById('artist-earnings').textContent = '$0.00';
+        document.getElementById('marketplace-fee').textContent = '$0.00';
+        document.getElementById('homeless-contribution').textContent = '$0.00';
+    }
+
 })();

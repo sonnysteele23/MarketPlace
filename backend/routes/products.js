@@ -7,7 +7,7 @@ const express = require('express');
 const router = express.Router();
 const { supabaseAdmin } = require('../config/supabase');
 const { authenticateToken } = require('../middleware/auth');
-const { sendFirstProductEmail } = require('../services/emailService');
+const { sendFirstProductEmail, sendEmail } = require('../services/emailService');
 
 // ===================================
 // Public Routes
@@ -39,7 +39,8 @@ router.get('/', async (req, res) => {
                 artist:artist_id(id, business_name, profile_image_url, location),
                 category:categories(id, name)
             `, { count: 'exact' })
-            .eq('is_active', true);
+            .eq('is_active', true)
+            .eq('approval_status', 'approved');
         
         // Apply filters
         if (category_id) {
@@ -104,6 +105,7 @@ router.get('/featured', async (req, res) => {
             `)
             .eq('is_featured', true)
             .eq('is_active', true)
+            .eq('approval_status', 'approved')
             .limit(8)
             .order('created_at', { ascending: false });
         
@@ -126,6 +128,7 @@ router.get('/new-arrivals', async (req, res) => {
                 artist:artist_id(id, business_name, profile_image_url)
             `)
             .eq('is_active', true)
+            .eq('approval_status', 'approved')
             .order('created_at', { ascending: false })
             .limit(12);
         
@@ -157,6 +160,7 @@ router.get('/search', async (req, res) => {
                 artist:artist_id(id, business_name)
             `)
             .eq('is_active', true)
+            .eq('approval_status', 'approved')
             .or(`name.ilike.%${q}%,description.ilike.%${q}%,materials.ilike.%${q}%`)
             .limit(20);
         
@@ -235,8 +239,9 @@ router.post('/', authenticateToken, async (req, res) => {
         const productData = {
             ...req.body,
             artist_id: req.artist.id,
-            is_active: true,
-            is_featured: false
+            is_active: false,
+            is_featured: false,
+            approval_status: 'pending'
         };
         
         const { data: product, error } = await supabaseAdmin
@@ -251,22 +256,24 @@ router.post('/', authenticateToken, async (req, res) => {
         
         if (error) throw error;
         
-        // Check if this is artist's first product
-        const { count } = await supabaseAdmin
-            .from('products')
-            .select('id', { count: 'exact', head: true })
-            .eq('artist_id', req.artist.id);
-        
-        // Send first product email if this is their first
-        if (count === 1) {
-            sendFirstProductEmail(
-                req.artist.id,
-                product.artist.business_name,
-                product.artist.email,
-                product.name
-            ).catch(err => console.error('Error sending first product email:', err));
-        }
-        
+        // Send product received notification to artist
+        sendEmail(
+            product.artist.email,
+            `📦 Product Received — "${product.name}" is under review`,
+            buildProductReceivedEmail(product.artist.business_name, product.name),
+            req.artist.id,
+            'product_received'
+        ).catch(err => console.error('Error sending product received email:', err));
+
+        // Notify admin of new product to review
+        sendEmail(
+            'admin@amyshaven.com',
+            `🔔 New product pending review: "${product.name}" by ${product.artist.business_name}`,
+            buildAdminNotificationEmail(product.artist.business_name, product.name, product.id),
+            null,
+            'admin_product_notification'
+        ).catch(err => console.error('Error sending admin notification email:', err));
+
         res.status(201).json(product);
     } catch (error) {
         console.error('Error creating product:', error);
@@ -375,5 +382,72 @@ router.delete('/:id', authenticateToken, async (req, res) => {
         res.status(500).json({ error: 'Error deleting product', message: error.message });
     }
 });
+
+// ───────────────────────────────────────────────
+// Email templates used by product creation
+// ───────────────────────────────────────────────
+function buildProductReceivedEmail(artistName, productName) {
+    return `
+<!DOCTYPE html><html><head><style>
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6;color:#333;margin:0;padding:0;}
+.wrap{max-width:600px;margin:0 auto;padding:20px;}
+.header{background:linear-gradient(135deg,#6B46C1,#8B5CF6);color:#fff;padding:32px 24px;text-align:center;border-radius:12px 12px 0 0;}
+.body{background:#f9fafb;padding:32px 24px;border-radius:0 0 12px 12px;}
+.info-box{background:#EDE9FE;border-left:4px solid #6B46C1;padding:16px;border-radius:0 8px 8px 0;margin:16px 0;}
+.step{display:flex;align-items:flex-start;gap:12px;margin:12px 0;}
+.step-num{background:#6B46C1;color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:14px;}
+</style></head><body>
+<div class="wrap">
+  <div class="header">
+    <div style="font-size:48px;margin-bottom:8px;">📦</div>
+    <h1 style="margin:0;">Product Received!</h1>
+    <p style="margin:8px 0 0;opacity:0.9;">Amy's Haven Marketplace</p>
+  </div>
+  <div class="body">
+    <h2>Hi ${artistName}! 👋</h2>
+    <p>We've received your product listing and it's now <strong>under review</strong> by our team.</p>
+    <div class="info-box">
+      <strong>📦 Product:</strong> ${productName}<br>
+      <strong>⏱ Review time:</strong> Within 24 hours<br>
+      <strong>📧 Notification:</strong> We'll email you once reviewed
+    </div>
+    <h3>What happens next?</h3>
+    <div class="step"><div class="step-num">1</div><div><strong>Review</strong> — Our team checks your listing for quality, accuracy, and guidelines compliance.</div></div>
+    <div class="step"><div class="step-num">2</div><div><strong>Decision</strong> — You'll receive an email within 24 hours with the outcome.</div></div>
+    <div class="step"><div class="step-num">3</div><div><strong>Go Live</strong> — Once approved, your product will be immediately visible to shoppers!</div></div>
+    <p style="margin-top:24px;">While you wait, you can add more products or complete your artist profile to boost your shop's visibility.</p>
+    <p style="color:#6B7280;font-size:14px;margin-top:24px;">Questions? Contact us at <a href="mailto:admin@amyshaven.com">admin@amyshaven.com</a></p>
+    <p>— The Amy's Haven Team</p>
+  </div>
+</div>
+</body></html>`;
+}
+
+function buildAdminNotificationEmail(artistName, productName, productId) {
+    return `
+<!DOCTYPE html><html><head><style>
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6;color:#333;margin:0;padding:0;}
+.wrap{max-width:600px;margin:0 auto;padding:20px;}
+.header{background:linear-gradient(135deg,#1F2937,#374151);color:#fff;padding:24px;text-align:center;border-radius:12px 12px 0 0;}
+.body{background:#f9fafb;padding:32px 24px;border-radius:0 0 12px 12px;}
+.btn{display:inline-block;background:#6B46C1;color:#fff;padding:14px 32px;text-decoration:none;border-radius:8px;font-weight:600;margin:20px 0;}
+.info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #E5E7EB;font-size:14px;}
+</style></head><body>
+<div class="wrap">
+  <div class="header">
+    <h1 style="margin:0;">🔔 New Product Pending Review</h1>
+  </div>
+  <div class="body">
+    <p>A new product has been submitted and requires your approval before it goes live.</p>
+    <div class="info-row"><span><strong>Product:</strong></span><span>${productName}</span></div>
+    <div class="info-row"><span><strong>Artist:</strong></span><span>${artistName}</span></div>
+    <div class="info-row"><span><strong>Product ID:</strong></span><span>${productId}</span></div>
+    <div class="info-row"><span><strong>Submitted:</strong></span><span>${new Date().toLocaleString()}</span></div>
+    <a href="https://amyshaven.com/admin/product-approvals.html" class="btn">Review in Admin Dashboard</a>
+    <p style="color:#6B7280;font-size:13px;">This is an automated notification from Amy's Haven.</p>
+  </div>
+</div>
+</body></html>`;
+}
 
 module.exports = router;

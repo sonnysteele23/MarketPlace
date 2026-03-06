@@ -7,6 +7,7 @@ const express = require('express');
 const router = express.Router();
 const { supabaseAdmin } = require('../config/supabase');
 const { authenticateToken } = require('../middleware/auth');
+const { sendEmail } = require('../services/emailService');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // ===================================
@@ -135,8 +136,17 @@ router.post('/', async (req, res) => {
             });
         }
         
-        res.status(201).json({ 
-            order,
+        // Send order confirmation email to customer
+        sendEmail(
+        customer_email,
+            `✅ Order Confirmed — Amy's Haven #${order.id.slice(0,8).toUpperCase()}`,
+                buildOrderConfirmationEmail(customer_name, order, processedItems),
+            null,
+            'order_confirmation'
+        ).catch(err => console.error('Error sending order confirmation email:', err));
+
+        res.status(201).json({
+                order,
             items: processedItems
         });
     } catch (error) {
@@ -427,5 +437,57 @@ router.post('/:id/add-tracking', authenticateToken, async (req, res) => {
         res.status(500).json({ error: 'Error adding tracking information', message: error.message });
     }
 });
+
+// ───────────────────────────────────────────────
+function buildOrderConfirmationEmail(customerName, order, items) {
+    const itemRows = items.map(item => `
+        <tr>
+          <td style="padding:10px;border-bottom:1px solid #E5E7EB;">${item.product_name}</td>
+          <td style="padding:10px;border-bottom:1px solid #E5E7EB;text-align:center;">${item.quantity}</td>
+          <td style="padding:10px;border-bottom:1px solid #E5E7EB;text-align:right;">${parseFloat(item.price_at_purchase).toFixed(2)}</td>
+        </tr>`).join('');
+
+    return `
+<!DOCTYPE html><html><head><style>
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6;color:#333;margin:0;padding:0;}
+.wrap{max-width:600px;margin:0 auto;padding:20px;}
+.header{background:linear-gradient(135deg,#6B46C1,#8B5CF6);color:#fff;padding:32px 24px;text-align:center;border-radius:12px 12px 0 0;}
+.body{background:#f9fafb;padding:32px 24px;border-radius:0 0 12px 12px;}
+.table{width:100%;border-collapse:collapse;margin:16px 0;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.table th{background:#6B46C1;color:#fff;padding:10px;text-align:left;font-size:13px;}
+.totals{background:#fff;padding:16px;border-radius:8px;margin-top:16px;}
+.total-row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px;}
+.total-final{font-weight:700;font-size:16px;border-top:2px solid #E5E7EB;padding-top:8px;margin-top:4px;}
+.impact{background:#EDE9FE;padding:16px;border-radius:8px;margin-top:16px;font-size:14px;}
+</style></head><body>
+<div class="wrap">
+  <div class="header">
+    <div style="font-size:48px;margin-bottom:8px;">✅</div>
+    <h1 style="margin:0;">Order Confirmed!</h1>
+    <p style="margin:8px 0 0;opacity:0.9;">Order #${order.id.slice(0,8).toUpperCase()}</p>
+  </div>
+  <div class="body">
+    <h2>Thank you, ${customerName}!</h2>
+    <p>Your order has been placed successfully. The artist will begin preparing your handcrafted item right away.</p>
+    <table class="table">
+      <thead><tr><th>Item</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Price</th></tr></thead>
+      <tbody>${itemRows}</tbody>
+    </table>
+    <div class="totals">
+      <div class="total-row"><span>Subtotal:</span><span>${parseFloat(order.subtotal).toFixed(2)}</span></div>
+      <div class="total-row"><span>Shipping:</span><span>${parseFloat(order.shipping_amount).toFixed(2)}</span></div>
+      <div class="total-row"><span>Tax:</span><span>${parseFloat(order.tax_amount).toFixed(2)}</span></div>
+      <div class="total-row total-final"><span>Total:</span><span>${parseFloat(order.total_amount).toFixed(2)}</span></div>
+    </div>
+    <div class="impact">
+      💚 <strong>Thank you for making an impact!</strong> A portion of every purchase on Amy's Haven goes toward fighting homelessness.
+    </div>
+    <p style="margin-top:24px;">You'll receive a shipping notification once your order is on its way.</p>
+    <p style="color:#6B7280;font-size:14px;">Questions? Contact us at <a href="mailto:admin@amyshaven.com">admin@amyshaven.com</a></p>
+    <p>— The Amy's Haven Team</p>
+  </div>
+</div>
+</body></html>`;
+}
 
 module.exports = router;
