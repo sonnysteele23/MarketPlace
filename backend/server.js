@@ -25,6 +25,9 @@ const adminRoutes = require('./routes/admin');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust Railway's proxy (fixes X-Forwarded-For rate limit warning)
+app.set('trust proxy', 1);
+
 // ===================================
 // Middleware
 // ===================================
@@ -88,12 +91,22 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Compression middleware
 app.use(compression());
 
-// Rate limiting
+// Rate limiting - generous limit for admin, standard for public
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per windowMs
-    message: 'Too many requests from this IP, please try again later.'
+    windowMs: 15 * 60 * 1000,
+    max: 300,
+    message: 'Too many requests from this IP, please try again later.',
+    trustProxy: true
 });
+
+const adminLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 1000, // Admin makes many requests per session
+    message: 'Too many requests.',
+    trustProxy: true
+});
+
+app.use('/api/admin', adminLimiter);
 app.use('/api/', limiter);
 
 // Serve static files - Order matters!
