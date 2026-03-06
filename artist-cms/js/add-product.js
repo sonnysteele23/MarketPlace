@@ -24,8 +24,20 @@
         const userType = localStorage.getItem('userType');
         
         if (!token || userType !== 'artist') {
-            window.location.href = '../frontend/login.html?redirect=artist-cms/add-product.html';
+            redirectToLogin();
             return null;
+        }
+
+        // Check if JWT is expired client-side before even making a request
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            if (payload.exp && payload.exp * 1000 < Date.now()) {
+                console.warn('[Marketplace] Token expired, redirecting to login');
+                redirectToLogin();
+                return null;
+            }
+        } catch(e) {
+            // Can't decode token — let server handle it
         }
         
         const artistNameEl = document.getElementById('artist-name');
@@ -34,6 +46,13 @@
         }
         
         return { token, user };
+    }
+
+    function redirectToLogin() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('userType');
+        window.location.href = '../frontend/login.html?redirect=artist-cms/add-product.html&reason=session_expired';
     }
 
     // Image Upload
@@ -326,6 +345,10 @@
                 body: formData
             });
             
+            if (response.status === 401) {
+                redirectToLogin();
+                throw new Error('Session expired. Please log in again.');
+            }
             if (!response.ok) {
                 const error = await response.json();
                 throw new Error(error.error || 'Failed to upload images');

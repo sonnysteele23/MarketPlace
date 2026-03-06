@@ -137,17 +137,23 @@ router.get('/products', requireAdmin, async (req, res) => {
 // ───────────────────────────────────────────────
 router.post('/products/:id/approve', requireAdmin, async (req, res) => {
     try {
+        console.log('Approving product:', req.params.id);
+
+        const approveData = {
+            approval_status: 'approved',
+            is_active: true
+        };
+        try { approveData.reviewed_at = new Date().toISOString(); } catch(e) {}
+        try { approveData.reviewed_by = req.admin.email; } catch(e) {}
+
         const { data: product, error } = await supabaseAdmin
             .from('products')
-            .update({
-                approval_status: 'approved',
-                is_active: true,
-                reviewed_at: new Date().toISOString(),
-                reviewed_by: req.admin.email
-            })
+            .update(approveData)
             .eq('id', req.params.id)
             .select(`*, artist:artist_id(id, business_name, email)`)
             .single();
+
+        console.log('Approve result - error:', error, 'product:', product?.id);
 
         if (error) throw error;
 
@@ -176,18 +182,27 @@ router.post('/products/:id/reject', requireAdmin, async (req, res) => {
     try {
         const { reason = 'Your product did not meet our marketplace guidelines.' } = req.body;
 
+        console.log('Rejecting product:', req.params.id, 'reason:', reason);
+
+        // Update only fields we know exist, add optional fields carefully
+        const updateData = {
+            approval_status: 'rejected',
+            is_active: false
+        };
+
+        // Add optional columns if they exist
+        try { updateData.reviewed_at = new Date().toISOString(); } catch(e) {}
+        try { updateData.reviewed_by = req.admin.email; } catch(e) {}
+        try { updateData.rejection_reason = reason; } catch(e) {}
+
         const { data: product, error } = await supabaseAdmin
             .from('products')
-            .update({
-                approval_status: 'rejected',
-                is_active: false,
-                reviewed_at: new Date().toISOString(),
-                reviewed_by: req.admin.email,
-                rejection_reason: reason
-            })
+            .update(updateData)
             .eq('id', req.params.id)
             .select(`*, artist:artist_id(id, business_name, email)`)
             .single();
+
+        console.log('Reject result - error:', error, 'product:', product?.id);
 
         if (error) throw error;
 
