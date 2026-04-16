@@ -102,22 +102,6 @@ class Cart {
 }
 
 // ===================================
-// Mobile Menu
-// ===================================
-
-function initMobileMenu() {
-    const menuBtn = document.querySelector('.mobile-menu-btn');
-    const navLinks = document.querySelector('.nav-links');
-    
-    if (menuBtn) {
-        menuBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            menuBtn.classList.toggle('active');
-        });
-    }
-}
-
-// ===================================
 // Featured Products Loading
 // ===================================
 
@@ -316,7 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
     Cart.updateCount();
     
     // Initialize components
-    initMobileMenu();
     loadFeaturedProducts();
     initNewsletterForm();
     initSmoothScroll();
@@ -375,29 +358,6 @@ function addAnimationStyles() {
             transform: translateY(-2px);
         }
         
-        .nav-links.active {
-            display: flex;
-            flex-direction: column;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            padding: 1rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        
-        .mobile-menu-btn.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-        
-        .mobile-menu-btn.active span:nth-child(2) {
-            opacity: 0;
-        }
-        
-        .mobile-menu-btn.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -5px);
-        }
     `;
     document.head.appendChild(style);
 }

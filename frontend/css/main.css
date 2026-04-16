@@ -214,6 +214,8 @@
   gap: 5px;
   padding: var(--space-2);
   cursor: pointer;
+  background: none;
+  border: none;
 }
 
 .mobile-menu-btn span {
