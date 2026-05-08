@@ -87,10 +87,6 @@ function updateAuthNavigation() {
                         <i data-lucide="package"></i>
                         My Orders
                     </a>
-                    <a href="${getBasePath()}frontend/account.html#wishlist" class="dropdown-item">
-                        <i data-lucide="heart"></i>
-                        Wishlist
-                    </a>
                     ${userType === 'artist' ? `
                     <div class="dropdown-divider"></div>
                     <a href="${getBasePath()}artist-cms/dashboard.html" class="dropdown-item">

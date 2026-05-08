@@ -328,11 +328,6 @@
             }
         });
         
-        // Wishlist
-        document.getElementById('wishlist-btn').addEventListener('click', function() {
-            showNotification('Added to wishlist!', 'success');
-        });
-        
         // Share
         document.getElementById('share-btn').addEventListener('click', function() {
             if (navigator.share) {
