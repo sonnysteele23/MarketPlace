@@ -164,58 +164,56 @@ async function forgotPassword(email, userType = 'customer') {
 // UI Helper Functions
 // ===================================
 
-// Show error message
-function showError(message, formId = null) {
-    // Remove any existing error
-    const existingError = document.querySelector('.auth-error');
-    if (existingError) existingError.remove();
-
-    // Create error element
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'auth-error';
-    errorDiv.innerHTML = `
-        <i data-lucide="alert-circle"></i>
-        <span>${message}</span>
-    `;
-
-    // Insert error
-    if (formId) {
-        const form = document.getElementById(formId);
-        form.insertBefore(errorDiv, form.firstChild);
-    } else {
-        const form = document.querySelector('.auth-form');
-        form.insertBefore(errorDiv, form.firstChild);
+// Render a status message. Detects the modern container (#auth-msg + #auth-msg-text)
+// used by register.html, then falls back to legacy .auth-form injection used by
+// login.html / forgot-password.html. Never throws — if no container is found,
+// surfaces the message via alert() so users still get feedback.
+function renderAuthMessage(kind, message, formId = null) {
+    const msgEl = document.getElementById('auth-msg');
+    if (msgEl) {
+        const textEl = document.getElementById('auth-msg-text');
+        msgEl.className = 'auth-msg ' + kind;
+        if (textEl) textEl.textContent = message;
+        else msgEl.textContent = message;
+        msgEl.style.display = 'flex';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+        return;
     }
 
-    // Re-initialize Lucide icons
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
+    const className = kind === 'error' ? 'auth-error' : 'auth-success';
+    const iconName = kind === 'error' ? 'alert-circle' : 'check-circle';
+
+    document.querySelectorAll('.auth-error, .auth-success').forEach(el => el.remove());
+
+    const div = document.createElement('div');
+    div.className = className;
+    const icon = document.createElement('i');
+    icon.setAttribute('data-lucide', iconName);
+    const span = document.createElement('span');
+    span.textContent = message;
+    div.append(icon, span);
+
+    const form = (formId && document.getElementById(formId))
+        || document.querySelector('.auth-form')
+        || document.querySelector('form');
+
+    if (!form) {
+        console.warn('[auth] No form/message container found; falling back to alert.');
+        alert(message);
+        return;
     }
 
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-        errorDiv.remove();
-    }, 5000);
+    form.insertBefore(div, form.firstChild);
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    if (kind === 'error') setTimeout(() => div.remove(), 5000);
 }
 
-// Show success message
+function showError(message, formId = null) {
+    renderAuthMessage('error', message, formId);
+}
+
 function showSuccess(message) {
-    const existingSuccess = document.querySelector('.auth-success');
-    if (existingSuccess) existingSuccess.remove();
-
-    const successDiv = document.createElement('div');
-    successDiv.className = 'auth-success';
-    successDiv.innerHTML = `
-        <i data-lucide="check-circle"></i>
-        <span>${message}</span>
-    `;
-
-    const form = document.querySelector('.auth-form');
-    form.insertBefore(successDiv, form.firstChild);
-
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
+    renderAuthMessage('success', message);
 }
 
 // Show loading state on button
