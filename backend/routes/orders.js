@@ -74,11 +74,30 @@ router.post('/', async (req, res) => {
             });
         }
         
-        // Calculate tax (Washington state: ~10%)
+        // Calculate tax (~10%)
         const tax_rate = 0.10;
         const tax_amount = subtotal * tax_rate;
         const total_amount = subtotal + shipping_amount + tax_amount;
-        
+
+        // Single-artist-per-order constraint for the MVP. Stripe Connect destination
+        // charges only target one connected account; multi-artist carts will require
+        // splitting into separate orders or moving to per-item transfers later.
+        const distinctArtists = Array.from(new Set(processedItems.map(i => i.artist_id).filter(Boolean)));
+        if (distinctArtists.length === 0) {
+            return res.status(400).json({ error: 'Order has no associated artist' });
+        }
+        if (distinctArtists.length > 1) {
+            return res.status(400).json({
+                error: 'Multi-artist orders are not yet supported. Please check out one artist at a time.',
+            });
+        }
+        const orderArtistId = distinctArtists[0];
+
+        // Fee math, in cents — 10% platform + 5% donation = 15% application fee.
+        const total_amount_cents = Math.round(total_amount * 100);
+        const application_fee_amount = Math.round(total_amount_cents * 0.15);
+        const donation_amount = Math.round(total_amount_cents * 0.05);
+
         // Create order
         const { data: order, error: orderError } = await supabaseAdmin
             .from('orders')
@@ -91,11 +110,14 @@ router.post('/', async (req, res) => {
                 tax_amount: tax_amount.toFixed(2),
                 shipping_amount: shipping_amount.toFixed(2),
                 total_amount: total_amount.toFixed(2),
-                status: 'pending'
+                status: 'pending',
+                artist_id: orderArtistId,
+                application_fee_amount,
+                donation_amount,
             }])
             .select()
             .single();
-        
+
         if (orderError) throw orderError;
         
         // Create order items
@@ -114,25 +136,46 @@ router.post('/', async (req, res) => {
         
         // Create Stripe payment intent
         if (payment_method === 'stripe') {
+            // Look up the seller's Connect account; refuse to charge if they're not onboarded.
+            const { data: artistRow, error: artistErr } = await supabaseAdmin
+                .from('artists')
+                .select('id, business_name, stripe_account_id, stripe_charges_enabled')
+                .eq('id', orderArtistId)
+                .single();
+            if (artistErr) throw artistErr;
+
+            if (!artistRow.stripe_account_id || !artistRow.stripe_charges_enabled) {
+                return res.status(409).json({
+                    error: `${artistRow.business_name} has not finished setting up payouts yet. Please check back soon.`,
+                    code: 'artist_payouts_not_ready',
+                });
+            }
+
             const paymentIntent = await stripe.paymentIntents.create({
-                amount: Math.round(total_amount * 100), // Convert to cents
+                amount: total_amount_cents,
                 currency: 'usd',
+                application_fee_amount,
+                transfer_data: { destination: artistRow.stripe_account_id },
                 metadata: {
                     order_id: order.id,
-                    customer_email: customer_email
-                }
+                    customer_email,
+                    artist_id: artistRow.id,
+                    donation_amount_cents: String(donation_amount),
+                },
             });
-            
+
             // Update order with Stripe payment intent ID
             await supabaseAdmin
                 .from('orders')
                 .update({ stripe_payment_intent_id: paymentIntent.id })
                 .eq('id', order.id);
-            
+
             return res.status(201).json({
                 order,
                 items: processedItems,
-                clientSecret: paymentIntent.client_secret
+                clientSecret: paymentIntent.client_secret,
+                application_fee_amount,
+                donation_amount,
             });
         }
         

@@ -20,6 +20,8 @@ const orderRoutes = require('./routes/orders');
 const uploadRoutes = require('./routes/upload');
 const customerRoutes = require('./routes/customers');
 const adminRoutes = require('./routes/admin');
+const stripeConnectRoutes = require('./routes/stripeConnect');
+const stripeWebhookRoutes = require('./routes/stripeWebhook');
 
 // Initialize Express
 const app = express();
@@ -84,6 +86,10 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+// Stripe webhook MUST be mounted before express.json() so signature
+// verification sees the raw request body.
+app.use('/api/webhooks', stripeWebhookRoutes);
+
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -131,6 +137,7 @@ console.log('✅ Supabase connection initialized');
 
 app.use('/api/products', productRoutes);
 app.use('/api/artists', artistRoutes);
+app.use('/api/artists/me/stripe', stripeConnectRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/upload', uploadRoutes);

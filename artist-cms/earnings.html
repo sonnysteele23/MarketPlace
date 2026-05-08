@@ -97,9 +97,24 @@
                     </h1>
                     <p>Track your revenue and payouts</p>
                 </div>
-                <button class="btn btn-primary" id="request-payout">
-                    <i data-lucide="banknote"></i>
-                    <span>Request Payout</span>
+                <button class="btn btn-primary" id="stripe-action-btn" hidden>
+                    <i data-lucide="external-link"></i>
+                    <span id="stripe-action-label">Manage on Stripe</span>
+                </button>
+            </div>
+
+            <!-- Stripe Connect status banner -->
+            <div id="stripe-connect-banner" style="display:none; padding:20px 24px; border-radius:12px; margin-bottom:24px; gap:16px; align-items:center;">
+                <div id="stripe-connect-icon" style="flex-shrink:0; width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                    <i data-lucide="alert-circle" style="width:24px; height:24px;"></i>
+                </div>
+                <div style="flex:1;">
+                    <h3 id="stripe-connect-title" style="margin:0 0 4px; font-size:1rem;">Loading payment status…</h3>
+                    <p id="stripe-connect-body" style="margin:0; font-size:0.875rem; color:#6B7280;"></p>
+                </div>
+                <button id="stripe-connect-cta" class="btn btn-primary" style="display:none; flex-shrink:0;">
+                    <i data-lucide="external-link"></i>
+                    <span id="stripe-connect-cta-label">Connect Stripe</span>
                 </button>
             </div>
 
@@ -204,86 +219,22 @@
                 </div>
             </div>
 
-            <!-- Payout History -->
+            <!-- Payout History (live from Stripe) -->
             <div class="payout-history">
                 <div class="section-header">
                     <h2>
                         <i data-lucide="history"></i>
                         Payout History
                     </h2>
+                    <span style="font-size:0.8125rem; color:#6B7280;">Powered by Stripe</span>
                 </div>
                 <div class="payout-list" id="payout-list">
-                    <!-- Sample Payout -->
-                    <div class="payout-item" style="display: none;">
-                        <div class="payout-info">
-                            <div class="payout-icon">
-                                <i data-lucide="banknote"></i>
-                            </div>
-                            <div class="payout-details">
-                                <strong>Payout to Bank ****1234</strong>
-                                <span>Jan 15, 2025</span>
-                            </div>
-                        </div>
-                        <div class="payout-amount success">+$125.00</div>
-                        <span class="payout-status completed">Completed</span>
-                    </div>
-
-                    <!-- Empty State -->
                     <div class="empty-state" id="empty-payouts">
                         <div class="empty-icon">
                             <i data-lucide="receipt"></i>
                         </div>
                         <h3>No payouts yet</h3>
-                        <p>Your payout history will appear here once you request a withdrawal.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Payout Settings -->
-            <div class="payout-settings">
-                <h2>
-                    <i data-lucide="settings"></i>
-                    Payout Settings
-                </h2>
-                <div class="settings-card">
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <i data-lucide="building"></i>
-                            <div>
-                                <strong>Bank Account</strong>
-                                <p>Add a bank account for payouts</p>
-                            </div>
-                        </div>
-                        <button class="btn btn-ghost btn-sm">
-                            <i data-lucide="plus"></i>
-                            Add
-                        </button>
-                    </div>
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <i data-lucide="credit-card"></i>
-                            <div>
-                                <strong>PayPal</strong>
-                                <p>Connect your PayPal account</p>
-                            </div>
-                        </div>
-                        <button class="btn btn-ghost btn-sm">
-                            <i data-lucide="link"></i>
-                            Connect
-                        </button>
-                    </div>
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <i data-lucide="calendar"></i>
-                            <div>
-                                <strong>Automatic Payouts</strong>
-                                <p>Receive payouts automatically</p>
-                            </div>
-                        </div>
-                        <label class="toggle">
-                            <input type="checkbox" id="auto-payout">
-                            <span class="toggle-slider"></span>
-                        </label>
+                        <p>Stripe automatically pays out your balance on a rolling schedule once you've made sales.</p>
                     </div>
                 </div>
             </div>

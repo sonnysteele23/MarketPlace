@@ -1,355 +1,260 @@
 /**
- * Artist Earnings Page JavaScript
- * Displays earnings, revenue analytics, and payout information
+ * Artist Earnings Page
+ * Wires Stripe Connect status, balance, payouts, and onboarding/dashboard links.
  */
 
-// API Configuration
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:3000/api'
     : 'https://marketplace-production-57b7.up.railway.app/api';
 
-// ===================================
-// Authentication Check
-// ===================================
 function checkAuth() {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const userType = localStorage.getItem('userType');
-    
+
     if (!token || userType !== 'artist') {
         window.location.href = '../frontend/login.html?redirect=artist-cms/earnings.html';
         return null;
     }
-    
+
     const artistNameEl = document.getElementById('artist-name');
     if (artistNameEl && user.business_name) {
         artistNameEl.textContent = user.business_name;
     }
-    
     return { token, user };
 }
 
-// ===================================
-// Load Earnings Data
-// ===================================
-async function loadEarnings() {
+function authHeaders(token) {
+    return { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+}
+
+function fmtCurrencyCents(cents, currency) {
+    const amount = (cents || 0) / 100;
+    return amount.toLocaleString('en-US', { style: 'currency', currency: (currency || 'usd').toUpperCase() });
+}
+
+function sumBalance(rows) {
+    return (rows || []).reduce((sum, row) => sum + (row.amount || 0), 0);
+}
+
+// ─────────────────────────────────────────────
+// Connect status banner
+// ─────────────────────────────────────────────
+
+const BANNER_STATES = {
+    not_connected: {
+        bg: '#FEF3C7', border: '#FCD34D', icon: '#92400E', titleColor: '#78350F',
+        title: 'Connect Stripe to receive payouts',
+        body: 'Stripe handles your bank verification, payouts, and tax forms. Setup takes about 5 minutes.',
+        ctaLabel: 'Connect Stripe',
+        showCta: true,
+    },
+    incomplete: {
+        bg: '#FEF3C7', border: '#FCD34D', icon: '#92400E', titleColor: '#78350F',
+        title: 'Finish setting up your Stripe account',
+        body: 'Stripe needs a few more details before you can accept payments.',
+        ctaLabel: 'Continue Setup',
+        showCta: true,
+    },
+    needs_action: {
+        bg: '#FEE2E2', border: '#FCA5A5', icon: '#991B1B', titleColor: '#7F1D1D',
+        title: 'Action required on your Stripe account',
+        body: 'Stripe needs additional information to keep your account active.',
+        ctaLabel: 'Resolve in Stripe',
+        showCta: true,
+    },
+    connected: {
+        bg: '#ECFDF5', border: '#A7F3D0', icon: '#065F46', titleColor: '#064E3B',
+        title: 'Connected to Stripe — payouts active',
+        body: 'Customers can now buy your work and Stripe will pay out automatically.',
+        ctaLabel: 'Manage on Stripe',
+        showCta: false,
+    },
+};
+
+function applyBannerState(stateKey) {
+    const banner = document.getElementById('stripe-connect-banner');
+    const iconWrap = document.getElementById('stripe-connect-icon');
+    const title = document.getElementById('stripe-connect-title');
+    const body = document.getElementById('stripe-connect-body');
+    const cta = document.getElementById('stripe-connect-cta');
+    const ctaLabel = document.getElementById('stripe-connect-cta-label');
+    const cfg = BANNER_STATES[stateKey];
+    if (!cfg) return;
+    banner.style.display = 'flex';
+    banner.style.background = cfg.bg;
+    banner.style.border = `1px solid ${cfg.border}`;
+    iconWrap.style.background = cfg.bg;
+    iconWrap.style.color = cfg.icon;
+    title.style.color = cfg.titleColor;
+    title.textContent = cfg.title;
+    body.textContent = cfg.body;
+    cta.style.display = cfg.showCta ? 'inline-flex' : 'none';
+    if (ctaLabel) ctaLabel.textContent = cfg.ctaLabel;
+    cta.dataset.action = stateKey === 'not_connected' ? 'onboard' : 'continue';
+}
+
+async function loadConnectStatus(token) {
+    const res = await fetch(`${API_BASE_URL}/artists/me/stripe/connect/status`, {
+        headers: authHeaders(token),
+    });
+    if (!res.ok) {
+        applyBannerState('not_connected');
+        return null;
+    }
+    const status = await res.json();
+    if (!status.connected) {
+        applyBannerState('not_connected');
+    } else if (!status.details_submitted || !status.charges_enabled) {
+        const requirements = status.requirements || {};
+        const hasOverdue = requirements.currently_due && requirements.currently_due.length > 0;
+        applyBannerState(hasOverdue ? 'needs_action' : 'incomplete');
+    } else {
+        applyBannerState('connected');
+        // Switch the header button on
+        const headerBtn = document.getElementById('stripe-action-btn');
+        if (headerBtn) headerBtn.hidden = false;
+    }
+    return status;
+}
+
+async function handleConnectCta(token) {
+    const cta = document.getElementById('stripe-connect-cta');
+    if (!cta) return;
+    cta.addEventListener('click', async () => {
+        cta.disabled = true;
+        const originalLabel = cta.querySelector('span').textContent;
+        cta.querySelector('span').textContent = 'Opening Stripe…';
+        try {
+            const res = await fetch(`${API_BASE_URL}/artists/me/stripe/connect/onboard`, {
+                method: 'POST',
+                headers: authHeaders(token),
+            });
+            if (!res.ok) throw new Error((await res.json()).error || 'Could not start onboarding');
+            const data = await res.json();
+            window.location.href = data.url;
+        } catch (err) {
+            alert(err.message);
+            cta.querySelector('span').textContent = originalLabel;
+            cta.disabled = false;
+        }
+    });
+}
+
+async function handleManageButton(token) {
+    const btn = document.getElementById('stripe-action-btn');
+    if (!btn) return;
+    btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        try {
+            const res = await fetch(`${API_BASE_URL}/artists/me/stripe/connect/login-link`, {
+                method: 'POST',
+                headers: authHeaders(token),
+            });
+            if (!res.ok) throw new Error((await res.json()).error || 'Could not open Stripe dashboard');
+            const data = await res.json();
+            window.open(data.url, '_blank', 'noopener,noreferrer');
+        } catch (err) {
+            alert(err.message);
+        } finally {
+            btn.disabled = false;
+        }
+    });
+}
+
+// ─────────────────────────────────────────────
+// Balance + payouts
+// ─────────────────────────────────────────────
+
+async function loadBalance(token) {
+    const res = await fetch(`${API_BASE_URL}/artists/me/stripe/balance`, {
+        headers: authHeaders(token),
+    });
+    if (!res.ok) return;
+    const { connected, available, pending } = await res.json();
+    if (!connected) return;
+
+    const availableCents = sumBalance(available);
+    const pendingCents = sumBalance(pending);
+    const currency = (available && available[0] && available[0].currency)
+        || (pending && pending[0] && pending[0].currency) || 'usd';
+
+    document.getElementById('available-balance').textContent = fmtCurrencyCents(availableCents, currency);
+    document.getElementById('pending-earnings').textContent = fmtCurrencyCents(pendingCents, currency);
+}
+
+function payoutRowHtml(p) {
+    const date = new Date(p.arrival_date * 1000).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    const statusClass = p.status === 'paid' ? 'completed' : (p.status === 'failed' ? 'failed' : 'pending');
+    const description = p.description || `Payout via ${p.method}`;
+    return `
+      <div class="payout-item">
+        <div class="payout-info">
+          <div class="payout-icon"><i data-lucide="banknote"></i></div>
+          <div class="payout-details">
+            <strong>${description}</strong>
+            <span>${date}</span>
+          </div>
+        </div>
+        <div class="payout-amount ${p.status === 'paid' ? 'success' : ''}">
+          ${p.status === 'paid' ? '+' : ''}${fmtCurrencyCents(p.amount, p.currency)}
+        </div>
+        <span class="payout-status ${statusClass}">${p.status}</span>
+      </div>`;
+}
+
+async function loadPayouts(token) {
+    const res = await fetch(`${API_BASE_URL}/artists/me/stripe/payouts?limit=10`, {
+        headers: authHeaders(token),
+    });
+    if (!res.ok) return;
+    const { connected, payouts } = await res.json();
+    if (!connected || !payouts || payouts.length === 0) return;
+
+    const list = document.getElementById('payout-list');
+    if (!list) return;
+    list.innerHTML = payouts.map(payoutRowHtml).join('');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    // Total paid
+    const totalPaid = payouts
+        .filter(p => p.status === 'paid')
+        .reduce((s, p) => s + (p.amount || 0), 0);
+    const totalEl = document.getElementById('total-paid');
+    if (totalEl) totalEl.textContent = fmtCurrencyCents(totalPaid, payouts[0].currency);
+}
+
+// ─────────────────────────────────────────────
+// Init
+// ─────────────────────────────────────────────
+
+async function init() {
     const auth = checkAuth();
     if (!auth) return;
-    
-    try {
-        // Load stats from API
-        const statsResponse = await fetch(`${API_BASE_URL}/artists/me/stats`, {
-            headers: {
-                'Authorization': `Bearer ${auth.token}`
-            }
-        });
-        
-        if (!statsResponse.ok) {
-            throw new Error('Failed to load stats');
-        }
-        
-        const stats = await statsResponse.json();
-        console.log('Earnings stats:', stats);
-        
-        // Update earnings display
-        updateEarningsDisplay(stats);
-        
-        // Load orders for transaction history
-        await loadTransactionHistory(auth.token);
-        
-    } catch (error) {
-        console.error('Error loading earnings:', error);
-        showNotification('Failed to load earnings data', 'error');
-    }
-}
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 
-// ===================================
-// Update Earnings Display
-// ===================================
-function updateEarningsDisplay(stats) {
-    // Total revenue
-    const totalRevenue = parseFloat(stats.totalRevenue || 0);
-    const totalRevenueEl = document.getElementById('total-revenue');
-    if (totalRevenueEl) {
-        totalRevenueEl.textContent = `$${totalRevenue.toFixed(2)}`;
-    }
-    
-    // Total sales
-    const totalSalesEl = document.getElementById('total-sales');
-    if (totalSalesEl) {
-        totalSalesEl.textContent = stats.totalSales || 0;
-    }
-    
-    // Pending payout (for simplicity, show 0 as we don't have actual payout tracking)
-    const pendingPayoutEl = document.getElementById('pending-payout');
-    if (pendingPayoutEl) {
-        pendingPayoutEl.textContent = '$0.00';
-    }
-    
-    // Available balance
-    const availableBalanceEl = document.getElementById('available-balance');
-    if (availableBalanceEl) {
-        availableBalanceEl.textContent = `$${totalRevenue.toFixed(2)}`;
-    }
-    
-    // Impact donation (5% of revenue)
-    const impactDonationEl = document.getElementById('impact-donation');
-    if (impactDonationEl) {
-        const donation = totalRevenue * 0.05;
-        impactDonationEl.textContent = `$${donation.toFixed(2)}`;
-    }
-}
+    handleConnectCta(auth.token);
+    handleManageButton(auth.token);
 
-// ===================================
-// Load Transaction History
-// ===================================
-async function loadTransactionHistory(token) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/orders/artist/me`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        
-        if (!response.ok) {
-            throw new Error('Failed to load orders');
-        }
-        
-        const orders = await response.json();
-        displayTransactionHistory(orders);
-        
-    } catch (error) {
-        console.error('Error loading transactions:', error);
-        const container = document.getElementById('transactions-list');
-        if (container) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <i data-lucide="receipt"></i>
-                    <h3>No transactions yet</h3>
-                    <p>Your sales history will appear here.</p>
-                </div>
-            `;
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
+    const status = await loadConnectStatus(auth.token);
+    if (status && status.connected && status.charges_enabled) {
+        await Promise.all([loadBalance(auth.token), loadPayouts(auth.token)]);
     }
-}
 
-// ===================================
-// Display Transaction History
-// ===================================
-function displayTransactionHistory(orders) {
-    const container = document.getElementById('transactions-list');
-    if (!container) return;
-    
-    if (!orders || orders.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <i data-lucide="receipt"></i>
-                <h3>No transactions yet</h3>
-                <p>Your sales history will appear here.</p>
-            </div>
-        `;
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-        return;
-    }
-    
-    // Convert orders to transactions
-    const transactions = orders.map(order => {
-        const earnings = order.items.reduce((sum, item) => sum + parseFloat(item.subtotal), 0);
-        return {
-            id: order.id,
-            date: order.created_at,
-            type: 'sale',
-            description: `Order #${order.id.slice(0, 8).toUpperCase()}`,
-            items: order.items.length,
-            amount: earnings,
-            status: order.status
-        };
-    });
-    
-    container.innerHTML = `
-        <table class="transactions-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Description</th>
-                    <th>Items</th>
-                    <th>Status</th>
-                    <th>Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${transactions.map(tx => `
-                    <tr>
-                        <td>${formatDate(tx.date)}</td>
-                        <td>${escapeHtml(tx.description)}</td>
-                        <td>${tx.items}</td>
-                        <td>
-                            <span class="status-badge status-${tx.status}">
-                                ${capitalizeFirst(tx.status)}
-                            </span>
-                        </td>
-                        <td class="amount">+$${tx.amount.toFixed(2)}</td>
-                    </tr>
-                `).join('')}
-            </tbody>
-        </table>
-    `;
-}
-
-// ===================================
-// Helper Functions
-// ===================================
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-    });
-}
-
-function capitalizeFirst(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function showNotification(message, type = 'info') {
-    const existing = document.querySelector('.notification');
-    if (existing) existing.remove();
-    
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    
-    const iconName = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info';
-    
-    notification.innerHTML = `
-        <i data-lucide="${iconName}"></i>
-        <span>${message}</span>
-    `;
-    
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 16px 24px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        z-index: 9999;
-        animation: slideIn 0.3s ease;
-        font-weight: 500;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        ${type === 'success' ? 'background: #ECFDF5; color: #065F46;' : ''}
-        ${type === 'error' ? 'background: #FEF2F2; color: #B91C1C;' : ''}
-        ${type === 'info' ? 'background: #EFF6FF; color: #1E40AF;' : ''}
-    `;
-    
-    document.body.appendChild(notification);
-    
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
-    
-    setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => notification.remove(), 300);
-    }, 4000);
-}
-
-// Add styles
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes slideOut {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-    }
-    .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        color: #6B7280;
-    }
-    .empty-state i {
-        width: 48px;
-        height: 48px;
-        margin-bottom: 16px;
-        color: #9CA3AF;
-    }
-    .empty-state h3 {
-        margin-bottom: 8px;
-        color: #374151;
-    }
-    .transactions-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    .transactions-table th,
-    .transactions-table td {
-        padding: 12px 16px;
-        text-align: left;
-        border-bottom: 1px solid #E5E7EB;
-    }
-    .transactions-table th {
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: #6B7280;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        background: #F9FAFB;
-    }
-    .transactions-table .amount {
-        font-weight: 600;
-        color: #059669;
-    }
-    .status-badge {
-        padding: 4px 10px;
-        border-radius: 9999px;
-        font-size: 0.75rem;
-        font-weight: 600;
-    }
-    .status-pending { background: #FEF3C7; color: #92400E; }
-    .status-processing { background: #DBEAFE; color: #1E40AF; }
-    .status-shipped { background: #E0E7FF; color: #3730A3; }
-    .status-delivered { background: #D1FAE5; color: #065F46; }
-    .status-cancelled { background: #FEE2E2; color: #991B1B; }
-`;
-document.head.appendChild(style);
-
-// ===================================
-// Logout Handler
-// ===================================
-function initLogout() {
+    // Logout
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             localStorage.removeItem('userType');
-            window.location.href = '../index.html';
+            window.location.href = '../frontend/login.html';
         });
     }
 }
 
-// ===================================
-// Initialize Page
-// ===================================
-document.addEventListener('DOMContentLoaded', () => {
-    checkAuth();
-    loadEarnings();
-    initLogout();
-    
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
-});
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
