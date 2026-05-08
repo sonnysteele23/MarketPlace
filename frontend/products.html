@@ -15,7 +15,7 @@
     
     <!-- SEO Meta Tags -->
     <title>Shop Handmade Gifts | Unique Artisan Jewelry, Pottery & Decor | Amy's Haven</title>
-    <meta name="description" content="Browse 1000+ unique handmade items from talented artists nationwide. Shop artisan jewelry, pottery, home decor, candles & more. Every purchase supports creators and funds homelessness solutions. Free shipping on orders $50+.">
+    <meta name="description" content="Discover hand-curated handmade items from talented artisans across the United States. Shop jewelry, pottery, home decor, and more. Every purchase supports creators and funds homelessness solutions.">
     <meta name="keywords" content="buy handmade online, unique handmade gifts, handmade jewelry for sale, artisan pottery, handmade home decor, handmade candles, shop artisan marketplace, handmade crafts online, artisan gifts USA, ethical handmade shopping">
     <link rel="canonical" href="https://amyshaven.com/frontend/products.html">
     
@@ -173,30 +173,7 @@
                     <div class="filter-group">
                         <h3 class="filter-title">Artist Location</h3>
                         <div class="filter-options">
-                            <label class="filter-option">
-                                <input type="checkbox" name="location" value="seattle">
-                                <span>Seattle</span>
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="location" value="spokane">
-                                <span>Spokane</span>
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="location" value="tacoma">
-                                <span>Tacoma</span>
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="location" value="olympia">
-                                <span>Olympia</span>
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="location" value="bellingham">
-                                <span>Bellingham</span>
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="location" value="vancouver">
-                                <span>Vancouver</span>
-                            </label>
+                            <input type="text" id="location-filter" name="location" placeholder="City or state (e.g. Portland, OR)" class="filter-text-input" aria-label="Filter by artist city or state">
                         </div>
                     </div>
 
@@ -263,43 +240,40 @@
                 <div class="footer-col">
                     <h4>Shop</h4>
                     <ul>
-                        <li><a href="products.html">All Products</a></li>
-                        <li><a href="products.html?category=jewelry">Jewelry</a></li>
-                        <li><a href="products.html?category=home-decor">Home Decor</a></li>
-                        <li><a href="products.html?category=pottery">Pottery</a></li>
-                        <li><a href="products.html?category=miscellaneous">Miscellaneous</a></li>
+                        <li><a href="/frontend/products.html">All Products</a></li>
+                        <li><a href="/frontend/products.html?category=jewelry">Jewelry</a></li>
+                        <li><a href="/frontend/products.html?category=pottery">Pottery</a></li>
+                        <li><a href="/frontend/products.html?featured=true">Featured Items</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="footer-col">
                     <h4>Artists</h4>
                     <ul>
-                        <li><a href="../artist-cms/dashboard.html">Sell Your Work</a></li>
-                        <li><a href="artists.html">Meet Our Artists</a></li>
+                        <li><a href="/frontend/register.html">Apply to Sell</a></li>
+                        <li><a href="/artist-cms/dashboard.html">Artist Dashboard</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="footer-col">
                     <h4>About</h4>
                     <ul>
-                        <li><a href="about.html">Our Mission</a></li>
-                        <li><a href="/contact">Contact Us</a></li>
+                        <li><a href="/frontend/about.html">Our Mission</a></li>
+                        <li><a href="mailto:admin@amyshaven.com">Contact Us</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="footer-col">
-                    <h4>Support</h4>
+                    <h4>Legal</h4>
                     <ul>
-                        <li><a href="/shipping">Shipping Info</a></li>
-                        <li><a href="/returns">Returns</a></li>
-                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                        <li><a href="terms-and-conditions.html">Terms &amp; Conditions</a></li>
+                        <li><a href="/frontend/privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="/frontend/terms-and-conditions.html">Terms &amp; Conditions</a></li>
                     </ul>
                 </div>
             </div>
-            
+
             <div class="footer-bottom">
-                <p>&copy; 2025 Amy's Haven. All rights reserved.</p>
+                <p>&copy; 2026 Amy's Haven. All rights reserved.</p>
             </div>
         </div>
     </footer>

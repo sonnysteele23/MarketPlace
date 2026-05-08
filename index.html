@@ -38,6 +38,7 @@
     
     <!-- Mobile Optimization -->
     <meta name="theme-color" content="#7C3AED">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
@@ -65,7 +66,7 @@
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "Amy's Haven",
-      "alternateName": "WA Artisan Marketplace",
+      "alternateName": "Amy's Haven Marketplace",
       "url": "https://amyshaven.com",
       "description": "Online marketplace for handmade goods supporting artists and homelessness solutions",
       "potentialAction": {
@@ -355,16 +356,16 @@
             <p class="hero-subtitle">Shop unique handmade jewelry, pottery, home decor & gifts from talented artists. Every purchase supports creators and funds homelessness solutions.</p>
             <div class="hero-stats">
                 <div class="stat">
-                    <strong>100+</strong>
-                    <span>Artists Nationwide</span>
-                </div>
-                <div class="stat">
                     <strong>5%</strong>
                     <span>To Homelessness Solutions</span>
                 </div>
                 <div class="stat">
-                    <strong>1000+</strong>
-                    <span>Unique Handmade Items</span>
+                    <strong>100%</strong>
+                    <span>Handmade in the USA</span>
+                </div>
+                <div class="stat">
+                    <strong>Hand-Vetted</strong>
+                    <span>Artisans &amp; Stories</span>
                 </div>
             </div>
             <a href="frontend/products.html" class="cta-btn">
@@ -395,14 +396,6 @@
                     </div>
                     <h3>Jewelry & Accessories</h3>
                     <p>Handcrafted jewelry and unique accessories</p>
-                </a>
-                
-                <a href="frontend/products.html?category=home-decor" class="category-card">
-                    <div class="category-icon">
-                        <i data-lucide="home"></i>
-                    </div>
-                    <h3>Home Decor</h3>
-                    <p>Beautiful pieces for your living space</p>
                 </a>
                 
                 <a href="frontend/products.html?category=pottery" class="category-card">
@@ -445,14 +438,6 @@
                     <p>Stunning blown and fused glass pieces</p>
                 </a>
                 
-                <a href="frontend/products.html?category=soap-candles" class="category-card">
-                    <div class="category-icon">
-                        <i data-lucide="flame"></i>
-                    </div>
-                    <h3>Soaps & Candles</h3>
-                    <p>Handmade aromatics for your home</p>
-                </a>
-                
                 <a href="frontend/products.html?category=miscellaneous" class="category-card">
                     <div class="category-icon">
                         <i data-lucide="package"></i>
@@ -487,29 +472,29 @@
     <!-- Artist Spotlight Section -->
     <section class="artist-spotlight">
         <div class="container">
-            <h2 class="section-title">Artist Spotlight</h2>
+            <h2 class="section-title">Are You an Artist?</h2>
             <div class="spotlight-content">
                 <div class="spotlight-image">
                     <div style="width: 100%; height: 400px; background: linear-gradient(135deg, #EDE9FE 0%, #DDD6FE 100%); border-radius: 24px; display: flex; align-items: center; justify-content: center; position: relative;">
-                        <i data-lucide="palette" style="width: 80px; height: 80px; color: #7C3AED; opacity: 0.3;"></i>
+                        <i data-lucide="palette" style="width: 80px; height: 80px; color: #7C3AED; opacity: 0.4;"></i>
                         <div class="spotlight-badge" style="position: absolute; bottom: 16px; left: 16px; background: white; padding: 8px 16px; border-radius: 9999px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 8px;">
-                            <i data-lucide="award" style="width: 16px; height: 16px;"></i>
-                            <span>Featured Artist</span>
+                            <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i>
+                            <span>Now Welcoming Artists</span>
                         </div>
                     </div>
                 </div>
                 <div class="spotlight-text">
-                    <h3>Meet Sarah Thompson</h3>
-                    <p class="artist-category">Ceramic Artist, Seattle</p>
+                    <h3>Your work belongs here.</h3>
                     <p class="artist-story">
-                        "After experiencing homelessness for two years, I found solace in pottery. 
-                        This marketplace gave me a platform to share my work and rebuild my life. 
-                        Each piece I create is a reminder that everyone deserves a second chance."
+                        Amy's Haven is hand-curating its very first collection of artists across the United States. We're especially seeking creators with lived experience of homelessness whose work tells a story of resilience and craft.
                     </p>
-                    <p style="color: #6B7280; font-size: 0.875rem; margin-top: 16px;">
-                        <i data-lucide="info" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"></i>
-                        Artist profiles coming soon
+                    <p class="artist-story" style="margin-top: 12px;">
+                        Listing is free. We handle payments, shipping logistics, and tell your story to the people who buy your work.
                     </p>
+                    <a href="frontend/register.html" class="cta-btn" style="margin-top: 24px; display: inline-flex;">
+                        Apply to Sell
+                        <i data-lucide="arrow-right"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -583,59 +568,40 @@
                 <div class="footer-col">
                     <h4>Shop</h4>
                     <ul>
-                        <li><a href="frontend/products.html">All Products</a></li>
-                        <li><a href="frontend/products.html?category=jewelry">Jewelry</a></li>
-                        <li><a href="frontend/products.html?category=home-decor">Home Decor</a></li>
-                        <li><a href="frontend/products.html?category=pottery">Pottery</a></li>
-                        <li><a href="frontend/products.html?category=miscellaneous">Miscellaneous</a></li>
-                        <li><a href="frontend/products.html?featured=true">Featured Items</a></li>
+                        <li><a href="/frontend/products.html">All Products</a></li>
+                        <li><a href="/frontend/products.html?category=jewelry">Jewelry</a></li>
+                        <li><a href="/frontend/products.html?category=pottery">Pottery</a></li>
+                        <li><a href="/frontend/products.html?featured=true">Featured Items</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="footer-col">
                     <h4>Artists</h4>
                     <ul>
-                        <li><a href="artist-cms/dashboard.html">Sell Your Work</a></li>
-                        <li><a href="frontend/artists.html">Meet Our Artists</a></li>
-                        <li><a href="/artist-faq">Artist FAQ</a></li>
-                        <li><a href="/application">Apply to Sell</a></li>
+                        <li><a href="/frontend/register.html">Apply to Sell</a></li>
+                        <li><a href="/artist-cms/dashboard.html">Artist Dashboard</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="footer-col">
                     <h4>About</h4>
                     <ul>
-                        <li><a href="frontend/about.html">Our Mission</a></li>
-                        <li><a href="/impact">Social Impact</a></li>
-                        <li><a href="/contact">Contact Us</a></li>
-                        <li><a href="/blog">Blog</a></li>
+                        <li><a href="/frontend/about.html">Our Mission</a></li>
+                        <li><a href="mailto:admin@amyshaven.com">Contact Us</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="footer-col">
-                    <h4>Support</h4>
+                    <h4>Legal</h4>
                     <ul>
-                        <li><a href="/shipping">Shipping Info</a></li>
-                        <li><a href="/returns">Returns</a></li>
-                        <li><a href="frontend/privacy-policy.html">Privacy Policy</a></li>
-                        <li><a href="frontend/terms-and-conditions.html">Terms &amp; Conditions</a></li>
+                        <li><a href="/frontend/privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="/frontend/terms-and-conditions.html">Terms &amp; Conditions</a></li>
                     </ul>
                 </div>
             </div>
-            
+
             <div class="footer-bottom">
-                <p>&copy; 2025 Amy's Haven. All rights reserved.</p>
-                <div class="social-links">
-                    <a href="#" aria-label="Facebook">
-                        <i data-lucide="facebook"></i>
-                    </a>
-                    <a href="#" aria-label="Instagram">
-                        <i data-lucide="instagram"></i>
-                    </a>
-                    <a href="#" aria-label="Twitter">
-                        <i data-lucide="twitter"></i>
-                    </a>
-                </div>
+                <p>&copy; 2026 Amy's Haven. All rights reserved.</p>
             </div>
         </div>
     </footer>

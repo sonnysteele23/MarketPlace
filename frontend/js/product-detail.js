@@ -61,7 +61,7 @@
         document.getElementById('product-content').style.display = 'block';
         
         // Update page title
-        document.title = product.name + ' | WA Artisan Marketplace';
+        document.title = product.name + " | Amy's Haven";
         
         // Update breadcrumb
         document.getElementById('breadcrumb-product').textContent = product.name;

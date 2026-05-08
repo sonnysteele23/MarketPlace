@@ -12,8 +12,8 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Account | WA Artisan Marketplace</title>
-    <meta name="description" content="Manage your WA Artisan Marketplace account">
+    <title>My Account | Amy's Haven</title>
+    <meta name="description" content="Manage your Amy\'s Haven account">
     
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/icons.css">
@@ -87,7 +87,7 @@
                         </div>
                         <h2 id="profile-name">User</h2>
                         <p id="profile-email">user@example.com</p>
-                        <span class="member-since">Member since Jan 2025</span>
+                        <span class="member-since" id="profile-member-since"></span>
                     </div>
                     <nav class="account-nav">
                         <a href="#dashboard" class="nav-item active" data-tab="dashboard">
@@ -125,7 +125,7 @@
                                     <i data-lucide="package"></i>
                                 </div>
                                 <div class="stat-info">
-                                    <span class="stat-value">3</span>
+                                    <span class="stat-value" id="stat-orders">0</span>
                                     <span class="stat-label">Orders</span>
                                 </div>
                             </div>
@@ -134,7 +134,7 @@
                                     <i data-lucide="star"></i>
                                 </div>
                                 <div class="stat-info">
-                                    <span class="stat-value">5</span>
+                                    <span class="stat-value" id="stat-reviews">0</span>
                                     <span class="stat-label">Reviews</span>
                                 </div>
                             </div>
@@ -143,32 +143,12 @@
                         <div class="recent-orders-section">
                             <div class="section-header">
                                 <h2>Recent Orders</h2>
-                                <a href="#orders" class="view-all">View All</a>
                             </div>
-                            <div class="orders-list">
-                                <div class="order-card">
-                                    <div class="order-header">
-                                        <span class="order-number">#ORD-2025-001</span>
-                                        <span class="order-status delivered">Delivered</span>
-                                    </div>
-                                    <div class="order-items">
-                                        <img src="../images/placeholder-product.jpg" alt="Product">
-                                        <div class="order-details">
-                                            <h4>Handcrafted Ceramic Vase</h4>
-                                            <p>Jan 15, 2025</p>
-                                        </div>
-                                        <span class="order-total">$49.50</span>
-                                    </div>
-                                    <div class="order-actions">
-                                        <button class="btn btn-ghost btn-sm">
-                                            <i data-lucide="eye"></i>
-                                            View Details
-                                        </button>
-                                        <button class="btn btn-ghost btn-sm">
-                                            <i data-lucide="repeat"></i>
-                                            Buy Again
-                                        </button>
-                                    </div>
+                            <div class="orders-list" id="recent-orders-list">
+                                <div class="empty-state" style="text-align:center; padding:48px 24px; color:#6B7280;">
+                                    <i data-lucide="package" style="width:40px;height:40px;opacity:0.3;margin-bottom:12px;"></i>
+                                    <p>You haven't placed any orders yet.</p>
+                                    <a href="products.html" class="btn btn-primary btn-sm" style="margin-top:12px;">Start Shopping</a>
                                 </div>
                             </div>
                         </div>
@@ -179,7 +159,7 @@
                             </div>
                             <div class="impact-content">
                                 <h3>Your Impact</h3>
-                                <p>Your purchases have contributed <strong>$12.50</strong> to fighting homelessness in Washington!</p>
+                                <p>5% of every purchase you make funds homelessness solutions across America. Your contribution will appear here after your first order.</p>
                             </div>
                         </div>
                     </div>
@@ -197,46 +177,12 @@
                             </select>
                         </div>
 
-                        <div class="orders-list">
-                            <div class="order-card detailed">
-                                <div class="order-header">
-                                    <div class="order-info">
-                                        <span class="order-number">#ORD-2025-001</span>
-                                        <span class="order-date">January 15, 2025</span>
-                                    </div>
-                                    <span class="order-status delivered">Delivered</span>
-                                </div>
-                                <div class="order-items">
-                                    <div class="order-item">
-                                        <img src="../images/placeholder-product.jpg" alt="Product">
-                                        <div class="item-details">
-                                            <h4>Handcrafted Ceramic Vase</h4>
-                                            <p>By: Sarah's Pottery</p>
-                                            <span class="item-qty">Qty: 1</span>
-                                        </div>
-                                        <span class="item-price">$45.00</span>
-                                    </div>
-                                </div>
-                                <div class="order-footer">
-                                    <div class="order-total">
-                                        <span>Total:</span>
-                                        <strong>$49.50</strong>
-                                    </div>
-                                    <div class="order-actions">
-                                        <button class="btn btn-ghost btn-sm">
-                                            <i data-lucide="truck"></i>
-                                            Track Order
-                                        </button>
-                                        <button class="btn btn-ghost btn-sm">
-                                            <i data-lucide="file-text"></i>
-                                            Invoice
-                                        </button>
-                                        <button class="btn btn-primary btn-sm">
-                                            <i data-lucide="star"></i>
-                                            Leave Review
-                                        </button>
-                                    </div>
-                                </div>
+                        <div class="orders-list" id="full-orders-list">
+                            <div class="empty-state" style="text-align:center; padding:64px 24px; color:#6B7280;">
+                                <i data-lucide="package" style="width:48px;height:48px;opacity:0.3;margin-bottom:16px;"></i>
+                                <h3 style="color:#374151;margin-bottom:8px;">No orders yet</h3>
+                                <p>Once you place your first order, it'll show up here.</p>
+                                <a href="products.html" class="btn btn-primary" style="margin-top:16px;">Browse Products</a>
                             </div>
                         </div>
                     </div>
@@ -251,29 +197,11 @@
                             </button>
                         </div>
                         
-                        <div class="addresses-grid">
-                            <div class="address-card default">
-                                <span class="default-badge">Default</span>
-                                <h3>Home</h3>
-                                <p>John Doe</p>
-                                <p>123 Main Street, Apt 4B</p>
-                                <p>Seattle, WA 98101</p>
-                                <p>United States</p>
-                                <p>Phone: (555) 123-4567</p>
-                                <div class="address-actions">
-                                    <button class="btn btn-ghost btn-sm">
-                                        <i data-lucide="edit"></i>
-                                        Edit
-                                    </button>
-                                    <button class="btn btn-ghost btn-sm">
-                                        <i data-lucide="trash-2"></i>
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="address-card add-new">
-                                <i data-lucide="plus"></i>
-                                <span>Add New Address</span>
+                        <div class="addresses-grid" id="addresses-grid">
+                            <div class="empty-state" style="grid-column:1/-1; text-align:center; padding:64px 24px; color:#6B7280;">
+                                <i data-lucide="map-pin" style="width:48px;height:48px;opacity:0.3;margin-bottom:16px;"></i>
+                                <h3 style="color:#374151;margin-bottom:8px;">No saved addresses</h3>
+                                <p>Add an address to make checkout faster next time.</p>
                             </div>
                         </div>
                     </div>
@@ -289,28 +217,10 @@
                         </div>
                         
                         <div class="payment-cards">
-                            <div class="payment-card default">
-                                <span class="default-badge">Default</span>
-                                <div class="card-brand">
-                                    <i data-lucide="credit-card"></i>
-                                    <span>Visa</span>
-                                </div>
-                                <div class="card-number">•••• •••• •••• 4242</div>
-                                <div class="card-expiry">Expires 12/26</div>
-                                <div class="card-actions">
-                                    <button class="btn btn-ghost btn-sm">
-                                        <i data-lucide="edit"></i>
-                                        Edit
-                                    </button>
-                                    <button class="btn btn-ghost btn-sm">
-                                        <i data-lucide="trash-2"></i>
-                                        Remove
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="payment-card add-new">
-                                <i data-lucide="plus"></i>
-                                <span>Add Payment Method</span>
+                            <div class="empty-state" style="text-align:center; padding:64px 24px; color:#6B7280;">
+                                <i data-lucide="credit-card" style="width:48px;height:48px;opacity:0.3;margin-bottom:16px;"></i>
+                                <h3 style="color:#374151;margin-bottom:8px;">No payment methods on file</h3>
+                                <p>Add a card at checkout to save it for next time.</p>
                             </div>
                         </div>
                     </div>
@@ -335,19 +245,19 @@
                                 <div class="form-grid">
                                     <div class="form-group">
                                         <label for="first-name">First Name</label>
-                                        <input type="text" id="first-name" class="form-input" value="John">
+                                        <input type="text" id="first-name" class="form-input" autocomplete="given-name">
                                     </div>
                                     <div class="form-group">
                                         <label for="last-name">Last Name</label>
-                                        <input type="text" id="last-name" class="form-input" value="Doe">
+                                        <input type="text" id="last-name" class="form-input" autocomplete="family-name">
                                     </div>
                                     <div class="form-group full-width">
                                         <label for="email">Email Address</label>
-                                        <input type="email" id="email" class="form-input" value="john@example.com">
+                                        <input type="email" id="email" class="form-input" autocomplete="email">
                                     </div>
                                     <div class="form-group full-width">
                                         <label for="phone">Phone Number</label>
-                                        <input type="tel" id="phone" class="form-input" value="(555) 123-4567">
+                                        <input type="tel" id="phone" class="form-input" autocomplete="tel">
                                     </div>
                                 </div>
                             </div>
@@ -455,8 +365,44 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="/frontend/products.html">All Products</a></li>
+                        <li><a href="/frontend/products.html?category=jewelry">Jewelry</a></li>
+                        <li><a href="/frontend/products.html?category=pottery">Pottery</a></li>
+                        <li><a href="/frontend/products.html?featured=true">Featured Items</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Artists</h4>
+                    <ul>
+                        <li><a href="/frontend/register.html">Apply to Sell</a></li>
+                        <li><a href="/artist-cms/dashboard.html">Artist Dashboard</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>About</h4>
+                    <ul>
+                        <li><a href="/frontend/about.html">Our Mission</a></li>
+                        <li><a href="mailto:admin@amyshaven.com">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/frontend/privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="/frontend/terms-and-conditions.html">Terms &amp; Conditions</a></li>
+                    </ul>
+                </div>
+            </div>
+
             <div class="footer-bottom">
-                <p>&copy; 2025 Washington Artisan Marketplace. All rights reserved.</p>
+                <p>&copy; 2026 Amy's Haven. All rights reserved.</p>
             </div>
         </div>
     </footer>
