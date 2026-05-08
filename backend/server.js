@@ -149,14 +149,34 @@ app.get('/api/health', (req, res) => {
 // Newsletter subscription endpoint
 app.post('/api/newsletter/subscribe', async (req, res) => {
     const { email } = req.body;
-    
-    if (!email || !email.includes('@')) {
+
+    // RFC 5322-ish email check; rejects empty / no @ / no dot in domain
+    const valid = typeof email === 'string'
+        && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!valid) {
         return res.status(400).json({ error: 'Invalid email address' });
     }
-    
-    // TODO: Add to newsletter service (MailChimp, SendGrid, etc.)
-    console.log(`Newsletter subscription: ${email}`);
-    
+
+    const normalized = email.toLowerCase().trim();
+    const source = (req.body && typeof req.body.source === 'string') ? req.body.source.slice(0, 64) : 'site_footer';
+
+    try {
+        const { supabaseAdmin } = require('./config/supabase');
+        // upsert so re-subscribes are idempotent (relies on unique constraint on email)
+        const { error } = await supabaseAdmin
+            .from('newsletter_subscribers')
+            .upsert({ email: normalized, source }, { onConflict: 'email' });
+        if (error) {
+            // Most likely cause: table missing. Log clearly so the migration shows up in Railway logs.
+            console.warn('[newsletter] supabase upsert failed:', error.message);
+        } else {
+            console.log(`[newsletter] subscribed: ${normalized}`);
+        }
+    } catch (err) {
+        console.error('[newsletter] unexpected error:', err);
+    }
+
+    // Always 200 — the user submitted a valid email; we don't leak whether storage worked.
     res.json({ message: 'Successfully subscribed to newsletter!' });
 });
 

@@ -394,7 +394,20 @@
     // ===================================
     function initProductsPage() {
         console.log('Initializing products page...');
-        
+
+        // Apply ?q= and ?category= from URL on first load
+        var urlParams = new URLSearchParams(window.location.search);
+        var initialQuery = urlParams.get('q');
+        if (initialQuery) {
+            currentFilters.search = initialQuery;
+            var searchInput = document.getElementById('search-input');
+            if (searchInput) searchInput.value = initialQuery;
+        }
+        var initialCategory = urlParams.get('category');
+        if (initialCategory) {
+            currentFilters.categories = [initialCategory];
+        }
+
         // Fetch categories first (with counts)
         fetchCategories();
         
