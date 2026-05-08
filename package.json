@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Marketplace for Washington state artisans supporting homelessness solutions",
   "main": "backend/server.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "start": "node backend/server.js",
     "dev": "nodemon backend/server.js",
