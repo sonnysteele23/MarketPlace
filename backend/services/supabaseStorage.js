@@ -31,7 +31,7 @@ async function initializeBuckets() {
         if (productError && productError.message.includes('not found')) {
             await supabase.storage.createBucket(BUCKETS.PRODUCTS, {
                 public: true,
-                fileSizeLimit: 5242880, // 5MB
+                fileSizeLimit: 15728640, // 15MB
                 allowedMimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
             });
             console.log('✅ Created product-images bucket');
@@ -45,7 +45,7 @@ async function initializeBuckets() {
         if (artistError && artistError.message.includes('not found')) {
             await supabase.storage.createBucket(BUCKETS.ARTISTS, {
                 public: true,
-                fileSizeLimit: 5242880, // 5MB
+                fileSizeLimit: 15728640, // 15MB
                 allowedMimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
             });
             console.log('✅ Created artist-images bucket');

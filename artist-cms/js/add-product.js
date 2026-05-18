@@ -14,7 +14,13 @@
     // State
     let uploadedImages = [];
     const MAX_IMAGES = 5;
-    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+    // Generous sanity cap on the ORIGINAL file the user selects. Browser-side
+    // compression (see compressImage) shrinks normal phone photos far below
+    // this, so this only blocks absurd inputs like RAW files or stray videos.
+    const MAX_ORIGINAL_FILE_SIZE = 25 * 1024 * 1024; // 25MB
+    // Browser-side compression target, applied before upload.
+    const COMPRESS_MAX_DIMENSION = 1800; // longest edge, px
+    const COMPRESS_QUALITY = 0.85;
     let productTags = [];
 
     // Authentication
@@ -132,38 +138,103 @@
         console.log('[Marketplace] Image upload initialized');
     }
 
-    function handleFiles(files) {
+    /**
+     * Resize + re-encode an image in the browser before upload.
+     * Returns { file, dataUrl }. On any failure (or for animated GIFs)
+     * it falls back to the original file so uploads never silently break.
+     */
+    function compressImage(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onerror = () => reject(new Error('Could not read file'));
+            reader.onload = function(e) {
+                const originalDataUrl = e.target.result;
+
+                // Animated GIFs would be flattened to a single frame by the
+                // canvas, so leave them untouched.
+                if (file.type === 'image/gif') {
+                    resolve({ file: file, dataUrl: originalDataUrl });
+                    return;
+                }
+
+                const img = new Image();
+                img.onerror = () => reject(new Error('Could not decode image'));
+                img.onload = function() {
+                    let width = img.naturalWidth;
+                    let height = img.naturalHeight;
+                    const longest = Math.max(width, height);
+
+                    if (longest > COMPRESS_MAX_DIMENSION) {
+                        const scale = COMPRESS_MAX_DIMENSION / longest;
+                        width = Math.round(width * scale);
+                        height = Math.round(height * scale);
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+
+                    canvas.toBlob(function(blob) {
+                        // If the canvas pass failed, or didn't actually shrink
+                        // the file, keep the original.
+                        if (!blob || blob.size >= file.size) {
+                            resolve({ file: file, dataUrl: originalDataUrl });
+                            return;
+                        }
+                        const newName = file.name.replace(/\.[^.]+$/, '') + '.jpg';
+                        resolve({
+                            file: new File([blob], newName, { type: 'image/jpeg' }),
+                            dataUrl: canvas.toDataURL('image/jpeg', COMPRESS_QUALITY)
+                        });
+                    }, 'image/jpeg', COMPRESS_QUALITY);
+                };
+                img.src = originalDataUrl;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async function handleFiles(files) {
         console.log('[Marketplace] Processing', files.length, 'files');
         const filesArray = Array.from(files);
-        
+
         for (const file of filesArray) {
             if (uploadedImages.length >= MAX_IMAGES) {
                 showNotification(`Maximum ${MAX_IMAGES} images allowed`, 'error');
                 break;
             }
-            
-            if (file.size > MAX_FILE_SIZE) {
-                showNotification(`${file.name} exceeds 5MB limit`, 'error');
-                continue;
-            }
-            
+
             if (!file.type.startsWith('image/')) {
                 showNotification(`${file.name} is not an image`, 'error');
                 continue;
             }
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const imageData = {
-                    file: file,
-                    dataUrl: e.target.result,
+
+            // Sanity guard on the ORIGINAL file. Intentionally generous --
+            // normal phone photos pass and get compressed below.
+            if (file.size > MAX_ORIGINAL_FILE_SIZE) {
+                showNotification(`${file.name} is too large (max 25MB)`, 'error');
+                continue;
+            }
+
+            try {
+                const { file: processedFile, dataUrl } = await compressImage(file);
+                uploadedImages.push({
+                    file: processedFile,
+                    dataUrl: dataUrl,
                     isMain: uploadedImages.length === 0
-                };
-                uploadedImages.push(imageData);
+                });
                 renderImagePreviews();
-                console.log('[Marketplace] Image added, total:', uploadedImages.length);
-            };
-            reader.readAsDataURL(file);
+                console.log(
+                    `[Marketplace] Image added: ${file.name} ` +
+                    `(${(file.size / 1024 / 1024).toFixed(1)}MB -> ` +
+                    `${(processedFile.size / 1024 / 1024).toFixed(2)}MB), ` +
+                    `total: ${uploadedImages.length}`
+                );
+            } catch (err) {
+                console.error('[Marketplace] Failed to process', file.name, err);
+                showNotification(`Could not process ${file.name}`, 'error');
+            }
         }
     }
 

@@ -28,7 +28,10 @@ const upload = multer({
     storage: storage,
     fileFilter: fileFilter,
     limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB max file size
+        // Server-side guardrail. The artist CMS compresses images in the
+        // browser before upload (well under 1MB each), so this is a generous
+        // safety margin rather than the primary gate.
+        fileSize: 15 * 1024 * 1024 // 15MB max file size
     }
 });
 
@@ -163,7 +166,7 @@ const handleUploadError = (err, req, res, next) => {
     if (err instanceof multer.MulterError) {
         if (err.code === 'LIMIT_FILE_SIZE') {
             return res.status(400).json({ 
-                error: 'File size too large. Maximum 5MB allowed per image.' 
+                error: 'File size too large. Maximum 15MB allowed per image.' 
             });
         }
         if (err.code === 'LIMIT_FILE_COUNT') {
